@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:11:40 by eric              #+#    #+#             */
-/*   Updated: 2026/02/06 13:12:37 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/06 13:18:45 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ export default function Register()
 					type="text"
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
-					placeholder="Oussame Ben Laden"
+					placeholder="Votre pseudo"
 					required
 				/>
 				<Input
