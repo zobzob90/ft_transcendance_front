@@ -16,9 +16,9 @@ function App()
         <Route path="/register" element={<Register />} />
 
 		{/*ROUTE AVEC NAVBAR*/}
-		<Route path="/feed" element={<Layout />} />
-		<Route path="/messages" element={<Layout />} />
-		<Route path="/profile" element={<Layout />} />
+		<Route path="/feed" element={<Layout><Feed /></Layout>} />
+		<Route path="/messages" element={<Layout><Messages /></Layout>}  />
+		<Route path="/profile" element={<Layout><Profile /></Layout>} />
 
 		{/*REDIRECTION PAR DEFAUT*/}
         <Route path="/" element={<Navigate to="/login" />} />
