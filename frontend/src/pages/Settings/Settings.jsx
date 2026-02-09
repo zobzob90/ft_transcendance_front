@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 11:04:24 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 11:28:38 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ export default function Settings() {
         showProjects: true
     });
 
+    const [language, setLanguage] = useState("fr");
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -48,6 +50,10 @@ export default function Settings() {
 
     const handlePrivacyToggle = (key) => {
         setPrivacy({ ...privacy, [key]: !privacy[key] });
+    };
+
+    const handleLanguageChange = (e) => {
+        setLanguage(e.target.value);
     };
 
     const handleSaveProfile = (e) => {
@@ -82,9 +88,8 @@ export default function Settings() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-3xl font-bold">
-                <span className="text-blue-600">Paramè</span>
-                <span className="text-orange-500">tres</span>
+            <h1 className="text-3xl font-bold text-orange-500">
+                Paramètres
             </h1>
 
             {/* Section Profil */}
@@ -245,6 +250,29 @@ export default function Settings() {
                             checked={privacy.showProjects}
                             onChange={() => handlePrivacyToggle('showProjects')}
                         />
+                    </div>
+                </div>
+            </div>
+
+            {/* Section Langue */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Langue</h2>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Langue de l'interface
+                        </label>
+                        <select
+                            value={language}
+                            onChange={handleLanguageChange}
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        >
+                            <option value="fr">Français</option>
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="de">Deutsch</option>
+                            <option value="pt">Português</option>
+                        </select>
                     </div>
                 </div>
             </div>
