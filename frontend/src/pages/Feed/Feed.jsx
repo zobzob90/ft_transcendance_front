@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:04 by eric              #+#    #+#             */
-/*   Updated: 2026/02/06 19:59:02 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 12:12:24 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@ import { useState } from "react";
 import PostCard from "../../components/PostCard";
 import CreatePostForm from "../../components/CreatePostForm";
 import { Link } from "react-router-dom";
+import { FiMessageCircle } from "react-icons/fi";
 
 export default function Feed() 
 {
@@ -83,10 +84,10 @@ export default function Feed()
             {/* Bouton flottant chat */}
             <Link
                 to="/messages"
-                className="fixed bottom-8 right-8 bg-orange-500 text-white p-4 rounded-full shadow-lg hover:bg-orange-600 transition flex items-center space-x-2"
+                className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center space-x-2"
                 >
-                    <span className="text-2xl">💬</span>
-                    <span className="hidden sm:block">Messages</span>
+                    <FiMessageCircle className="text-2xl" />
+                    <span className="hidden sm:block font-medium"></span>
                 </Link>
         </div>
     );

@@ -64,7 +64,7 @@ export default function Profile()
                     <img
                         src={user.avatar}
                         alt={user.username}
-                        className="w-32 h-32 rounded-full border-4 border-orange-500"
+                        className="w-32 h-32 rounded-full border-4 border-blue-500"
                     />
 
                     {/* Infos utilisateur */}
@@ -78,7 +78,7 @@ export default function Profile()
                             </div>
                             <Link
                                 to="/settings"
-                                className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition"
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
                             >
                                 ⚙️ Modifier le profil
                             </Link>
@@ -114,7 +114,7 @@ export default function Profile()
             {/* Onglets */}
             <div className="mb-6">
                 <div className="border-b">
-                    <button className="px-6 py-3 font-semibold text-orange-500 border-b-2 border-orange-500">
+                    <button className="px-6 py-3 font-semibold text-blue-500 border-b-2 border-blue-500">
                         Posts
                     </button>
                     <button className="px-6 py-3 font-semibold text-gray-500 hover:text-gray-700">

@@ -101,7 +101,7 @@ export default function Messages()
                             key={conv.id}
                             onClick={() => setSelectedConv(conv)}
                             className={`p-4 border-b cursor-pointer hover:bg-gray-100 transition ${
-                                selectedConv.id === conv.id ? 'bg-orange-50 border-l-4 border-orange-500' : ''
+                                selectedConv.id === conv.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                             }`}
                         >
                             <div className="flex items-center space-x-3">
@@ -112,7 +112,7 @@ export default function Messages()
                                         className="w-12 h-12 rounded-full"
                                     />
                                     {conv.unread > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                             {conv.unread}
                                         </span>
                                     )}
@@ -156,12 +156,12 @@ export default function Messages()
                             <div
                                 className={`max-w-xs px-4 py-2 rounded-2xl ${
                                     msg.isMine
-                                        ? 'bg-orange-500 text-white'
+                                        ? 'bg-blue-500 text-white'
                                         : 'bg-white text-gray-900 border'
                                 }`}
                             >
                                 <p>{msg.content}</p>
-                                <span className={`text-xs ${msg.isMine ? 'text-orange-100' : 'text-gray-500'}`}>
+                                <span className={`text-xs ${msg.isMine ? 'text-blue-100' : 'text-gray-500'}`}>
                                     {msg.time}
                                 </span>
                             </div>
@@ -177,11 +177,11 @@ export default function Messages()
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                             placeholder="Écrivez un message..."
-                            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                             type="submit"
-                            className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition"
+                            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
                         >
                             Envoyer
                         </button>

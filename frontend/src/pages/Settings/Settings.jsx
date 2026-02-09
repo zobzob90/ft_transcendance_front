@@ -6,12 +6,23 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 11:28:38 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 12:11:17 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState } from "react";
 import { Input, Button } from "../../utils";
+import { 
+    FiSun, 
+    FiMoon, 
+    FiMonitor,
+    FiUser,
+    FiLock,
+    FiBell,
+    FiShield,
+    FiGlobe,
+    FiAlertTriangle
+} from "react-icons/fi";
 
 export default function Settings() {
     const [formData, setFormData] = useState({
@@ -38,6 +49,7 @@ export default function Settings() {
     });
 
     const [language, setLanguage] = useState("fr");
+    const [theme, setTheme] = useState("light"); // light, dark, auto
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -54,6 +66,12 @@ export default function Settings() {
 
     const handleLanguageChange = (e) => {
         setLanguage(e.target.value);
+    };
+
+    const handleThemeChange = (newTheme) => {
+        setTheme(newTheme);
+        // TODO: Implémenter le changement de thème avec Tailwind dark mode
+        console.log("Thème changé:", newTheme);
     };
 
     const handleSaveProfile = (e) => {
@@ -75,7 +93,7 @@ export default function Settings() {
             type="button"
             onClick={onChange}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                checked ? 'bg-orange-500' : 'bg-gray-300'
+                checked ? 'bg-blue-500' : 'bg-gray-300'
             }`}
         >
             <span
@@ -88,13 +106,16 @@ export default function Settings() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-3xl font-bold text-orange-500">
+            <h1 className="text-3xl font-bold text-black-600">
                 Paramètres
             </h1>
 
             {/* Section Profil */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4">Profil</h2>
+                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                    <FiUser className="text-blue-500" />
+                    <span>Profil</span>
+                </h2>
                 <form onSubmit={handleSaveProfile} className="space-y-4">
                     <Input
                         label="Nom d'utilisateur"
@@ -118,7 +139,7 @@ export default function Settings() {
                             value={formData.bio}
                             onChange={handleInputChange}
                             rows="3"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                     <Button type="submit">Sauvegarder les modifications</Button>
@@ -127,7 +148,10 @@ export default function Settings() {
 
             {/* Section Mot de passe */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4">Changer le mot de passe</h2>
+                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                    <FiLock className="text-blue-500" />
+                    <span>Changer le mot de passe</span>
+                </h2>
                 <form onSubmit={handleChangePassword} className="space-y-4">
                     <Input
                         label="Mot de passe actuel"
@@ -156,7 +180,10 @@ export default function Settings() {
 
             {/* Section Notifications */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4">Notifications</h2>
+                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                    <FiBell className="text-blue-500" />
+                    <span>Notifications</span>
+                </h2>
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
                         <div>
@@ -217,7 +244,10 @@ export default function Settings() {
 
             {/* Section Confidentialité */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4">Confidentialité</h2>
+                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                    <FiShield className="text-blue-500" />
+                    <span>Confidentialité</span>
+                </h2>
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
                         <div>
@@ -254,9 +284,80 @@ export default function Settings() {
                 </div>
             </div>
 
+            {/* Section Apparence */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                    <FiSun className="text-blue-500" />
+                    <span>Apparence</span>
+                </h2>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                            Thème
+                        </label>
+                        <div className="grid grid-cols-3 gap-3">
+                            {/* Light Theme */}
+                            <button
+                                onClick={() => handleThemeChange('light')}
+                                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition ${
+                                    theme === 'light' 
+                                        ? 'border-blue-500 bg-blue-50' 
+                                        : 'border-gray-200 hover:border-blue-300'
+                                }`}
+                            >
+                                <FiSun className={`text-2xl ${theme === 'light' ? 'text-blue-500' : 'text-gray-600'}`} />
+                                <span className={`text-sm font-medium ${theme === 'light' ? 'text-blue-700' : 'text-gray-700'}`}>
+                                    Clair
+                                </span>
+                            </button>
+
+                            {/* Dark Theme */}
+                            <button
+                                onClick={() => handleThemeChange('dark')}
+                                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition ${
+                                    theme === 'dark' 
+                                        ? 'border-blue-500 bg-blue-50' 
+                                        : 'border-gray-200 hover:border-blue-300'
+                                }`}
+                            >
+                                <FiMoon className={`text-2xl ${theme === 'dark' ? 'text-blue-500' : 'text-gray-600'}`} />
+                                <span className={`text-sm font-medium ${theme === 'dark' ? 'text-blue-700' : 'text-gray-700'}`}>
+                                    Sombre
+                                </span>
+                            </button>
+
+                            {/* Auto Theme */}
+                            <button
+                                onClick={() => handleThemeChange('auto')}
+                                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition ${
+                                    theme === 'auto' 
+                                        ? 'border-blue-500 bg-blue-50' 
+                                        : 'border-gray-200 hover:border-blue-300'
+                                }`}
+                            >
+                                <FiMonitor className={`text-2xl ${theme === 'auto' ? 'text-blue-500' : 'text-gray-600'}`} />
+                                <span className={`text-sm font-medium ${theme === 'auto' ? 'text-blue-700' : 'text-gray-700'}`}>
+                                    Auto
+                                </span>
+                            </button>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                            {theme === 'auto' 
+                                ? "Le thème s'adaptera à vos préférences système" 
+                                : theme === 'dark' 
+                                    ? "Mode sombre activé" 
+                                    : "Mode clair activé"}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* Section Langue */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-4">Langue</h2>
+                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                    <FiGlobe className="text-blue-500" />
+                    <span>Langue</span>
+                </h2>
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -265,7 +366,7 @@ export default function Settings() {
                         <select
                             value={language}
                             onChange={handleLanguageChange}
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="fr">Français</option>
                             <option value="en">English</option>
@@ -279,7 +380,10 @@ export default function Settings() {
 
             {/* Section Danger Zone */}
             <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                <h2 className="text-xl font-bold text-red-600 mb-4">Zone de danger</h2>
+                <h2 className="text-xl font-bold text-red-600 mb-4 flex items-center space-x-2">
+                    <FiAlertTriangle />
+                    <span>Gestion du compte</span>
+                </h2>
                 <div className="space-y-3">
                     <button className="w-full bg-white border border-red-300 text-red-600 py-2 rounded-lg hover:bg-red-50 transition">
                         Désactiver le compte

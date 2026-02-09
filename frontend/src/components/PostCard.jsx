@@ -6,11 +6,12 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 16:21:25 by eric              #+#    #+#             */
-/*   Updated: 2026/02/06 18:47:46 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 12:00:16 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { Button } from "../utils";
+import { FiHeart, FiMessageCircle, FiShare2 } from "react-icons/fi";
 
 export default function PostCard({ post, onLike })
 {
@@ -34,13 +35,23 @@ export default function PostCard({ post, onLike })
 					{/*CONTENU*/}
 					<p className="text-gray-800 mb-4">{post.content}</p>
 					{/*footer like*/}
-					<div className="flex items-center space-x-4">
+					<div className="flex items-center space-x-6">
 						<button
 							onClick={() => onLike(post.id)}
-							className="flex items-center space-x-2 text-gray-600 hover:text-orange-500 transition"
+							className={`flex items-center space-x-2 transition ${
+								post.liked ? 'text-red-500' : 'text-gray-600 hover:text-red-500'
+							}`}
 						>
-							<span>❤️</span>
+							<FiHeart className={post.liked ? 'fill-red-500' : ''} />
 							<span>{post.likes}</span>
+						</button>
+						<button className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition">
+							<FiMessageCircle />
+							<span>Commenter</span>
+						</button>
+						<button className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition">
+							<FiShare2 />
+							<span>Partager</span>
 						</button>
 					</div>
 				</div>

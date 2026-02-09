@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:17:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/06 13:28:42 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 12:11:20 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ export default function Login()
 			>
 				<h1 className="text-2xl font-bold text-center mb-6">
     				<span className="text-black">42</span>
-    				<span className="text-orange-500">Hub</span>
+    				<span className="text-blue-600">Hub</span>
 				</h1>
 
 				<Input
