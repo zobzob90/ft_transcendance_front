@@ -4,6 +4,7 @@ import Register from "./pages/Register/Register";
 import Feed from "./pages/Feed/Feed";
 import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";
+import Settings from "./pages/Settings/Settings";
 import Layout from "./components/Layout";
 
 function App() 
@@ -19,6 +20,7 @@ function App()
 		<Route path="/feed" element={<Layout><Feed /></Layout>} />
 		<Route path="/messages" element={<Layout><Messages /></Layout>}  />
 		<Route path="/profile" element={<Layout><Profile /></Layout>} />
+		<Route path="/settings" element={<Layout><Settings /></Layout>} />
 
 		{/*REDIRECTION PAR DEFAUT*/}
         <Route path="/" element={<Navigate to="/login" />} />

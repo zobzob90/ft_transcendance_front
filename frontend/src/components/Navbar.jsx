@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:47:42 by eric              #+#    #+#             */
-/*   Updated: 2026/02/06 13:58:06 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 11:04:16 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,12 @@ export default function Navbar()
 								className="text-gray-700 hover:text-orange-500 font-medium transition"
 							>
 								Profile
+							</Link>
+							<Link
+								to="/settings"
+								className="text-gray-700 hover:text-orange-500 font-medium transition"
+							>
+								Paramètres
 							</Link>
 						</div>
 						{/* LOGOUT BUTTON */}

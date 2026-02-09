@@ -1,0 +1,266 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Settings.jsx                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
+/*   Updated: 2026/02/09 11:04:24 by eric             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+import { useState } from "react";
+import { Input, Button } from "../../utils";
+
+export default function Settings() {
+    const [formData, setFormData] = useState({
+        username: "jdupont",
+        email: "john.dupont@student.42.fr",
+        bio: "Développeur passionné | 42 Student",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+    });
+
+    const [notifications, setNotifications] = useState({
+        emailNotif: true,
+        pushNotif: false,
+        messages: true,
+        likes: true,
+        comments: false
+    });
+
+    const [privacy, setPrivacy] = useState({
+        profilePublic: true,
+        showEmail: false,
+        showProjects: true
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleNotifToggle = (key) => {
+        setNotifications({ ...notifications, [key]: !notifications[key] });
+    };
+
+    const handlePrivacyToggle = (key) => {
+        setPrivacy({ ...privacy, [key]: !privacy[key] });
+    };
+
+    const handleSaveProfile = (e) => {
+        e.preventDefault();
+        alert("Profil mis à jour !");
+    };
+
+    const handleChangePassword = (e) => {
+        e.preventDefault();
+        if (formData.newPassword !== formData.confirmPassword) {
+            alert("Les mots de passe ne correspondent pas !");
+            return;
+        }
+        alert("Mot de passe modifié !");
+    };
+
+    const ToggleSwitch = ({ checked, onChange }) => (
+        <button
+            type="button"
+            onClick={onChange}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                checked ? 'bg-orange-500' : 'bg-gray-300'
+            }`}
+        >
+            <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    checked ? 'translate-x-6' : 'translate-x-1'
+                }`}
+            />
+        </button>
+    );
+
+    return (
+        <div className="max-w-4xl mx-auto space-y-6">
+            <h1 className="text-3xl font-bold">
+                <span className="text-blue-600">Paramè</span>
+                <span className="text-orange-500">tres</span>
+            </h1>
+
+            {/* Section Profil */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Profil</h2>
+                <form onSubmit={handleSaveProfile} className="space-y-4">
+                    <Input
+                        label="Nom d'utilisateur"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                    />
+                    <Input
+                        label="Email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                    />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Bio
+                        </label>
+                        <textarea
+                            name="bio"
+                            value={formData.bio}
+                            onChange={handleInputChange}
+                            rows="3"
+                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                    </div>
+                    <Button type="submit">Sauvegarder les modifications</Button>
+                </form>
+            </div>
+
+            {/* Section Mot de passe */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Changer le mot de passe</h2>
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                    <Input
+                        label="Mot de passe actuel"
+                        name="currentPassword"
+                        type="password"
+                        value={formData.currentPassword}
+                        onChange={handleInputChange}
+                    />
+                    <Input
+                        label="Nouveau mot de passe"
+                        name="newPassword"
+                        type="password"
+                        value={formData.newPassword}
+                        onChange={handleInputChange}
+                    />
+                    <Input
+                        label="Confirmer le mot de passe"
+                        name="confirmPassword"
+                        type="password"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                    />
+                    <Button type="submit">Changer le mot de passe</Button>
+                </form>
+            </div>
+
+            {/* Section Notifications */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Notifications</h2>
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Notifications par email</p>
+                            <p className="text-sm text-gray-600">Recevoir des emails de notification</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={notifications.emailNotif}
+                            onChange={() => handleNotifToggle('emailNotif')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Notifications push</p>
+                            <p className="text-sm text-gray-600">Recevoir des notifications dans le navigateur</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={notifications.pushNotif}
+                            onChange={() => handleNotifToggle('pushNotif')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Messages</p>
+                            <p className="text-sm text-gray-600">Notifications pour nouveaux messages</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={notifications.messages}
+                            onChange={() => handleNotifToggle('messages')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">J'aime</p>
+                            <p className="text-sm text-gray-600">Notifications quand quelqu'un aime vos posts</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={notifications.likes}
+                            onChange={() => handleNotifToggle('likes')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Commentaires</p>
+                            <p className="text-sm text-gray-600">Notifications pour nouveaux commentaires</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={notifications.comments}
+                            onChange={() => handleNotifToggle('comments')}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Section Confidentialité */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Confidentialité</h2>
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Profil public</p>
+                            <p className="text-sm text-gray-600">Autoriser les autres à voir votre profil</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={privacy.profilePublic}
+                            onChange={() => handlePrivacyToggle('profilePublic')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Afficher l'email</p>
+                            <p className="text-sm text-gray-600">Rendre votre email visible sur votre profil</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={privacy.showEmail}
+                            onChange={() => handlePrivacyToggle('showEmail')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">Afficher les projets</p>
+                            <p className="text-sm text-gray-600">Afficher vos projets 42 sur votre profil</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={privacy.showProjects}
+                            onChange={() => handlePrivacyToggle('showProjects')}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Section Danger Zone */}
+            <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                <h2 className="text-xl font-bold text-red-600 mb-4">Zone de danger</h2>
+                <div className="space-y-3">
+                    <button className="w-full bg-white border border-red-300 text-red-600 py-2 rounded-lg hover:bg-red-50 transition">
+                        Désactiver le compte
+                    </button>
+                    <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
+                        Supprimer le compte
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
