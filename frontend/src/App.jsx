@@ -6,6 +6,8 @@ import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";
 import Settings from "./pages/Settings/Settings";
 import Layout from "./components/Layout";
+import Followers from "./pages/Followers/Followers";
+import Notifications from "./pages/Notifications/Notifications";
 
 function App() 
 {
@@ -19,8 +21,10 @@ function App()
 		{/*ROUTE AVEC NAVBAR*/}
 		<Route path="/feed" element={<Layout><Feed /></Layout>} />
 		<Route path="/messages" element={<Layout><Messages /></Layout>}  />
+		<Route path="/notifications" element={<Layout><Notifications /></Layout>}  />
 		<Route path="/profile" element={<Layout><Profile /></Layout>} />
 		<Route path="/settings" element={<Layout><Settings /></Layout>} />
+		<Route path="/followers" element={<Layout><Followers /></Layout>} />
 
 		{/*REDIRECTION PAR DEFAUT*/}
         <Route path="/" element={<Navigate to="/login" />} />

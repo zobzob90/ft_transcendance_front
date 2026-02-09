@@ -6,12 +6,12 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:47:42 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 12:11:18 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 15:17:52 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { Link, useLocation } from "react-router-dom";
-import { FiHome, FiMessageCircle, FiUser, FiSettings, FiLogOut } from "react-icons/fi";
+import { FiHome, FiMessageCircle, FiUser, FiSettings, FiLogOut, FiBell } from "react-icons/fi";
 
 export default function Navbar()
 {
@@ -52,6 +52,22 @@ export default function Navbar()
 					title="Messages"
 				>
 					<FiMessageCircle className="text-2xl" />
+				</Link>
+
+				<Link
+					to="/notifications"
+					className={`relative flex items-center justify-center px-4 py-3 rounded-lg transition ${
+						isActive('/notifications')
+							? 'bg-blue-600 text-white'
+							: 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+					}`}
+					title="Notifications"
+				>
+					<FiBell className="text-2xl" />
+					{/* Badge de compteur */}
+					<span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+						3
+					</span>
 				</Link>
 
 				<Link

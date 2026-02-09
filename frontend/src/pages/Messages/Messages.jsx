@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:04:31 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 11:04:22 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 12:28:24 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,79 @@ import { useState } from "react";
 
 export default function Messages()
 {
+	// Messages par conversation
+	const allMessages = {
+		1: [ // Anony
+			{
+				id: 1,
+				sender: "Anony",
+				content: "Salut !",
+				time: "14:30",
+				isMine: false
+			},
+			{
+				id: 2,
+				sender: "Moi",
+				content: "Pizza ou saucisse ?",
+				time: "14:39",
+				isMine: true
+			},
+			{
+				id: 3,
+				sender: "Anony",
+				content: "Paulo me manque vraiment ...",
+				time: "14:42",
+				isMine: false
+			}
+		],
+		2: [ // Kearmand
+			{
+				id: 1,
+				sender: "Kearmand",
+				content: "Yo ! On prend une pizza algérienne ?",
+				time: "13:15",
+				isMine: false
+			},
+			{
+				id: 2,
+				sender: "Moi",
+				content: "Carrément ! Quelle heure ?",
+				time: "13:20",
+				isMine: true
+			},
+			{
+				id: 3,
+				sender: "Kearmand",
+				content: "19h ça te va ?",
+				time: "13:22",
+				isMine: false
+			}
+		],
+		3: [ // Vdeliere
+			{
+				id: 1,
+				sender: "Vdeliere",
+				content: "T'as vu le dernier projet ?",
+				time: "10:05",
+				isMine: false
+			},
+			{
+				id: 2,
+				sender: "Moi",
+				content: "Ouais c'est chaud",
+				time: "10:10",
+				isMine: true
+			},
+			{
+				id: 3,
+				sender: "Vdeliere",
+				content: "J'aime le peintre autrichien",
+				time: "10:15",
+				isMine: false
+			}
+		]
+	};
+
 	const [conversations] = useState([
 		{
 			id:1,
@@ -44,32 +117,15 @@ export default function Messages()
 	// Conv Selectionnee
 	const [selectedConv, setSelectedConv] = useState(conversations[0]);
 
-	// Msg de la conv (mockes)
-	const [messages, setMessages] = useState([
-		{
-			id: 1,
-			sender: "Anony",
-			content: "Salut !",
-			time: "14:30",
-			isMine: false
-		},
-		{
-			id: 2,
-			sender: "Moi",
-			content: "Pizza ou saucisse ?",
-			time: "14:39",
-			isMine: true
-		},
-		{
-			id: 3,
-			sender: "Anony",
-			content: "Paulo me manque vraiment ...",
-			time: "14:42",
-			isMine: false
-		}
-	]);
+	// Messages de la conversation active
+	const [messagesByConv, setMessagesByConv] = useState(allMessages);
+	const messages = messagesByConv[selectedConv.id] || [];
 	
 	const [newMessage, setNewMessage] = useState("");
+
+	const handleSelectConv = (conv) => {
+		setSelectedConv(conv);
+	};
 
 	const handleSendMessage = (e) =>
 	{
@@ -83,7 +139,12 @@ export default function Messages()
 			time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit'}),
 			isMine: true
 		};
-		setMessages([...messages, message]);
+		
+		// Ajouter le message à la conversation active
+		setMessagesByConv({
+			...messagesByConv,
+			[selectedConv.id]: [...messagesByConv[selectedConv.id], message]
+		});
 		setNewMessage("");
 	};
 	return (
@@ -99,7 +160,7 @@ export default function Messages()
                     {conversations.map(conv => (
                         <div
                             key={conv.id}
-                            onClick={() => setSelectedConv(conv)}
+                            onClick={() => handleSelectConv(conv)}
                             className={`p-4 border-b cursor-pointer hover:bg-gray-100 transition ${
                                 selectedConv.id === conv.id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                             }`}

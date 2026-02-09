@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:20 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 09:52:07 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/09 14:56:17 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,14 +98,14 @@ export default function Profile()
                                 <span className="font-bold text-gray-900">{user.stats.posts}</span>
                                 <span className="text-gray-600 ml-1">posts</span>
                             </div>
-                            <div>
+                            <Link to="/followers" className="hover:underline">
                                 <span className="font-bold text-gray-900">{user.stats.followers}</span>
                                 <span className="text-gray-600 ml-1">abonnés</span>
-                            </div>
-                            <div>
+                            </Link>
+                            <Link to="/followers" className="hover:underline">
                                 <span className="font-bold text-gray-900">{user.stats.following}</span>
                                 <span className="text-gray-600 ml-1">abonnements</span>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </div>
