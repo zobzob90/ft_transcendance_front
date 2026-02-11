@@ -10,11 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiHome, FiMessageCircle, FiUser, FiSettings, FiLogOut, FiBell } from "react-icons/fi";
+import { FiHome, FiMessageCircle, FiUser, FiSettings, FiLogOut, FiBell, FiSearch } from "react-icons/fi";
+import SearchModal from "./SearchModal";
 
 export default function Navbar()
 {
+	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const location = useLocation();
 
 	const isActive = (path) => location.pathname === path;
@@ -30,6 +33,14 @@ export default function Navbar()
 
 			{/* NAV LINKS */}
 			<div className="flex-1 py-6 px-4 space-y-2">
+				<button
+					onClick={() => setIsSearchOpen(true)}
+					className="w-full flex items-center justify-center px-4 py-3 rounded-lg transition text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+					title="Rechercher"
+				>
+					<FiSearch className="text-2xl" />
+				</button>
+
 				<Link
 					to="/feed"
 					className={`flex items-center justify-center px-4 py-3 rounded-lg transition ${
@@ -105,6 +116,9 @@ export default function Navbar()
 					<FiLogOut className="text-2xl" />
 				</button>
 			</div>
+
+			{/* MODAL DE RECHERCHE */}
+			<SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 		</nav>
 	);
 }
