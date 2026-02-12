@@ -6,13 +6,14 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:11:40 by eric              #+#    #+#             */
-/*   Updated: 2026/02/06 13:18:45 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/12 11:51:06 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../../utils/index";
+import { authAPI } from "../../services/api";
 
 export default function Register()
 {
@@ -20,20 +21,48 @@ export default function Register()
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
-	const handleSubmit = (e) =>
+	const handleSubmit = async (e) =>
 	{
 		e.preventDefault();
+		setError("");
 		
 		if (password !== confirmPassword)
 		{
-			alert("Les mots de passe ne correspondent pas !");
+			setError("Les mots de passe ne correspondent pas !");
 			return ;
 		}
 
-		console.log("Username:", username);
-		console.log("Email:", email);
-		console.log("Password:", password);
+		setLoading(true);
+
+		try {
+			const response = await authAPI.register({
+				username,
+				email,
+				password,
+			});
+
+			// Stocker les tokens
+			localStorage.setItem('access_token', response.access_token);
+			if (response.refresh_token) {
+				localStorage.setItem('refresh_token', response.refresh_token);
+			}
+
+			// Rediriger vers le feed
+			navigate('/feed');
+		} catch (err) {
+			setError(err.message || "Erreur lors de l'inscription");
+			console.error("Register error:", err);
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	const handle42Login = () => {
+		authAPI.login42();
 	}
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -44,6 +73,13 @@ export default function Register()
 				<h1 className="text-2xl font-bold text-center mb-6">
 					Créer un compte
 				</h1>
+
+				{error && (
+					<div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+						{error}
+					</div>
+				)}
+
 				<Input
 					label="Nom d'utilisateur"
 					type="text"
@@ -51,6 +87,7 @@ export default function Register()
 					onChange={(e) => setUsername(e.target.value)}
 					placeholder="Votre pseudo"
 					required
+					disabled={loading}
 				/>
 				<Input
 					label="Email"
@@ -59,6 +96,7 @@ export default function Register()
 					onChange={(e) => setEmail(e.target.value)}
 					placeholder="email@example.com"
 					required
+					disabled={loading}
 				/>
 				<Input
 					label="Mot de passe"
@@ -67,6 +105,7 @@ export default function Register()
 					onChange={(e) => setPassword(e.target.value)}
 					placeholder="••••••••"
 					required
+					disabled={loading}
 				/>
 				<Input
 					label="Confirmer le mot de passe"
@@ -75,10 +114,36 @@ export default function Register()
 					onChange={(e) => setConfirmPassword(e.target.value)}
 					placeholder="••••••••"
 					required
+					disabled={loading}
 				/>
-				<Button type="submit" variant="green">
-					S'inscrire
+				<Button type="submit" variant="green" disabled={loading}>
+					{loading ? "Inscription..." : "S'inscrire"}
 				</Button>
+
+				{/* SEPARATEUR */}
+				<div className="relative my-6">
+					<div className="absolute inset-0 flex items-center">
+						<div className="w-full border-t border-gray-300"></div>
+					</div>
+					<div className="relative flex justify-center text-sm">
+						<span className="px-2 bg-white text-gray-500">ou</span>
+					</div>
+				</div>
+
+				{/* BOUTON 42 OAUTH */}
+				<button
+					type="button"
+					onClick={handle42Login}
+					className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition mb-4"
+					disabled={loading}
+				>
+					<svg className="w-6 h-6" viewBox="0 0 256 256" fill="currentColor">
+						<polygon points="128,0 256,74 256,182 128,256 0,182 0,74"/>
+						<text x="128" y="180" fontSize="180" fontWeight="bold" textAnchor="middle" fill="#000">42</text>
+					</svg>
+					S'inscrire avec 42
+				</button>
+
 				<p className="text-center text-sm text-gray-600">
 					Déjà un compte ?{" "}
 					<Link to="/login" className="text-blue-600 hover:underline">

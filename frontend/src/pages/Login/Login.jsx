@@ -6,37 +6,50 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:17:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/11 16:15:19 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/12 11:51:06 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../../utils";
-import { FiGithub } from "react-icons/fi";
+import { authAPI } from "../../services/api";
 
 export default function Login() 
 {
 	const [login, setLogin] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
-	const handleSubmit = (e) => 
+	const handleSubmit = async (e) => 
 	{
 		e.preventDefault();
-		console.log("Login:", login);
-		console.log("Password:", password);
+		setError("");
+		setLoading(true);
+
+		try {
+			const response = await authAPI.login(login, password);
+			
+			// Stocker les tokens
+			localStorage.setItem('access_token', response.access_token);
+			if (response.refresh_token) {
+				localStorage.setItem('refresh_token', response.refresh_token);
+			}
+
+			// Rediriger vers le feed
+			navigate('/feed');
+		} catch (err) {
+			setError(err.message || "Erreur lors de la connexion");
+			console.error("Login error:", err);
+		} finally {
+			setLoading(false);
+		}
 	}
 
 	const handle42Login = () => {
-		// URL de l'API 42 OAuth
-		// const clientId = "YOUR_42_CLIENT_ID";
-		// const redirectUri = encodeURIComponent("http://localhost:5173/callback");
-		// const authUrl = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
-		// window.location.href = authUrl;
-		
-		console.log("Connexion avec 42 (à implémenter avec l'API)");
-		// Pour l'instant, redirection mockée vers le feed
-		window.location.href = "/feed";
+		authAPI.login42();
 	}
 
 	return (
@@ -50,6 +63,12 @@ export default function Login()
     				<span className="text-blue-600">Hub</span>
 				</h1>
 
+				{error && (
+					<div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+						{error}
+					</div>
+				)}
+
 				<Input
 					label="Login"
 					type="text"
@@ -57,6 +76,7 @@ export default function Login()
 					onChange={(e) => setLogin(e.target.value)}
 					placeholder="login42"
 					required
+					disabled={loading}
 				/>
 
 				<Input
@@ -66,10 +86,11 @@ export default function Login()
 					onChange={(e) => setPassword(e.target.value)}
 					placeholder="••••••••"
 					required
+					disabled={loading}
 				/>
 
-				<Button type="submit" variant="blue">
-					Se connecter
+				<Button type="submit" variant="blue" disabled={loading}>
+					{loading ? "Connexion..." : "Se connecter"}
 				</Button>
 
 				{/* SEPARATEUR */}
