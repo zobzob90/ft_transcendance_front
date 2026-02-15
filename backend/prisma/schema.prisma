@@ -1,0 +1,116 @@
+// backend/prisma/schema.prisma
+
+generator client {
+	provider = "prisma-client-js"
+}
+
+datasource db {
+	provider	= "postgresql"
+	url			= env("DATABASE_URL")
+}
+
+// USER 
+
+model User {
+	id			Int		@id @default(autoincrement())
+	username	String	@unique
+	email		String	@unique
+	firstName	String?
+	lastName	String?
+	avatar		String?
+	bio			String?	@db.Text
+
+	ftId		Int?	@unique
+	campus		String?
+	cursus		String?
+	level		Float?
+
+	posts		Post[]
+	likes		Like[]
+	followers	Follower[]	@relation("UserFollowers")
+	following	Follower[]	@relation("UserFollowing")
+
+	sentMessages		Message[]	@relation("SentMessages")
+	receivedMessages	Message[]	@relation("ReceivedMessages")
+
+	createdAt	DateTime	@default(now())
+	updatedAt	DateTime	@updatedAt
+
+	@@map("users")
+}
+
+model Post {
+	id			Int			@id @default(autoincrement())
+	content		String		@db.Text
+	mediaUrl	String?		//Url image/PDF
+	
+	userId		Int
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	likes		Like[]
+
+	createdAt	DateTime	@default(now())
+	updatedAt	DateTime	@updatedAt
+
+	@@map("posts")
+}
+
+model Like {
+	id			Int			@id @default(autoincrement())
+
+	userId		Int
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	postId		Int
+	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
+
+	createdAt	DateTime	@default(now())
+
+	@@unique([userId, postId])
+	@@map("likes")
+}
+
+model	Follower {
+	id			Int			@id @default(autoincrement())
+
+	followerId	Int
+	follower	User		@relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+
+	followingId	Int
+	following	User		@relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+	createdAt	DateTime	@default(now())
+
+	@@unique([followerId, followingId])
+	@@map("followers")
+}
+
+model	Message {
+	id			Int			@id @default(autoincrement())
+	content		String		@db.Text
+
+	senderId	Int
+	sender		User		@relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+	receiverId	Int
+	receiver	User		@relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+	isRead		Boolean		@default(false)
+
+	createdAt	DateTime	@default(now())
+
+	@@map("messages")
+}
+
+model	Notification {
+	id			Int			@id @default(autoincrement())
+	type		String		
+	message		String
+	isRead		Boolean		@default(false)
+
+	userId		Int
+
+	createdAt	DateTime	@default(now())
+
+	@@map("notifications")
+}
