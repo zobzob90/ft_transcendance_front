@@ -6,106 +6,74 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:20 by eric              #+#    #+#             */
-/*   Updated: 2026/02/11 16:12:47 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/15 13:57:41 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { authAPI } from "../../services/api";
 import PostCard from "../../components/PostCard";
 import { Link } from "react-router-dom";
 import { FiImage, FiFileText, FiDownload } from "react-icons/fi";
 
 export default function Profile() 
 {
-    const [activeTab, setActiveTab] = useState("posts"); // posts | media | likes
+    const [activeTab, setActiveTab] = useState("posts");
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
-    // Donnee Mockee (remplace par l'API plus tard)
-    const [user] = useState({
-        username: "Anony",
-        displayName: "Adrien Nony",
-        email: "anony@student.42.fr",
-        avatar: "/avatars/anony.jpg",
-        bio: "Étudiant à 42 Paris | Fan de saucisse | PizzaCringe Lover",
-        level: 7.30,
-        campus: "Paris",
-        cursus: "42cursus",
-        stats: {
-            posts: 42,
-            followers: 39,
-            following: 69,
-        }
-    });
-    const [userPosts] = useState([
-        {
-            id: 1,
-            author: user.username,
-            avatar: user.avatar,
-            content: "Mon premier post sur 42Hub !",
-            likes: 23,
-            date: "Il y a 48 jours",
-        },
-        {
-            id: 2,
-            author: user.username,
-            avatar: user.avatar,
-            content: "IRC est valide !",
-            likes: 1,
-            date: "Il y a 3 jours",
-        }
-    ]);
+    // Récupère les infos de l'utilisateur connecté
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await authAPI.getCurrentUser();
+                setUser(userData);
+            } catch (err) {
+                console.error('Erreur récupération profil:', err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchUserData();
+    }, []);
 
-    const [userMedia] = useState([
-        {
-            id: 1,
-            type: "image",
-            url: "/avatars/anony.jpg",
-            title: "Photo de profil",
-            date: "Il y a 2 mois"
-        },
-        {
-            id: 2,
-            type: "image",
-            url: "/avatars/kearmand.jpg",
-            title: "Screenshot du projet",
-            date: "Il y a 1 mois"
-        },
-        {
-            id: 3,
-            type: "pdf",
-            url: "/docs/correction.pdf",
-            title: "Correction MiniRT",
-            date: "Il y a 3 semaines"
-        },
-        {
-            id: 4,
-            type: "image",
-            url: "/avatars/vdeliere.jpg",
-            title: "Événement 42",
-            date: "Il y a 1 semaine"
-        }
-    ]);
-
-    const [likedPosts] = useState([
-        {
-            id: 10,
-            author: "Kearmand",
-            avatar: "/avatars/kearmand.jpg",
-            content: "PizzaCringe le goat",
-            likes: 42,
-            date: "Il y a 1h"
-        },
-        {
-            id: 11,
-            author: "Vdeliere",
-            avatar: "/avatars/vdeliere.jpg",
-            content: "Allah Akbar",
-            likes: 12,
-            date: "Il y a 6h"
-        }
-    ]);
+    // Données mockées pour posts, media, likes (à remplacer par API plus tard)
+    const [userPosts] = useState([]);
+    const [userMedia] = useState([]);
+    const [likedPosts] = useState([]);
 
     const handleLike = (postId) => {
         console.log("Like post:", postId);
+    }
+
+    // Affichage pendant le chargement
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    // Affichage en cas d'erreur
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-red-600">Erreur: {error}</div>
+            </div>
+        );
+    }
+
+    // Si pas de user
+    if (!user) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div>Utilisateur non trouvé</div>
+            </div>
+        );
     }
     
  return (
@@ -125,7 +93,7 @@ export default function Profile()
                         <div className="flex items-center justify-between mb-2">
                             <div>
                                 <h1 className="text-3xl font-bold text-gray-900">
-                                    {user.displayName}
+                                    {user.firstName} {user.lastName}
                                 </h1>
                                 <p className="text-gray-600">@{user.username}</p>
                             </div>
@@ -136,27 +104,27 @@ export default function Profile()
                                 ⚙️ Modifier le profil
                             </Link>
                         </div>
-                        <p className="text-gray-700 mb-4">{user.bio}</p>
+                        {user.bio && <p className="text-gray-700 mb-4">{user.bio}</p>}
 
                         {/* Informations 42 */}
                         <div className="flex space-x-6 text-sm text-gray-600 mb-4">
-                            <span>📍 {user.campus}</span>
-                            <span>🎯 Niveau {user.level}</span>
-                            <span>📚 {user.cursus}</span>
+                            {user.campus && <span>📍 {user.campus}</span>}
+                            {user.level && <span>🎯 Niveau {user.level}</span>}
+                            {user.cursus && <span>📚 {user.cursus}</span>}
                         </div>
 
                         {/* Statistiques */}
                         <div className="flex space-x-6">
                             <div>
-                                <span className="font-bold text-gray-900">{user.stats.posts}</span>
+                                <span className="font-bold text-gray-900">{user._count?.posts || 0}</span>
                                 <span className="text-gray-600 ml-1">posts</span>
                             </div>
                             <Link to="/followers" className="hover:underline">
-                                <span className="font-bold text-gray-900">{user.stats.followers}</span>
+                                <span className="font-bold text-gray-900">{user._count?.followers || 0}</span>
                                 <span className="text-gray-600 ml-1">abonnés</span>
                             </Link>
                             <Link to="/followers" className="hover:underline">
-                                <span className="font-bold text-gray-900">{user.stats.following}</span>
+                                <span className="font-bold text-gray-900">{user._count?.following || 0}</span>
                                 <span className="text-gray-600 ml-1">abonnements</span>
                             </Link>
                         </div>

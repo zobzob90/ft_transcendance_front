@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:15:38 by eric              #+#    #+#             */
-/*   Updated: 2026/02/15 12:27:14 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/15 13:59:01 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ passport.use(new FortyTwoStrategy(
 		try {
 			const ftData = profile._json;
 			
+			// Trouve le cursus principal (42cursus ou Web3)
+			const mainCursus = ftData.cursus_users?.find(
+				cu => cu.cursus?.slug === '42cursus' || cu.cursus?.slug === 'web3'
+			) || ftData.cursus_users?.[0];
+			
 			let user = await prisma.user.findUnique({
 				where: { ftId: ftData.id }
 			});
@@ -38,16 +43,17 @@ passport.use(new FortyTwoStrategy(
 						lastName: ftData.last_name,
 						avatar: ftData.image?.link || null,
 						campus: ftData.campus?.[0]?.name || null,
-						cursus: ftData.cursus_users?.[0]?.cursus?.name || null,
-						level: ftData.cursus_users?.[0]?.level || 0,
+						cursus: mainCursus?.cursus?.name || null,
+						level: mainCursus?.level || 0,
 					}
 				});
 			} else {
 				user = await prisma.user.update({
 					where: { id: user.id },
 					data: {
-						level: ftData.cursus_users?.[0]?.level || user.level,
+						level: mainCursus?.level || user.level,
 						avatar: ftData.image?.link || user.avatar,
+						cursus: mainCursus?.cursus?.name || user.cursus,
 					}
 				});
 			}

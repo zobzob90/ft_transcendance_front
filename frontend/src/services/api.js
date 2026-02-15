@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/02/12 11:41:47 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/15 13:29:17 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,9 @@ export const authAPI = {
 
 	// Connexion OAuth 42
 	// Redirige USER vers la page d'auth de 42
-	login42: (redirectUri = window.location.origin + '/callback') => {
-		const clientId = import.meta.env.VITE_42_CLIENT_ID;
-		if (!clientId) {
-			console.error('VITE_42_CLIENT_ID non défini dans .env');
-			alert('Configuration Oauth 42 manquante');
-			return ;
-		}
-		const authUrl = `https://api.intra.42.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`;
-		window.location.href = authUrl;
+	login42: () => {
+    	const backendAuthUrl = `${API_BASE_URL}/auth/42`;
+    	window.location.href = backendAuthUrl;
 	},
 	
 	// Callback OAuth 42

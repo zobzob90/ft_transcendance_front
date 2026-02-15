@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
-import Callback from "./pages/Callback/Callback";
+import Callback from "./pages/Callback";
 import Feed from "./pages/Feed/Feed";
 import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";

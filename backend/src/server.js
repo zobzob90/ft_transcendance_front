@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import passport from './config/passport.js';
+
+import authRoutes from './routes/auth.js';
+import userRoutes  from './routes/users.js';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -10,11 +14,13 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
     credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(passport.initialize());
 
 // Route de test
 app.get('/api/health', (req, res) => {
@@ -23,6 +29,9 @@ app.get('/api/health', (req, res) => {
         message: '42Hub API is running!' 
     });
 });
+
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // Démarrage du serveur
 app.listen(PORT, () => {
