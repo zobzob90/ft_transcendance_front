@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/02/15 13:29:17 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 16:06:49 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,17 @@ const fetchWithAuth = async (endpoint, options = {}) => {
 		headers['Authorization'] = `Bearer ${token}`;
 	}
 
+	const url = `${API_BASE_URL}${endpoint}`;
+	console.log('📡 Appel API:', url);
+	console.log('🔑 Token:', token ? 'Présent' : 'Absent');
+
 	// Faire la requete
-	const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+	const response = await fetch(url, {
 		...options,
 		headers,
 	});
+	
+	console.log('📥 Réponse status:', response.status);
 	
 	// Si token perime ou invalide on redirige vers login
 	if (response.status === 401) {
@@ -56,7 +62,8 @@ const fetchWithAuth = async (endpoint, options = {}) => {
 		const error = await response.json().catch(() => ({
 			detail: 'Une erreur est survenue'
 		}));
-		throw new Error(error.detail || error.message || 'Erreur réseau');
+		console.error('❌ Erreur API:', error);
+		throw new Error(error.detail || error.message || error.error || 'Erreur réseau');
 	}
 
 	return response.json();
@@ -173,6 +180,40 @@ export const profileAPI = {
 };
 
 // ===================================
+// API USERS
+// ===================================
+
+export const usersAPI = {
+	// Récupérer tous les utilisateurs (avec pagination)
+	getAllUsers: async (page = 1, limit = 10) => {
+		return fetchWithAuth(`/users?page=${page}&limit=${limit}`);
+	},
+
+	// Récupérer un utilisateur par ID
+	getUserById: async (userId) => {
+		return fetchWithAuth(`/users/${userId}`);
+	},
+
+	// Rechercher des utilisateurs
+	searchUsers: async (query) => {
+		return fetchWithAuth(`/users/search?q=${encodeURIComponent(query)}`);
+	},
+
+	// Mettre à jour un utilisateur
+	updateUser: async (userId, userData) => {
+		return fetchWithAuth(`/users/${userId}`, {
+			method: 'PATCH',
+			body: JSON.stringify(userData),
+		});
+	},
+
+	// Récupérer les posts d'un utilisateur
+	getUserPosts: async (userId, page = 1, limit = 10) => {
+		return fetchWithAuth(`/users/${userId}/posts?page=${page}&limit=${limit}`);
+	},
+};
+
+// ===================================
 // API POST
 // ===================================
 
@@ -184,26 +225,33 @@ export const postsAPI = {
 
 	// Créer un nouveau post (avec ou sans média)
 	createPost: async (content, media = null) => {
-		const formData = new FormData();
-		formData.append('content', content);
 		if (media) {
+			// Si on a un média, utiliser FormData
+			const formData = new FormData();
+			formData.append('content', content);
 			formData.append('media', media);
+
+			const token = localStorage.getItem('access_token');
+			const response = await fetch(`${API_BASE_URL}/posts`, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`,
+				},
+				body: formData,
+			});
+
+			if (!response.ok) {
+				throw new Error('Erreur lors de la création du post');
+			}
+
+			return response.json();
+		} else {
+			// Sinon, utiliser JSON
+			return fetchWithAuth('/posts', {
+				method: 'POST',
+				body: JSON.stringify({ content }),
+			});
 		}
-
-		const token = localStorage.getItem('access_token');
-		const response = await fetch(`${API_BASE_URL}/posts`, {
-			method: 'POST',
-			headers: {
-				'Authorization': `Bearer ${token}`,
-			},
-			body: formData,
-		});
-
-		if (!response.ok) {
-			throw new Error('Erreur lors de la création du post');
-		}
-
-		return response.json();
 	},
 
 	// Supprimer un post (seulement si c'est le sien)
@@ -226,19 +274,6 @@ export const postsAPI = {
             method: 'DELETE',
         });
     },
-
-    // Récupérer les commentaires d'un post
-	getComments: async (postId) => {
-		return fetchWithAuth(`/posts/${postId}/comments`);
-	},
-
-	// Ajouter un commentaire sur un post
-	addComment: async (postId, content) => {
-		return fetchWithAuth(`/posts/${postId}/comments`, {
-			method: 'POST',
-			body: JSON.stringify({ content }),
-		});
-	},
 };
 
 // ===================================
@@ -320,6 +355,51 @@ export const messagesAPI = {
 	},
 };
 
+// ===================================
+// API COMMENTAIRES
+// ===================================
+
+export const commentsAPI = {
+	// Récupérer les commentaires d'un post
+	getCommentsByPost: async (postId, page = 1, limit = 20) => {
+		return fetchWithAuth(`/comments/post/${postId}?page=${page}&limit=${limit}`);
+	},
+
+	// Créer un commentaire
+	createComment: async (postId, content) => {
+		return fetchWithAuth(`/comments/post/${postId}`, {
+			method: 'POST',
+			body: JSON.stringify({ content }),
+		});
+	},
+
+	// Modifier un commentaire
+	updateComment: async (commentId, content) => {
+		return fetchWithAuth(`/comments/${commentId}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ content }),
+		});
+	},
+
+	// Supprimer un commentaire
+	deleteComment: async (commentId) => {
+		return fetchWithAuth(`/comments/${commentId}`, {
+			method: 'DELETE',
+		});
+	},
+};
+
+// ===================================
+// API RECHERCHE
+// ===================================
+
+export const searchAPI = {
+	// Rechercher des utilisateurs 42
+	search42Users: async (query) => {
+		return fetchWithAuth(`/search/42users?query=${encodeURIComponent(query)}`);
+	},
+};
+
 export default {
 	auth: authAPI,
 	profile: profileAPI,
@@ -327,4 +407,7 @@ export default {
 	followers: followersAPI,
 	notifications: notificationsAPI,
 	messages: messagesAPI,
+	comments: commentsAPI,
+	search: searchAPI,
+	users: usersAPI,
 };

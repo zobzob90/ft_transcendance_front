@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:00:30 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 12:05:52 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 16:18:14 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@ import Navbar from "./Navbar";
 export default function Layout({ children })
 {
 	return (
-		<div className="min-h-screen bg-gray-100 flex">
+		<div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex transition-colors">
 			{/* Sidebar */}
 			<Navbar />
 			

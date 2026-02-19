@@ -18,6 +18,24 @@ body
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Support des polices arabes */
+html[lang="ar"] body {
+  font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+}
+
+/* Ajustements RTL automatiques */
+html[dir="rtl"] {
+  text-align: right;
+}
+
+html[dir="rtl"] .text-left {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left !important;
+}
+
 /* Animation pour le modal de recherche */
 @keyframes slide-down {
   from {

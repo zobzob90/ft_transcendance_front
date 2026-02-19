@@ -1,27 +1,43 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   SearchModal.jsx                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 16:20:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/12 23:05:38 by eric             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 import { useState, useEffect } from "react";
-import { FiSearch, FiX } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
+import { FiSearch, FiX, FiLoader } from "react-icons/fi";
 import { Link } from "react-router-dom";
-
-const mockUsers = [
-	{ id: 1, username: "Anony", name: "Adrien Nony", avatar: "/avatars/anony.jpg", level: 7.30 },
-	{ id: 2, username: "Kearmand", name: "Kevin Armand", avatar: "/avatars/kearmand.jpg", level: 6.15 },
-	{ id: 3, username: "Vdeliere", name: "Valentin Deliere", avatar: "/avatars/vdeliere.jpg", level: 5.80 },
-];
+import { searchAPI } from "../services/api";
 
 export default function SearchModal({ isOpen, onClose }) {
+	const { t } = useTranslation();
 	const [query, setQuery] = useState("");
+	const [users, setUsers] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+
+	// Rechercher les utilisateurs 42 quand la query change
+	useEffect(() => {
+		if (query.trim() === '') {
+			setUsers([]);
+			setError(null);
+			return;
+		}
+
+		const searchUsers = async () => {
+			setLoading(true);
+			setError(null);
+			try {
+				const response = await searchAPI.search42Users(query);
+				setUsers(response.users || []);
+			} catch (err) {
+				console.error(t('search.errorSearching'), err);
+				setError(err.message || t('search.errorSearching'));
+				setUsers([]);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		// Debounce de 800ms pour réduire les appels API
+		const timeoutId = setTimeout(searchUsers, 800);
+		return () => clearTimeout(timeoutId);
+	}, [query]);
 
 	// Fermer avec ESC
 	useEffect(() => {
@@ -40,37 +56,31 @@ export default function SearchModal({ isOpen, onClose }) {
 		};
 	}, [isOpen, onClose]);
 
-	const filteredUsers = mockUsers.filter(
-		(user) =>
-			user.username.toLowerCase().includes(query.toLowerCase()) ||
-			user.name.toLowerCase().includes(query.toLowerCase())
-	);
-
 	if (!isOpen) return null;
 
 	return (
 		<div
-			className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center pt-20 px-4"
+			className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-50 flex items-start justify-center pt-20 px-4"
 			onClick={onClose}
 		>
 			<div
-				className="bg-white rounded-lg shadow-2xl w-full max-w-2xl animate-slide-down"
+				className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl animate-slide-down"
 				onClick={(e) => e.stopPropagation()}
 			>
 				{/* HEADER */}
-				<div className="flex items-center gap-3 p-4 border-b">
-					<FiSearch className="text-gray-400 text-xl flex-shrink-0" />
+				<div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-700">
+					<FiSearch className="text-gray-400 dark:text-gray-500 text-xl flex-shrink-0" />
 					<input
 						type="text"
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
-						placeholder="Rechercher des utilisateurs..."
-						className="flex-1 outline-none text-lg"
+						placeholder={t('search.placeholder')}
+						className="flex-1 outline-none text-lg bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
 						autoFocus
 					/>
 					<button
 						onClick={onClose}
-						className="text-gray-400 hover:text-gray-600 flex-shrink-0"
+						className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 flex-shrink-0"
 					>
 						<FiX className="text-2xl" />
 					</button>
@@ -78,42 +88,52 @@ export default function SearchModal({ isOpen, onClose }) {
 
 				{/* RESULTS */}
 				<div className="max-h-96 overflow-y-auto">
-					{query.length > 0 ? (
-						filteredUsers.length > 0 ? (
+					{loading ? (
+						<div className="p-8 text-center text-gray-500 dark:text-gray-400">
+							<FiLoader className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-600 animate-spin" />
+							<p>{t('search.searching')}</p>
+						</div>
+					) : error ? (
+						<div className="p-8 text-center text-red-500 dark:text-red-400">
+							<p>{error}</p>
+						</div>
+					) : query.length > 0 ? (
+						users.length > 0 ? (
 							<div className="py-2">
-								{filteredUsers.map((user) => (
-									<Link
+								{users.map((user) => (
+									<div
 										key={user.id}
-										to="/profile"
-										onClick={onClose}
-										className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition"
+										className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition"
 									>
 										<img
-											src={user.avatar}
-											alt={user.username}
+											src={user.avatar || '/default-avatar.png'}
+											alt={user.login}
 											className="w-12 h-12 rounded-full object-cover"
 										/>
 										<div className="flex-1">
-											<p className="font-semibold text-gray-900">{user.name}</p>
-											<p className="text-sm text-gray-500">@{user.username}</p>
+											<p className="font-semibold text-gray-900 dark:text-white">{user.displayName}</p>
+											<p className="text-sm text-gray-500 dark:text-gray-400">@{user.login}</p>
 										</div>
-										<div className="text-sm text-gray-500">
-											Niveau {user.level}
+										<div className="text-right">
+											<p className="text-sm text-gray-500 dark:text-gray-400">{user.campus}</p>
+											<p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+												{t('search.level')} {user.level.toFixed(2)}
+											</p>
 										</div>
-									</Link>
+									</div>
 								))}
 							</div>
 						) : (
-							<div className="p-8 text-center text-gray-500">
-								<FiSearch className="text-4xl mx-auto mb-2 text-gray-300" />
-								<p>Aucun résultat pour "{query}"</p>
+							<div className="p-8 text-center text-gray-500 dark:text-gray-400">
+								<FiSearch className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-600" />
+								<p>{t('search.noResults', { query })}</p>
 							</div>
 						)
 					) : (
-						<div className="p-8 text-center text-gray-400">
-							<FiSearch className="text-4xl mx-auto mb-2 text-gray-300" />
-							<p>Tapez pour rechercher des utilisateurs...</p>
-							<p className="text-xs mt-2">ESC pour fermer</p>
+						<div className="p-8 text-center text-gray-400 dark:text-gray-500">
+							<FiSearch className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-600" />
+							<p>{t('search.typeToSearch')}</p>
+							<p className="text-xs mt-2">{t('search.pressEsc')}</p>
 						</div>
 					)}
 				</div>

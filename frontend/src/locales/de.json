@@ -1,0 +1,181 @@
+{
+  "navbar": {
+    "feed": "Feed",
+    "profile": "Profil",
+    "messages": "Nachrichten",
+    "notifications": "Benachrichtigungen",
+    "followers": "Follower",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "search": "Suchen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "profile": {
+      "title": "Profil",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "username": "Benutzername",
+      "email": "E-Mail",
+      "bio": "Bio",
+      "bioPlaceholder": "Erzählen Sie uns von sich...",
+      "save": "Änderungen speichern",
+      "saving": "Speichern..."
+    },
+    "password": {
+      "title": "Passwort ändern",
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirm": "Passwort bestätigen",
+      "change": "Passwort ändern",
+      "changing": "Wird geändert..."
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "email": "E-Mail-Benachrichtigungen",
+      "emailDesc": "E-Mail-Benachrichtigungen erhalten",
+      "push": "Push-Benachrichtigungen",
+      "pushDesc": "Browser-Benachrichtigungen erhalten",
+      "messages": "Nachrichten",
+      "messagesDesc": "Benachrichtigungen für neue Nachrichten",
+      "likes": "Likes",
+      "likesDesc": "Benachrichtigungen wenn jemand Ihre Beiträge mag",
+      "comments": "Kommentare",
+      "commentsDesc": "Benachrichtigungen für neue Kommentare"
+    },
+    "privacy": {
+      "title": "Datenschutz",
+      "profilePublic": "Öffentliches Profil",
+      "profilePublicDesc": "Anderen erlauben, Ihr Profil zu sehen",
+      "showEmail": "E-Mail anzeigen",
+      "showEmailDesc": "Ihre E-Mail in Ihrem Profil sichtbar machen",
+      "showProjects": "Projekte anzeigen",
+      "showProjectsDesc": "Ihre 42-Projekte in Ihrem Profil anzeigen"
+    },
+    "appearance": {
+      "title": "Erscheinungsbild",
+      "theme": "Design",
+      "light": "Hell",
+      "dark": "Dunkel",
+      "auto": "Auto",
+      "autoDesc": "Das Design passt sich Ihren Systemeinstellungen an",
+      "darkDesc": "Dunkelmodus aktiviert",
+      "lightDesc": "Hellmodus aktiviert"
+    },
+    "language": {
+      "title": "Sprache",
+      "interface": "Oberflächensprache"
+    },
+    "danger": {
+      "title": "Kontoverwaltung",
+      "deactivate": "Konto deaktivieren",
+      "delete": "Konto löschen"
+    }
+  },
+  "profile": {
+    "edit": "Profil bearbeiten",
+    "posts": "Beiträge",
+    "followers": "Follower",
+    "following": "Folgt",
+    "tabs": {
+      "posts": "Beiträge",
+      "media": "Medien",
+      "likes": "Likes"
+    },
+    "noPosts": "Noch keine Beiträge",
+    "noMedia": "Noch keine Medien",
+    "noLikes": "Noch keine Likes"
+  },
+  "post": {
+    "create": "Was gibt's Neues?",
+    "publish": "Veröffentlichen",
+    "publishing": "Wird veröffentlicht...",
+    "like": "Gefällt mir",
+    "comment": "Kommentieren",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "confirmDelete": "Diesen Beitrag löschen?"
+  },
+  "comment": {
+    "add": "Kommentar hinzufügen...",
+    "validate": "Bestätigen",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirmDelete": "Diesen Kommentar löschen?"
+  },
+  "messages": {
+    "title": "Nachrichten",
+    "search": "Konversation suchen...",
+    "typeMessage": "Nachricht eingeben...",
+    "send": "Senden",
+    "noConversations": "Keine Konversationen",
+    "startConversation": "Neue Konversation beginnen",
+    "online": "Online",
+    "errorLoadingConversations": "Fehler beim Laden der Konversationen",
+    "errorLoadingMessages": "Fehler beim Laden der Nachrichten"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "markAllRead": "Alle als gelesen markieren",
+    "noNotifications": "Keine Benachrichtigungen",
+    "all": "Alle",
+    "unread": "Ungelesen",
+    "errorLoading": "Fehler beim Laden der Benachrichtigungen"
+  },
+  "followers": {
+    "title": "Follower",
+    "followers": "Follower",
+    "following": "Folgt",
+    "follow": "Folgen",
+    "unfollow": "Nicht mehr folgen",
+    "noFollowers": "Keine Follower",
+    "noFollowing": "Folgt niemandem",
+    "network": "Netzwerk",
+    "mutual": "Gegenseitig",
+    "followsYou": "Folgt dir",
+    "following_label": "Wird gefolgt",
+    "searchPlaceholder": "Suchen...",
+    "noResults": "Keine Ergebnisse gefunden",
+    "noFollowersYet": "Noch keine Follower",
+    "notFollowingAnyone": "Du folgst noch niemandem",
+    "noBio": "Keine Bio",
+    "loading": "Lädt...",
+    "errorLoadingFollowers": "Fehler beim Laden der Follower",
+    "errorLoadingFollowing": "Fehler beim Laden der gefolgten Personen",
+    "errorFollow": "Fehler beim Folgen",
+    "errorUnfollow": "Fehler beim Entfolgen"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "loginWith42": "Mit 42 anmelden",
+    "welcome": "Willkommen bei 42Hub",
+    "description": "Das soziale Netzwerk für 42-Studenten"
+  },
+  "common": {
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "search": "Suchen"
+  },
+  "feed": {
+    "title": "Feed",
+    "noPosts": "Noch keine Beiträge",
+    "beFirstToPost": "Sei der Erste, der etwas postet!",
+    "openChat": "Chat öffnen"
+  },
+  "search": {
+    "placeholder": "Nach 42-Benutzern suchen...",
+    "searching": "Suche läuft...",
+    "noResults": "Keine Ergebnisse für \"{{query}}\"",
+    "typeToSearch": "Tippen Sie, um nach 42-Benutzern zu suchen...",
+    "pressEsc": "ESC zum Schließen",
+    "level": "Level",
+    "errorSearching": "Fehler bei der Suche"
+  }
+}

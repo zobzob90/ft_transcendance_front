@@ -4,7 +4,14 @@ import dotenv from 'dotenv';
 import passport from './config/passport.js';
 
 import authRoutes from './routes/auth.js';
-import userRoutes  from './routes/users.js';
+import userRoutes from './routes/users.js';
+import postRoutes from './routes/posts.js';
+import likeRoutes from './routes/likes.js';
+import followerRoutes from './routes/followers.js';
+import messageRoutes from './routes/messages.js';
+import notificationRoutes from './routes/notifications.js';
+import commentRoutes from './routes/comments.js';
+import searchRoutes from './routes/search.js';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -30,8 +37,16 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/followers', followerRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/search', searchRoutes);
 
 // Démarrage du serveur
 app.listen(PORT, () => {

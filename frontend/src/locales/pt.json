@@ -1,0 +1,181 @@
+{
+  "navbar": {
+    "feed": "Feed",
+    "profile": "Perfil",
+    "messages": "Mensagens",
+    "notifications": "Notificações",
+    "followers": "Seguidores",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "search": "Pesquisar"
+  },
+  "settings": {
+    "title": "Configurações",
+    "profile": {
+      "title": "Perfil",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "username": "Nome de usuário",
+      "email": "E-mail",
+      "bio": "Biografia",
+      "bioPlaceholder": "Conte-nos sobre você...",
+      "save": "Salvar alterações",
+      "saving": "Salvando..."
+    },
+    "password": {
+      "title": "Alterar senha",
+      "current": "Senha atual",
+      "new": "Nova senha",
+      "confirm": "Confirmar senha",
+      "change": "Alterar senha",
+      "changing": "Alterando..."
+    },
+    "notifications": {
+      "title": "Notificações",
+      "email": "Notificações por e-mail",
+      "emailDesc": "Receber notificações por e-mail",
+      "push": "Notificações push",
+      "pushDesc": "Receber notificações no navegador",
+      "messages": "Mensagens",
+      "messagesDesc": "Notificações para novas mensagens",
+      "likes": "Curtidas",
+      "likesDesc": "Notificações quando alguém curtir suas publicações",
+      "comments": "Comentários",
+      "commentsDesc": "Notificações para novos comentários"
+    },
+    "privacy": {
+      "title": "Privacidade",
+      "profilePublic": "Perfil público",
+      "profilePublicDesc": "Permitir que outros vejam seu perfil",
+      "showEmail": "Mostrar e-mail",
+      "showEmailDesc": "Tornar seu e-mail visível no seu perfil",
+      "showProjects": "Mostrar projetos",
+      "showProjectsDesc": "Exibir seus projetos 42 no seu perfil"
+    },
+    "appearance": {
+      "title": "Aparência",
+      "theme": "Tema",
+      "light": "Claro",
+      "dark": "Escuro",
+      "auto": "Auto",
+      "autoDesc": "O tema se adaptará às preferências do seu sistema",
+      "darkDesc": "Modo escuro ativado",
+      "lightDesc": "Modo claro ativado"
+    },
+    "language": {
+      "title": "Idioma",
+      "interface": "Idioma da interface"
+    },
+    "danger": {
+      "title": "Gerenciamento de conta",
+      "deactivate": "Desativar conta",
+      "delete": "Excluir conta"
+    }
+  },
+  "profile": {
+    "edit": "Editar perfil",
+    "posts": "publicações",
+    "followers": "seguidores",
+    "following": "seguindo",
+    "tabs": {
+      "posts": "Publicações",
+      "media": "Mídia",
+      "likes": "Curtidas"
+    },
+    "noPosts": "Ainda não há publicações",
+    "noMedia": "Ainda não há mídia",
+    "noLikes": "Ainda não há curtidas"
+  },
+  "post": {
+    "create": "O que há de novo?",
+    "publish": "Publicar",
+    "publishing": "Publicando...",
+    "like": "Curtir",
+    "comment": "Comentar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "confirmDelete": "Excluir esta publicação?"
+  },
+  "comment": {
+    "add": "Adicionar um comentário...",
+    "validate": "Validar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "confirmDelete": "Excluir este comentário?"
+  },
+  "messages": {
+    "title": "Mensagens",
+    "search": "Pesquisar conversa...",
+    "typeMessage": "Digite sua mensagem...",
+    "send": "Enviar",
+    "noConversations": "Sem conversas",
+    "startConversation": "Iniciar uma nova conversa",
+    "online": "Online",
+    "errorLoadingConversations": "Erro ao carregar conversas",
+    "errorLoadingMessages": "Erro ao carregar mensagens"
+  },
+  "notifications": {
+    "title": "Notificações",
+    "markAllRead": "Marcar todas como lidas",
+    "noNotifications": "Sem notificações",
+    "all": "Todas",
+    "unread": "Não lidas",
+    "errorLoading": "Erro ao carregar notificações"
+  },
+  "followers": {
+    "title": "Seguidores",
+    "followers": "Seguidores",
+    "following": "Seguindo",
+    "follow": "Seguir",
+    "unfollow": "Deixar de seguir",
+    "noFollowers": "Sem seguidores",
+    "noFollowing": "Sem seguir",
+    "network": "Rede",
+    "mutual": "Mútuos",
+    "followsYou": "Segue você",
+    "following_label": "Seguindo",
+    "searchPlaceholder": "Pesquisar...",
+    "noResults": "Nenhum resultado encontrado",
+    "noFollowersYet": "Ainda não há seguidores",
+    "notFollowingAnyone": "Você ainda não segue ninguém",
+    "noBio": "Sem biografia",
+    "loading": "Carregando...",
+    "errorLoadingFollowers": "Erro ao carregar seguidores",
+    "errorLoadingFollowing": "Erro ao carregar seguindo",
+    "errorFollow": "Erro ao seguir",
+    "errorUnfollow": "Erro ao deixar de seguir"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair",
+    "loginWith42": "Entrar com 42",
+    "welcome": "Bem-vindo ao 42Hub",
+    "description": "A rede social dos estudantes da 42"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "search": "Pesquisar"
+  },
+  "feed": {
+    "title": "Feed",
+    "noPosts": "Ainda não há publicações",
+    "beFirstToPost": "Seja o primeiro a publicar algo!",
+    "openChat": "Abrir chat"
+  },
+  "search": {
+    "placeholder": "Pesquisar usuários 42...",
+    "searching": "Pesquisando...",
+    "noResults": "Nenhum resultado para \"{{query}}\"",
+    "typeToSearch": "Digite para pesquisar usuários 42...",
+    "pressEsc": "ESC para fechar",
+    "level": "Nível",
+    "errorSearching": "Erro ao pesquisar"
+  }
+}

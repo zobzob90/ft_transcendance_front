@@ -6,73 +6,23 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 14:30:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 15:26:58 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 17:58:33 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState } from "react";
-import { FiHeart, FiMessageCircle, FiUserPlus, FiCheckCircle } from "react-icons/fi";
-
-const mockNotifications = [
-	{
-		id: 1,
-		type: "like",
-		user: "johndoe",
-		avatar: "/avatars/john.jpg",
-		message: "a aimé votre publication",
-		time: "Il y a 5 min",
-		isRead: false,
-	},
-	{
-		id: 2,
-		type: "comment",
-		user: "janesmith",
-		avatar: "/avatars/jane.jpg",
-		message: "a commenté votre publication",
-		time: "Il y a 15 min",
-		isRead: false,
-	},
-	{
-		id: 3,
-		type: "follow",
-		user: "alexmartin",
-		avatar: "/avatars/alex.jpg",
-		message: "a commencé à vous suivre",
-		time: "Il y a 1h",
-		isRead: false,
-	},
-	{
-		id: 4,
-		type: "like",
-		user: "sarahlee",
-		avatar: "/avatars/sarah.jpg",
-		message: "a aimé votre publication",
-		time: "Il y a 2h",
-		isRead: true,
-	},
-	{
-		id: 5,
-		type: "comment",
-		user: "mikebrown",
-		avatar: "/avatars/mike.jpg",
-		message: "a commenté votre publication : 'Super projet ! 🚀'",
-		time: "Il y a 3h",
-		isRead: true,
-	},
-	{
-		id: 6,
-		type: "follow",
-		user: "emilydavis",
-		avatar: "/avatars/emily.jpg",
-		message: "a commencé à vous suivre",
-		time: "Il y a 5h",
-		isRead: true,
-	},
-];
+import { useTranslation } from "react-i18next";
+import { useAppContext } from "../../context/AppContext";
+import { FiHeart, FiMessageCircle, FiUserPlus, FiCheckCircle, FiBell } from "react-icons/fi";
 
 export default function Notifications() {
+	const { t } = useTranslation();
 	const [activeTab, setActiveTab] = useState("all"); // all | unread
-	const [notifications, setNotifications] = useState(mockNotifications);
+	const { 
+		notifications, 
+		markNotificationAsRead, 
+		markAllNotificationsAsRead 
+	} = useAppContext();
 
 	const filteredNotifications =
 		activeTab === "all"
@@ -82,15 +32,11 @@ export default function Notifications() {
 	const unreadCount = notifications.filter((n) => !n.isRead).length;
 
 	const markAsRead = (id) => {
-		setNotifications((prev) =>
-			prev.map((notif) =>
-				notif.id === id ? { ...notif, isRead: true } : notif
-			)
-		);
+		markNotificationAsRead(id);
 	};
 
 	const markAllAsRead = () => {
-		setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
+		markAllNotificationsAsRead();
 	};
 
 	const getNotificationIcon = (type) => {
@@ -101,6 +47,8 @@ export default function Notifications() {
 				return <FiMessageCircle className="text-blue-500" />;
 			case "follow":
 				return <FiUserPlus className="text-green-500" />;
+			case "system":
+				return <FiBell className="text-purple-500" />;
 			default:
 				return <FiCheckCircle className="text-gray-500" />;
 		}
@@ -110,46 +58,46 @@ export default function Notifications() {
 		<div className="max-w-4xl mx-auto p-6">
 			{/* HEADER */}
 			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-3xl font-bold">Notifications</h1>
+				<h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('notifications.title')}</h1>
 				{unreadCount > 0 && (
 					<button
 						onClick={markAllAsRead}
-						className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+						className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
 					>
-						Tout marquer comme lu
+						{t('notifications.markAllRead')}
 					</button>
 				)}
 			</div>
 
 			{/* TABS */}
-			<div className="flex gap-4 mb-6 border-b">
+			<div className="flex gap-4 mb-6 border-b dark:border-gray-700">
 				<button
 					onClick={() => setActiveTab("all")}
 					className={`pb-2 px-1 font-medium transition ${
 						activeTab === "all"
-							? "text-blue-600 border-b-2 border-blue-600"
-							: "text-gray-600 hover:text-blue-600"
+							? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+							: "text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
 					}`}
 				>
-					Toutes ({notifications.length})
+					{t('notifications.all')} ({notifications.length})
 				</button>
 				<button
 					onClick={() => setActiveTab("unread")}
 					className={`pb-2 px-1 font-medium transition ${
 						activeTab === "unread"
-							? "text-blue-600 border-b-2 border-blue-600"
-							: "text-gray-600 hover:text-blue-600"
+							? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+							: "text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
 					}`}
 				>
-					Non lues ({unreadCount})
+					{t('notifications.unread')} ({unreadCount})
 				</button>
 			</div>
 
 			{/* NOTIFICATIONS LIST */}
 			<div className="space-y-3">
 				{filteredNotifications.length === 0 ? (
-					<div className="text-center py-12 text-gray-500">
-						<p className="text-lg">Aucune notification</p>
+					<div className="text-center py-12 text-gray-500 dark:text-gray-400">
+						<p className="text-lg">{t('notifications.noNotifications')}</p>
 					</div>
 				) : (
 					filteredNotifications.map((notif) => (
@@ -158,8 +106,8 @@ export default function Notifications() {
 							onClick={() => !notif.isRead && markAsRead(notif.id)}
 							className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition shadow-sm ${
 								notif.isRead
-									? "bg-white hover:bg-gray-50"
-									: "bg-blue-50 hover:bg-blue-100"
+									? "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+									: "bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50"
 							}`}
 						>
 							{/* ICON */}
@@ -176,11 +124,17 @@ export default function Notifications() {
 
 							{/* CONTENT */}
 							<div className="flex-1 min-w-0">
-								<p className="text-gray-800 text-sm">
-									<span className="font-semibold">{notif.user}</span>{" "}
-									{notif.message}
+								{notif.type === "system" ? (
+									<p className="text-gray-800 dark:text-gray-200 text-sm">{notif.content}</p>
+								) : (
+									<p className="text-gray-800 dark:text-gray-200 text-sm">
+										<span className="font-semibold">{notif.user}</span>{" "}
+										{notif.content}
+									</p>
+								)}
+								<p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+									{new Date(notif.createdAt).toLocaleString('fr-FR')}
 								</p>
-								<p className="text-xs text-gray-500 mt-0.5">{notif.time}</p>
 							</div>
 
 							{/* UNREAD BADGE */}

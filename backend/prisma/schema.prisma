@@ -27,11 +27,13 @@ model User {
 
 	posts		Post[]
 	likes		Like[]
+	comments	Comment[]
 	followers	Follower[]	@relation("UserFollowers")
 	following	Follower[]	@relation("UserFollowing")
 
-	sentMessages		Message[]	@relation("SentMessages")
-	receivedMessages	Message[]	@relation("ReceivedMessages")
+	sentMessages		Message[]		@relation("SentMessages")
+	receivedMessages	Message[]		@relation("ReceivedMessages")
+	notifications		Notification[]
 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@updatedAt
@@ -48,6 +50,7 @@ model Post {
 	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
 
 	likes		Like[]
+	comments	Comment[]
 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@updatedAt
@@ -104,13 +107,30 @@ model	Message {
 
 model	Notification {
 	id			Int			@id @default(autoincrement())
-	type		String		
-	message		String
+	type		String		// like, follow, message, system
+	content		String?		@db.Text
 	isRead		Boolean		@default(false)
 
 	userId		Int
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
 
 	createdAt	DateTime	@default(now())
 
 	@@map("notifications")
+}
+
+model Comment {
+	id			Int			@id @default(autoincrement())
+	content		String		@db.Text
+	
+	userId		Int
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+	
+	postId		Int
+	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
+	
+	createdAt	DateTime	@default(now())
+	updatedAt	DateTime	@updatedAt
+	
+	@@map("comments")
 }

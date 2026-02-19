@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:15:38 by eric              #+#    #+#             */
-/*   Updated: 2026/02/15 13:59:01 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/17 14:28:04 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ passport.use(new FortyTwoStrategy(
 				where: { ftId: ftData.id }
 			});
 
+			const isNewUser = !user;
+
 			if (!user) {
 				user = await prisma.user.create({
 					data: {
@@ -45,6 +47,16 @@ passport.use(new FortyTwoStrategy(
 						campus: ftData.campus?.[0]?.name || null,
 						cursus: mainCursus?.cursus?.name || null,
 						level: mainCursus?.level || 0,
+					}
+				});
+
+				// Créer une notification de bienvenue pour les nouveaux utilisateurs
+				await prisma.notification.create({
+					data: {
+						userId: user.id,
+						type: 'system',
+						content: `Bienvenue sur 42Hub, ${user.firstName} ! 🎉 Commence à partager tes projets et à connecter avec la communauté 42.`,
+						isRead: false,
 					}
 				});
 			} else {

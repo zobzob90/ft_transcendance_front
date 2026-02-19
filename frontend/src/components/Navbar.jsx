@@ -6,28 +6,52 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:47:42 by eric              #+#    #+#             */
-/*   Updated: 2026/02/12 23:05:36 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 17:36:31 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAppContext } from "../context/AppContext";
 import { FiHome, FiMessageCircle, FiUser, FiSettings, FiLogOut, FiBell, FiSearch } from "react-icons/fi";
 import SearchModal from "./SearchModal";
 
 export default function Navbar()
 {
+	const { t } = useTranslation();
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const location = useLocation();
+	const navigate = useNavigate();
+	const { getUnreadCount, setUser, setPosts, setNotifications } = useAppContext();
+	
+	const unreadCount = getUnreadCount();
 
 	const isActive = (path) => location.pathname === path;
 
+	const handleLogout = () => {
+		// Supprimer les données du localStorage
+		localStorage.removeItem('access_token');
+		localStorage.removeItem('refresh_token');
+		localStorage.removeItem('user');
+		localStorage.removeItem('posts');
+		localStorage.removeItem('notifications');
+		
+		// Réinitialiser le contexte
+		setUser(null);
+		setPosts([]);
+		setNotifications([]);
+		
+		// Rediriger vers la page de login
+		navigate('/login');
+	};
+
 	return (
-		<nav className="fixed left-0 top-0 h-screen w-20 bg-white shadow-lg flex flex-col">
+		<nav className="fixed left-0 top-0 h-screen w-20 bg-white dark:bg-gray-800 shadow-lg flex flex-col transition-colors">
 			{/* LOGO */}
-			<div className="p-6 border-b flex justify-center">
+			<div className="p-6 border-b dark:border-gray-700 flex justify-center">
 				<Link to="/feed" className="text-2xl font-bold">
-					<span className="text-black-600">42</span>
+					<span className="text-black-600 dark:text-white">42</span>
 				</Link>
 			</div>
 
@@ -35,8 +59,8 @@ export default function Navbar()
 			<div className="flex-1 py-6 px-4 space-y-2">
 				<button
 					onClick={() => setIsSearchOpen(true)}
-					className="w-full flex items-center justify-center px-4 py-3 rounded-lg transition text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-					title="Rechercher"
+					className="w-full flex items-center justify-center px-4 py-3 rounded-lg transition text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
+					title={t('navbar.search')}
 				>
 					<FiSearch className="text-2xl" />
 				</button>
@@ -46,9 +70,9 @@ export default function Navbar()
 					className={`flex items-center justify-center px-4 py-3 rounded-lg transition ${
 						isActive('/feed')
 							? 'bg-blue-600 text-white'
-							: 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+							: 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
 					}`}
-					title="Feed"
+					title={t('navbar.feed')}
 				>
 					<FiHome className="text-2xl" />
 				</Link>
@@ -58,9 +82,9 @@ export default function Navbar()
 					className={`flex items-center justify-center px-4 py-3 rounded-lg transition ${
 						isActive('/messages')
 							? 'bg-blue-600 text-white'
-							: 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+							: 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
 					}`}
-					title="Messages"
+					title={t('navbar.messages')}
 				>
 					<FiMessageCircle className="text-2xl" />
 				</Link>
@@ -70,15 +94,17 @@ export default function Navbar()
 					className={`relative flex items-center justify-center px-4 py-3 rounded-lg transition ${
 						isActive('/notifications')
 							? 'bg-blue-600 text-white'
-							: 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+							: 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
 					}`}
-					title="Notifications"
+					title={t('navbar.notifications')}
 				>
 					<FiBell className="text-2xl" />
-					{/* Badge de compteur */}
-					<span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-						3
-					</span>
+					{/* Badge de compteur - affiché seulement s'il y a des notifications */}
+					{unreadCount > 0 && (
+						<span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+							{unreadCount > 9 ? '9+' : unreadCount}
+						</span>
+					)}
 				</Link>
 
 				<Link
@@ -86,9 +112,9 @@ export default function Navbar()
 					className={`flex items-center justify-center px-4 py-3 rounded-lg transition ${
 						isActive('/profile')
 							? 'bg-blue-600 text-white'
-							: 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+							: 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
 					}`}
-					title="Profil"
+					title={t('navbar.profile')}
 				>
 					<FiUser className="text-2xl" />
 				</Link>
@@ -98,20 +124,20 @@ export default function Navbar()
 					className={`flex items-center justify-center px-4 py-3 rounded-lg transition ${
 						isActive('/settings')
 							? 'bg-blue-600 text-white'
-							: 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+							: 'text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
 					}`}
-					title="Paramètres"
+					title={t('navbar.settings')}
 				>
 					<FiSettings className="text-2xl" />
 				</Link>
 			</div>
 
 			{/* LOGOUT BUTTON */}
-			<div className="p-4 border-t">
+			<div className="p-4 border-t dark:border-gray-700">
 				<button
 					className="w-full flex items-center justify-center bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition"
-					onClick={() => console.log("Déconnexion")}
-					title="Déconnexion"
+					onClick={handleLogout}
+					title={t('navbar.logout')}
 				>
 					<FiLogOut className="text-2xl" />
 				</button>

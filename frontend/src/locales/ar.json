@@ -1,0 +1,181 @@
+{
+  "navbar": {
+    "feed": "الخلاصة",
+    "profile": "الملف الشخصي",
+    "messages": "الرسائل",
+    "notifications": "الإشعارات",
+    "followers": "المتابعون",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "search": "بحث"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile": {
+      "title": "الملف الشخصي",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "username": "اسم المستخدم",
+      "email": "البريد الإلكتروني",
+      "bio": "السيرة الذاتية",
+      "bioPlaceholder": "أخبرنا عن نفسك...",
+      "save": "حفظ التغييرات",
+      "saving": "جاري الحفظ..."
+    },
+    "password": {
+      "title": "تغيير كلمة المرور",
+      "current": "كلمة المرور الحالية",
+      "new": "كلمة المرور الجديدة",
+      "confirm": "تأكيد كلمة المرور",
+      "change": "تغيير كلمة المرور",
+      "changing": "جاري التغيير..."
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "email": "إشعارات البريد الإلكتروني",
+      "emailDesc": "تلقي إشعارات عبر البريد الإلكتروني",
+      "push": "الإشعارات الفورية",
+      "pushDesc": "تلقي إشعارات المتصفح",
+      "messages": "الرسائل",
+      "messagesDesc": "إشعارات الرسائل الجديدة",
+      "likes": "الإعجابات",
+      "likesDesc": "إشعارات عندما يعجب شخص ما بمنشوراتك",
+      "comments": "التعليقات",
+      "commentsDesc": "إشعارات التعليقات الجديدة"
+    },
+    "privacy": {
+      "title": "الخصوصية",
+      "profilePublic": "ملف شخصي عام",
+      "profilePublicDesc": "السماح للآخرين برؤية ملفك الشخصي",
+      "showEmail": "إظهار البريد الإلكتروني",
+      "showEmailDesc": "جعل بريدك الإلكتروني مرئيًا في ملفك الشخصي",
+      "showProjects": "إظهار المشاريع",
+      "showProjectsDesc": "عرض مشاريع 42 الخاصة بك في ملفك الشخصي"
+    },
+    "appearance": {
+      "title": "المظهر",
+      "theme": "السمة",
+      "light": "فاتح",
+      "dark": "داكن",
+      "auto": "تلقائي",
+      "autoDesc": "ستتكيف السمة مع تفضيلات نظامك",
+      "darkDesc": "الوضع الداكن مفعّل",
+      "lightDesc": "الوضع الفاتح مفعّل"
+    },
+    "language": {
+      "title": "اللغة",
+      "interface": "لغة الواجهة"
+    },
+    "danger": {
+      "title": "إدارة الحساب",
+      "deactivate": "تعطيل الحساب",
+      "delete": "حذف الحساب"
+    }
+  },
+  "profile": {
+    "edit": "تعديل الملف الشخصي",
+    "posts": "منشورات",
+    "followers": "متابعون",
+    "following": "متابَعون",
+    "tabs": {
+      "posts": "المنشورات",
+      "media": "الوسائط",
+      "likes": "الإعجابات"
+    },
+    "noPosts": "لا توجد منشورات بعد",
+    "noMedia": "لا توجد وسائط بعد",
+    "noLikes": "لا توجد إعجابات بعد"
+  },
+  "post": {
+    "create": "ما الجديد؟",
+    "publish": "نشر",
+    "publishing": "جاري النشر...",
+    "like": "إعجاب",
+    "comment": "تعليق",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "confirmDelete": "حذف هذا المنشور؟"
+  },
+  "comment": {
+    "add": "إضافة تعليق...",
+    "validate": "تأكيد",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "confirmDelete": "حذف هذا التعليق؟"
+  },
+  "messages": {
+    "title": "الرسائل",
+    "search": "البحث عن محادثة...",
+    "typeMessage": "اكتب رسالتك...",
+    "send": "إرسال",
+    "noConversations": "لا توجد محادثات",
+    "startConversation": "بدء محادثة جديدة",
+    "online": "متصل",
+    "errorLoadingConversations": "خطأ في تحميل المحادثات",
+    "errorLoadingMessages": "خطأ في تحميل الرسائل"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "all": "الكل",
+    "unread": "غير مقروء",
+    "errorLoading": "خطأ في تحميل الإشعارات"
+  },
+  "followers": {
+    "title": "المتابعون",
+    "followers": "المتابعون",
+    "following": "المتابَعون",
+    "follow": "متابعة",
+    "unfollow": "إلغاء المتابعة",
+    "noFollowers": "لا يوجد متابعون",
+    "noFollowing": "لا توجد متابعة",
+    "network": "الشبكة",
+    "mutual": "متبادل",
+    "followsYou": "يتابعك",
+    "following_label": "متابَع",
+    "searchPlaceholder": "بحث...",
+    "noResults": "لم يتم العثور على نتائج",
+    "noFollowersYet": "لا يوجد متابعون بعد",
+    "notFollowingAnyone": "أنت لا تتابع أحدًا بعد",
+    "noBio": "لا توجد سيرة ذاتية",
+    "loading": "جاري التحميل...",
+    "errorLoadingFollowers": "خطأ في تحميل المتابعين",
+    "errorLoadingFollowing": "خطأ في تحميل المتابَعين",
+    "errorFollow": "خطأ في المتابعة",
+    "errorUnfollow": "خطأ في إلغاء المتابعة"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "logout": "تسجيل الخروج",
+    "loginWith42": "تسجيل الدخول باستخدام 42",
+    "welcome": "مرحبًا بك في 42Hub",
+    "description": "الشبكة الاجتماعية لطلاب 42"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجاح",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "search": "بحث"
+  },
+  "feed": {
+    "title": "الخلاصة",
+    "noPosts": "لا توجد منشورات بعد",
+    "beFirstToPost": "كن أول من ينشر شيئًا!",
+    "openChat": "فتح الدردشة"
+  },
+  "search": {
+    "placeholder": "البحث عن مستخدمي 42...",
+    "searching": "جاري البحث...",
+    "noResults": "لا توجد نتائج لـ \"{{query}}\"",
+    "typeToSearch": "اكتب للبحث عن مستخدمي 42...",
+    "pressEsc": "اضغط ESC للإغلاق",
+    "level": "المستوى",
+    "errorSearching": "خطأ في البحث"
+  }
+}

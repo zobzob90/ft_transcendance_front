@@ -6,17 +6,35 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 16:21:25 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 12:00:16 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 17:36:33 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../utils";
-import { FiHeart, FiMessageCircle, FiShare2 } from "react-icons/fi";
+import { FiHeart, FiMessageCircle, FiShare2, FiTrash2, FiMoreVertical } from "react-icons/fi";
+import CommentSection from "./CommentSection";
+import { useAppContext } from "../context/AppContext";
 
-export default function PostCard({ post, onLike })
+export default function PostCard({ post, onLike, onDelete })
 {
+	const { t } = useTranslation();
+	const [showComments, setShowComments] = useState(false);
+	const [showMenu, setShowMenu] = useState(false);
+	const { user } = useAppContext();
+
+	const isOwner = user?.id === post.userId;
+
+	const handleDelete = () => {
+		if (confirm(t('post.confirmDelete'))) {
+			onDelete(post.id);
+		}
+		setShowMenu(false);
+	};
+
 	return (
-		<div className="bg-white p-6 rounded-lg shadow-md">
+		<div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
 			<div className="flex items-start space-x-4">
 				{/*AVATAR */}
 				<img
@@ -28,32 +46,60 @@ export default function PostCard({ post, onLike })
 					{/*HEADER (auteur + date) */}
 					<div className="flex justify-between items-start mb-2">
 						<div>
-							<h3 className="font-bold text-gray-900">{post.author}</h3>
-							<p className="text-sm text-gray-500">{post.date}</p>
+							<h3 className="font-bold text-gray-900 dark:text-white">{post.author}</h3>
+							<p className="text-sm text-gray-500 dark:text-gray-400">{post.date}</p>
                         </div>
+						{/* Menu 3 points (visible seulement si c'est son propre post) */}
+						{isOwner && (
+							<div className="relative">
+								<button
+									onClick={() => setShowMenu(!showMenu)}
+									className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+								>
+									<FiMoreVertical />
+								</button>
+								{showMenu && (
+									<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg border dark:border-gray-600 z-10">
+										<button
+											onClick={handleDelete}
+											className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg flex items-center space-x-2"
+										>
+											<FiTrash2 />
+											<span>{t('post.delete')}</span>
+										</button>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 					{/*CONTENU*/}
-					<p className="text-gray-800 mb-4">{post.content}</p>
+					<p className="text-gray-800 dark:text-gray-200 mb-4">{post.content}</p>
 					{/*footer like*/}
 					<div className="flex items-center space-x-6">
 						<button
 							onClick={() => onLike(post.id)}
 							className={`flex items-center space-x-2 transition ${
-								post.liked ? 'text-red-500' : 'text-gray-600 hover:text-red-500'
+								post.liked ? 'text-red-500' : 'text-gray-600 dark:text-gray-400 hover:text-red-500'
 							}`}
 						>
 							<FiHeart className={post.liked ? 'fill-red-500' : ''} />
 							<span>{post.likes}</span>
 						</button>
-						<button className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition">
+						<button
+							onClick={() => setShowComments(!showComments)}
+							className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 transition"
+						>
 							<FiMessageCircle />
-							<span>Commenter</span>
+							<span>{showComments ? 'Masquer' : 'Commenter'}</span>
 						</button>
-						<button className="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition">
+						<button className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 transition">
 							<FiShare2 />
 							<span>Partager</span>
 						</button>
 					</div>
+
+					{/* Section commentaires */}
+					{showComments && <CommentSection postId={post.id} />}
 				</div>
 			</div>
 		</div>

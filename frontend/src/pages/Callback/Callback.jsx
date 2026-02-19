@@ -6,19 +6,21 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 11:48:31 by eric              #+#    #+#             */
-/*   Updated: 2026/02/12 11:53:15 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/17 14:27:41 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authAPI } from "../../services/api";
+import { useAppContext } from "../../context/AppContext";
 
 export default function Callback() 
 {
     const [searchParams] = useSearchParams();
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { setUser } = useAppContext();
 
     useEffect(() => {
         const code = searchParams.get('code');
@@ -39,7 +41,10 @@ export default function Callback()
         // Envoyer le code au backend
         const authenticate = async () => {
             try {
+                console.log("🔐 Callback - Début authentification avec code:", code);
+                
                 const response = await authAPI.callback42(code);
+                console.log("✅ Callback - Tokens reçus:", response);
                 
                 // Stocker les tokens dans localStorage
                 localStorage.setItem('access_token', response.access_token);
@@ -47,17 +52,24 @@ export default function Callback()
                     localStorage.setItem('refresh_token', response.refresh_token);
                 }
 
+                // Récupérer les infos de l'utilisateur connecté
+                console.log("👤 Callback - Récupération des infos utilisateur...");
+                const userData = await authAPI.getCurrentUser();
+                console.log("✅ Callback - Utilisateur reçu:", userData);
+                
+                setUser(userData);
+
                 // Rediriger vers le feed
                 navigate('/feed');
             } catch (err) {
-                console.error("Callback error:", err);
+                console.error("❌ Callback error:", err);
                 setError(err.message || "Erreur lors de l'authentification");
                 setTimeout(() => navigate('/login'), 3000);
             }
         };
 
         authenticate();
-    }, [searchParams, navigate]);
+    }, [searchParams, navigate, setUser]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">

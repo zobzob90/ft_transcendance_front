@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:17:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/12 11:51:06 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 17:05:54 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,18 @@ export default function Login()
 	}
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-100">
+		<div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors">
 			<form
 				onSubmit={handleSubmit}
-				className="bg-white p-8 rounded-lg shadow-md w-80"
+				className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-80"
 			>
 				<h1 className="text-2xl font-bold text-center mb-6">
-    				<span className="text-black">42</span>
+    				<span className="text-black dark:text-white">42</span>
     				<span className="text-blue-600">Hub</span>
 				</h1>
 
 				{error && (
-					<div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+					<div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded text-sm">
 						{error}
 					</div>
 				)}
@@ -96,10 +96,10 @@ export default function Login()
 				{/* SEPARATEUR */}
 				<div className="relative my-6">
 					<div className="absolute inset-0 flex items-center">
-						<div className="w-full border-t border-gray-300"></div>
+						<div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
 					</div>
 					<div className="relative flex justify-center text-sm">
-						<span className="px-2 bg-white text-gray-500">ou</span>
+						<span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">ou</span>
 					</div>
 				</div>
 
@@ -116,9 +116,9 @@ export default function Login()
 					Se connecter avec 42
 				</button>
 				
-				<p className="text-center text-sm text-gray-600">
+				<p className="text-center text-sm text-gray-600 dark:text-gray-400">
 					Pas encore de compte ?{" "}
-					<Link to="/register" className="text-blue-600 hover:underline">
+					<Link to="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
 						S'inscrire
 					</Link>
 				</p>

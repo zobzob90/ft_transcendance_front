@@ -6,154 +6,103 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:04:31 by eric              #+#    #+#             */
-/*   Updated: 2026/02/09 12:28:24 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/19 17:36:30 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Messages()
 {
-	// Messages par conversation
-	const allMessages = {
-		1: [ // Anony
-			{
-				id: 1,
-				sender: "Anony",
-				content: "Salut !",
-				time: "14:30",
-				isMine: false
-			},
-			{
-				id: 2,
-				sender: "Moi",
-				content: "Pizza ou saucisse ?",
-				time: "14:39",
-				isMine: true
-			},
-			{
-				id: 3,
-				sender: "Anony",
-				content: "Paulo me manque vraiment ...",
-				time: "14:42",
-				isMine: false
-			}
-		],
-		2: [ // Kearmand
-			{
-				id: 1,
-				sender: "Kearmand",
-				content: "Yo ! On prend une pizza algérienne ?",
-				time: "13:15",
-				isMine: false
-			},
-			{
-				id: 2,
-				sender: "Moi",
-				content: "Carrément ! Quelle heure ?",
-				time: "13:20",
-				isMine: true
-			},
-			{
-				id: 3,
-				sender: "Kearmand",
-				content: "19h ça te va ?",
-				time: "13:22",
-				isMine: false
-			}
-		],
-		3: [ // Vdeliere
-			{
-				id: 1,
-				sender: "Vdeliere",
-				content: "T'as vu le dernier projet ?",
-				time: "10:05",
-				isMine: false
-			},
-			{
-				id: 2,
-				sender: "Moi",
-				content: "Ouais c'est chaud",
-				time: "10:10",
-				isMine: true
-			},
-			{
-				id: 3,
-				sender: "Vdeliere",
-				content: "J'aime le peintre autrichien",
-				time: "10:15",
-				isMine: false
-			}
-		]
-	};
-
-	const [conversations] = useState([
-		{
-			id:1,
-			user: "Anony",
-			avatar: "/avatars/anony.jpg",
-			lastMessage: "Paulo me manque vraiment ...",
-			time: "Il y a 5 minutes",
-			unread: 2
-		},
-		{
-			id: 2,
-			user: "Kearmand",
-			avatar: "/avatars/kearmand.jpg",
-			lastMessage: "On prend une pizza algerienne ?",
-			time: "Il y a une 1 heure",
-			unread: 0
-		},
-		{
-			id: 3,
-			user: "Vdeliere",
-			avatar: "/avatars/vdeliere.jpg",
-			lastMessage: "J'aime le peintre autrichien",
-			time: "Il y a 3 heure",
-			unread: 1
-		}
-	]);
-
-	// Conv Selectionnee
-	const [selectedConv, setSelectedConv] = useState(conversations[0]);
-
-	// Messages de la conversation active
-	const [messagesByConv, setMessagesByConv] = useState(allMessages);
-	const messages = messagesByConv[selectedConv.id] || [];
-	
+	const { t } = useTranslation();
+	const [conversations, setConversations] = useState([]);
+	const [selectedConv, setSelectedConv] = useState(null);
+	const [messages, setMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState("");
+	const [loading, setLoading] = useState(true);
+
+	// TODO: Récupérer les conversations depuis l'API
+	useEffect(() => {
+		const fetchConversations = async () => {
+			try {
+				// const convs = await messagesAPI.getConversations();
+				// setConversations(convs);
+				// if (convs.length > 0) {
+				//     setSelectedConv(convs[0]);
+				// }
+				setLoading(false);
+			} catch (error) {
+				console.error(t('messages.errorLoadingConversations'), error);
+				setLoading(false);
+			}
+		};
+		
+		fetchConversations();
+	}, []);
+
+	// TODO: Récupérer les messages d'une conversation
+	useEffect(() => {
+		const fetchMessages = async () => {
+			if (!selectedConv) return;
+			
+			try {
+				// const msgs = await messagesAPI.getMessages(selectedConv.id);
+				// setMessages(msgs);
+			} catch (error) {
+				console.error(t('messages.errorLoadingMessages'), error);
+			}
+		};
+		
+		fetchMessages();
+	}, [selectedConv]);
 
 	const handleSelectConv = (conv) => {
 		setSelectedConv(conv);
 	};
 
-	const handleSendMessage = (e) =>
-	{
+	const handleSendMessage = async (e) => {
 		e.preventDefault();
-		if (newMessage.trim() === "")
+		if (newMessage.trim() === "" || !selectedConv)
 			return;
-		const message = {
-			id: messages.length + 1,
-			sender: "Moi",
-			content: newMessage,
-			time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit'}),
-			isMine: true
-		};
 		
-		// Ajouter le message à la conversation active
-		setMessagesByConv({
-			...messagesByConv,
-			[selectedConv.id]: [...messagesByConv[selectedConv.id], message]
-		});
+		// TODO: Envoyer le message à l'API
+		// const message = await messagesAPI.send({
+		//     receiverId: selectedConv.userId,
+		//     content: newMessage
+		// });
+		// setMessages([...messages, message]);
+		
+		console.log("Envoi message:", newMessage);
 		setNewMessage("");
 	};
+
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center min-h-screen">
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+			</div>
+		);
+	}
+
+	if (conversations.length === 0) {
+		return (
+			<div className="max-w-4xl mx-auto p-6">
+				<h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">{t('messages.title')}</h1>
+				<div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
+					<p className="text-lg mb-2">{t('messages.noConversations')}</p>
+					<p className="text-sm">{t('messages.startConversation')}</p>
+				</div>
+			</div>
+		);
+	}
 	return (
-        <div className="flex h-[calc(100vh-12rem)] bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="flex h-[calc(100vh-12rem)] bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors">
             
             {/* Liste des conversations (gauche) */}
-            <div className="w-1/3 border-r bg-gray-50">
-                <div className="p-4 border-b bg-white">
-                    <h2 className="text-xl font-bold">Messages</h2>
+            <div className="w-1/3 border-r dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <div className="p-4 border-b dark:border-gray-700 bg-white dark:bg-gray-800">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('messages.title')}</h2>
                 </div>
 
                 <div className="overflow-y-auto h-full">
@@ -195,20 +144,20 @@ export default function Messages()
             <div className="flex-1 flex flex-col">
                 
                 {/* En-tête de la conversation */}
-                <div className="p-4 border-b bg-white flex items-center space-x-3">
+                <div className="p-4 border-b dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center space-x-3">
                     <img
                         src={selectedConv.avatar}
                         alt={selectedConv.user}
                         className="w-10 h-10 rounded-full"
                     />
                     <div>
-                        <h3 className="font-semibold text-gray-900">{selectedConv.user}</h3>
-                        <p className="text-xs text-green-500">● En ligne</p>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{selectedConv.user}</h3>
+                        <p className="text-xs text-green-500">● {t('messages.online')}</p>
                     </div>
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50">
+                <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50 dark:bg-gray-900">
                     {messages.map(msg => (
                         <div
                             key={msg.id}
@@ -218,11 +167,11 @@ export default function Messages()
                                 className={`max-w-xs px-4 py-2 rounded-2xl ${
                                     msg.isMine
                                         ? 'bg-blue-500 text-white'
-                                        : 'bg-white text-gray-900 border'
+                                        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border dark:border-gray-700'
                                 }`}
                             >
                                 <p>{msg.content}</p>
-                                <span className={`text-xs ${msg.isMine ? 'text-blue-100' : 'text-gray-500'}`}>
+                                <span className={`text-xs ${msg.isMine ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'}`}>
                                     {msg.time}
                                 </span>
                             </div>
@@ -231,20 +180,20 @@ export default function Messages()
                 </div>
 
                 {/* Formulaire d'envoi */}
-                <form onSubmit={handleSendMessage} className="p-4 border-t bg-white">
+                <form onSubmit={handleSendMessage} className="p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
                     <div className="flex space-x-2">
                         <input
                             type="text"
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
-                            placeholder="Écrivez un message..."
-                            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder={t('messages.typeMessage')}
+                            className="flex-1 px-4 py-2 border dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         />
                         <button
                             type="submit"
                             className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
                         >
-                            Envoyer
+                            {t('messages.send')}
                         </button>
                     </div>
                 </form>
