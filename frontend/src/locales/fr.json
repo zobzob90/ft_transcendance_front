@@ -137,7 +137,11 @@
     "noNotifications": "Aucune notification",
     "all": "Toutes",
     "unread": "Non lues",
-    "errorLoading": "Erreur chargement notifications"
+    "errorLoading": "Erreur chargement notifications",
+    "welcome": {
+      "title": "Bienvenue sur 42Hub !",
+      "message": "Bienvenue {{name}} ! Découvrez votre nouveau réseau social pour la communauté 42."
+    }
   },
   "followers": {
     "title": "Abonnés",

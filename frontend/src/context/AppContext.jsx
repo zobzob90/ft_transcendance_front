@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 14:12:55 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:15:28 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/20 09:44:37 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ export const useAppContext = () => {
 };
 
 export const AppProvider = ({ children }) => {
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation();
     
     // User data
     const [user, setUser] = useState(() => {
@@ -34,12 +34,21 @@ export const AppProvider = ({ children }) => {
     });
 
     // Posts (NE PLUS charger depuis localStorage au démarrage)
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(() => {
+        // Nettoyer les anciennes données mockées de localStorage au démarrage
+        localStorage.removeItem('posts');
+        return [];
+    });
 
     // Notifications
     const [notifications, setNotifications] = useState(() => {
         const saved = localStorage.getItem('notifications');
         return saved ? JSON.parse(saved) : [];
+    });
+
+    // Flag pour savoir si la notification de bienvenue a été ajoutée
+    const [welcomeNotificationAdded, setWelcomeNotificationAdded] = useState(() => {
+        return localStorage.getItem('welcomeNotificationAdded') === 'true';
     });
 
     // Theme (light, dark, auto)
@@ -86,11 +95,8 @@ export const AppProvider = ({ children }) => {
                 setPosts(formattedPosts);
             } catch (error) {
                 console.error("❌ Erreur chargement posts:", error);
-                // Charger depuis localStorage en fallback
-                const saved = localStorage.getItem('posts');
-                if (saved) {
-                    setPosts(JSON.parse(saved));
-                }
+                // Ne plus charger depuis localStorage - laisser vide
+                setPosts([]);
             }
         };
 
@@ -102,14 +108,29 @@ export const AppProvider = ({ children }) => {
         if (user) {
             console.log("💾 Sauvegarde utilisateur dans localStorage:", user);
             localStorage.setItem('user', JSON.stringify(user));
+            
+            // Ajouter une notification de bienvenue si c'est la première fois
+            if (!welcomeNotificationAdded) {
+                const welcomeNotif = {
+                    id: Date.now(),
+                    type: 'system',
+                    content: t ? t('notifications.welcome.message', { name: user.firstName || user.username }) : `Bienvenue ${user.firstName || user.username} ! Découvrez votre nouveau réseau social pour la communauté 42.`,
+                    avatar: user.avatar || `https://ui-avatars.com/api/?name=42Hub&background=3b82f6&color=fff`,
+                    isRead: false,
+                    createdAt: new Date().toISOString(),
+                };
+                
+                setNotifications(prev => [welcomeNotif, ...prev]);
+                setWelcomeNotificationAdded(true);
+                localStorage.setItem('welcomeNotificationAdded', 'true');
+                console.log("🎉 Notification de bienvenue ajoutée");
+            }
         } else {
             console.log("⚠️ Pas d'utilisateur à sauvegarder");
         }
-    }, [user]);
+    }, [user, welcomeNotificationAdded, t]);
 
-    useEffect(() => {
-        localStorage.setItem('posts', JSON.stringify(posts));
-    }, [posts]);
+
 
     useEffect(() => {
         localStorage.setItem('notifications', JSON.stringify(notifications));

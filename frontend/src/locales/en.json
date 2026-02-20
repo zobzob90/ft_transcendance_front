@@ -137,7 +137,11 @@
     "noNotifications": "No notifications",
     "all": "All",
     "unread": "Unread",
-    "errorLoading": "Error loading notifications"
+    "errorLoading": "Error loading notifications",
+    "welcome": {
+      "title": "Welcome to 42Hub!",
+      "message": "Welcome {{name}}! Discover your new social network for the 42 community."
+    }
   },
   "followers": {
     "title": "Followers",

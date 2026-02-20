@@ -137,7 +137,11 @@
     "noNotifications": "Keine Benachrichtigungen",
     "all": "Alle",
     "unread": "Ungelesen",
-    "errorLoading": "Fehler beim Laden der Benachrichtigungen"
+    "errorLoading": "Fehler beim Laden der Benachrichtigungen",
+    "welcome": {
+      "title": "Willkommen bei 42Hub!",
+      "message": "Willkommen {{name}}! Entdecken Sie Ihr neues soziales Netzwerk für die 42-Community."
+    }
   },
   "followers": {
     "title": "Follower",
