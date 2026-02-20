@@ -13,11 +13,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppContext } from "../../context/AppContext";
-import { FiHeart, FiMessageCircle, FiUserPlus, FiCheckCircle, FiBell } from "react-icons/fi";
+import FloatingChat from "../../components/FloatingChat";
+import { FiHeart, FiMessageCircle as FiMessageCircleIcon, FiUserPlus, FiCheckCircle, FiBell, FiMessageCircle } from "react-icons/fi";
 
 export default function Notifications() {
 	const { t } = useTranslation();
 	const [activeTab, setActiveTab] = useState("all"); // all | unread
+	const [isChatOpen, setIsChatOpen] = useState(false);
 	const { 
 		notifications, 
 		markNotificationAsRead, 
@@ -44,7 +46,7 @@ export default function Notifications() {
 			case "like":
 				return <FiHeart className="text-red-500" />;
 			case "comment":
-				return <FiMessageCircle className="text-blue-500" />;
+				return <FiMessageCircleIcon className="text-blue-500" />;
 			case "follow":
 				return <FiUserPlus className="text-green-500" />;
 			case "system":
@@ -147,6 +149,18 @@ export default function Notifications() {
 					))
 				)}
 			</div>
+
+			{/* Bouton flottant chat */}
+			<button
+				onClick={() => setIsChatOpen(true)}
+				className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center z-40"
+				title={t('navbar.messages')}
+			>
+				<FiMessageCircle className="text-2xl" />
+			</button>
+
+			{/* FloatingChat */}
+			{isChatOpen && <FloatingChat onClose={() => setIsChatOpen(false)} />}
 		</div>
 	);
 }

@@ -124,7 +124,10 @@
     "send": "Envoyer",
     "noConversations": "Aucune conversation",
     "startConversation": "Commencez une nouvelle conversation",
+    "selectConversation": "Sélectionnez une conversation",
     "online": "En ligne",
+    "noResults": "Aucun résultat",
+    "backToConversations": "Retour aux conversations",
     "errorLoadingConversations": "Erreur chargement conversations",
     "errorLoadingMessages": "Erreur chargement messages"
   },

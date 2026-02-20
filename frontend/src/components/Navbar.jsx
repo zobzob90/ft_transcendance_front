@@ -77,6 +77,7 @@ export default function Navbar()
 					<FiHome className="text-2xl" />
 				</Link>
 
+				{/* Lien Messages - Navigation vers la page Messages */}
 				<Link
 					to="/messages"
 					className={`flex items-center justify-center px-4 py-3 rounded-lg transition ${

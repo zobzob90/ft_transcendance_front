@@ -119,12 +119,15 @@
   },
   "messages": {
     "title": "Mensagens",
-    "search": "Pesquisar conversa...",
+    "search": "Pesquisar conversas...",
     "typeMessage": "Digite sua mensagem...",
     "send": "Enviar",
     "noConversations": "Sem conversas",
     "startConversation": "Iniciar uma nova conversa",
+    "selectConversation": "Selecione uma conversa",
     "online": "Online",
+    "noResults": "Sem resultados",
+    "backToConversations": "Voltar às conversas",
     "errorLoadingConversations": "Erro ao carregar conversas",
     "errorLoadingMessages": "Erro ao carregar mensagens"
   },

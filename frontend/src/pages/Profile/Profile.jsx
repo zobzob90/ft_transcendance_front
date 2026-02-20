@@ -16,8 +16,9 @@ import { useAppContext } from "../../context/AppContext";
 import { authAPI, profileAPI } from "../../services/api";
 import PostCard from "../../components/PostCard";
 import CreatePostForm from "../../components/CreatePostForm";
+import FloatingChat from "../../components/FloatingChat";
 import { Link } from "react-router-dom";
-import { FiImage, FiFileText, FiDownload, FiCamera, FiX } from "react-icons/fi";
+import { FiImage, FiFileText, FiDownload, FiCamera, FiX, FiMessageCircle } from "react-icons/fi";
 
 export default function Profile() 
 {
@@ -28,6 +29,7 @@ export default function Profile()
     const [userMedia, setUserMedia] = useState([]);
     const [likedPosts, setLikedPosts] = useState([]);
     const [showAvatarModal, setShowAvatarModal] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState(null);
@@ -448,6 +450,18 @@ export default function Profile()
                     </div>
                 </div>
             )}
+
+            {/* Bouton flottant chat */}
+            <button
+                onClick={() => setIsChatOpen(true)}
+                className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center z-40"
+                title={t('navbar.messages')}
+            >
+                <FiMessageCircle className="text-2xl" />
+            </button>
+
+            {/* FloatingChat */}
+            {isChatOpen && <FloatingChat onClose={() => setIsChatOpen(false)} />}
         </div>
     );                 
 }

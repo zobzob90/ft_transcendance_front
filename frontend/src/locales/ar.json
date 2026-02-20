@@ -124,7 +124,10 @@
     "send": "إرسال",
     "noConversations": "لا توجد محادثات",
     "startConversation": "بدء محادثة جديدة",
+    "selectConversation": "اختر محادثة",
     "online": "متصل",
+    "noResults": "لا توجد نتائج",
+    "backToConversations": "العودة إلى المحادثات",
     "errorLoadingConversations": "خطأ في تحميل المحادثات",
     "errorLoadingMessages": "خطأ في تحميل الرسائل"
   },

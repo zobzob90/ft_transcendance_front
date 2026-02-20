@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:04 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:36:34 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/20 10:50:00 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,13 @@ export default function Feed()
             {/* Bouton flottant chat */}
             <button
                 onClick={() => setIsChatOpen(true)}
-                className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center group"
-                title={t('feed.openChat')}
+                className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center z-40"
+                title={t('navbar.messages')}
             >
                 <FiMessageCircle className="text-2xl" />
-                <span className="absolute right-full mr-3 bg-gray-900 text-white text-sm px-3 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                    {t('navbar.messages')}
-                </span>
             </button>
 
-            {/* Mini chat flottant */}
+            {/* FloatingChat */}
             {isChatOpen && <FloatingChat onClose={() => setIsChatOpen(false)} />}
         </div>
     );

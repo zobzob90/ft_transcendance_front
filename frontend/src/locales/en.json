@@ -119,12 +119,15 @@
   },
   "messages": {
     "title": "Messages",
-    "search": "Search conversation...",
+    "search": "Search conversations...",
     "typeMessage": "Type your message...",
     "send": "Send",
     "noConversations": "No conversations",
     "startConversation": "Start a new conversation",
+    "selectConversation": "Select a conversation",
     "online": "Online",
+    "noResults": "No results",
+    "backToConversations": "Back to conversations",
     "errorLoadingConversations": "Error loading conversations",
     "errorLoadingMessages": "Error loading messages"
   },
