@@ -77,14 +77,28 @@
     "posts": "Beiträge",
     "followers": "Follower",
     "following": "Folgt",
+    "changeAvatar": "Foto ändern",
+    "uploadAvatar": "Ein neues Foto hochladen",
+    "uploading": "Hochladen...",
+    "uploadSuccess": "Foto erfolgreich aktualisiert",
+    "uploadError": "Fehler beim Hochladen",
+    "selectImage": "Bild auswählen",
+    "cancel": "Abbrechen",
     "tabs": {
       "posts": "Beiträge",
+      "projects": "42 Projekte",
       "media": "Medien",
       "likes": "Likes"
     },
     "noPosts": "Noch keine Beiträge",
     "noMedia": "Noch keine Medien",
-    "noLikes": "Noch keine Likes"
+    "noLikes": "Noch keine Likes",
+    "projects": {
+      "validated": "Validiert",
+      "grade": "Note",
+      "date": "Datum",
+      "noProjects": "Keine Projekte verfügbar"
+    }
   },
   "post": {
     "create": "Was gibt's Neues?",

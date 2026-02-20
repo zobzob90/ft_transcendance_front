@@ -77,14 +77,28 @@
     "posts": "منشورات",
     "followers": "متابعون",
     "following": "متابَعون",
+    "changeAvatar": "تغيير الصورة",
+    "uploadAvatar": "رفع صورة جديدة",
+    "uploading": "جاري الرفع...",
+    "uploadSuccess": "تم تحديث الصورة بنجاح",
+    "uploadError": "خطأ في رفع الصورة",
+    "selectImage": "اختر صورة",
+    "cancel": "إلغاء",
     "tabs": {
       "posts": "المنشورات",
+      "projects": "مشاريع 42",
       "media": "الوسائط",
       "likes": "الإعجابات"
     },
     "noPosts": "لا توجد منشورات بعد",
     "noMedia": "لا توجد وسائط بعد",
-    "noLikes": "لا توجد إعجابات بعد"
+    "noLikes": "لا توجد إعجابات بعد",
+    "projects": {
+      "validated": "مصادق عليه",
+      "grade": "الدرجة",
+      "date": "التاريخ",
+      "noProjects": "لا توجد مشاريع متاحة"
+    }
   },
   "post": {
     "create": "ما الجديد؟",

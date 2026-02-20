@@ -6,18 +6,18 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:20 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:36:35 by eric             ###   ########.fr       */
+/*   Updated: 2026/02/20 09:16:06 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppContext } from "../../context/AppContext";
-import { authAPI } from "../../services/api";
+import { authAPI, profileAPI } from "../../services/api";
 import PostCard from "../../components/PostCard";
 import CreatePostForm from "../../components/CreatePostForm";
 import { Link } from "react-router-dom";
-import { FiImage, FiFileText, FiDownload } from "react-icons/fi";
+import { FiImage, FiFileText, FiDownload, FiCamera, FiX } from "react-icons/fi";
 
 export default function Profile() 
 {
@@ -27,6 +27,10 @@ export default function Profile()
     const [error, setError] = useState(null);
     const [userMedia, setUserMedia] = useState([]);
     const [likedPosts, setLikedPosts] = useState([]);
+    const [showAvatarModal, setShowAvatarModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState(null);
     
     const { user, setUser, posts, addPost, toggleLike, deletePost } = useAppContext();
     
@@ -67,6 +71,41 @@ export default function Profile()
         deletePost(postId);
     };
 
+    const handleFileSelect = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            setSelectedFile(file);
+            setUploadError(null);
+        } else {
+            setUploadError(t('profile.uploadError'));
+        }
+    };
+
+    const handleAvatarUpload = async () => {
+        if (!selectedFile) return;
+
+        setUploading(true);
+        setUploadError(null);
+
+        try {
+            // Appel API pour upload avatar
+            const response = await profileAPI.uploadAvatar(selectedFile);
+            
+            // Mettre à jour l'avatar de l'utilisateur
+            setUser({ ...user, avatar: response.avatarUrl || response.avatar });
+            
+            // Fermer le modal et réinitialiser
+            setShowAvatarModal(false);
+            setSelectedFile(null);
+            
+        } catch (err) {
+            console.error('Erreur upload avatar:', err);
+            setUploadError(t('profile.uploadError'));
+        } finally {
+            setUploading(false);
+        }
+    };
+
     // Si pas de user, ne rien afficher (le useEffect va le créer)
     if (!user) {
         return (
@@ -82,11 +121,19 @@ export default function Profile()
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-colors">
                 <div className="flex items-start space-x-6">
                     {/* Avatar */}
-                    <img
-                        src={user.avatar}
-                        alt={user.username}
-                        className="w-32 h-32 rounded-full border-4 border-blue-500"
-                    />
+                    <div className="relative group">
+                        <img
+                            src={user.avatar}
+                            alt={user.username}
+                            className="w-32 h-32 rounded-full border-4 border-blue-500"
+                        />
+                        <button
+                            onClick={() => setShowAvatarModal(true)}
+                            className="absolute inset-0 w-32 h-32 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-all"
+                        >
+                            <FiCamera className="text-white opacity-0 group-hover:opacity-100 text-3xl" />
+                        </button>
+                    </div>
 
                     {/* Infos utilisateur */}
                     <div className="flex-1">
@@ -149,6 +196,16 @@ export default function Profile()
                         {t('profile.tabs.posts')}
                     </button>
                     <button 
+                        onClick={() => setActiveTab("projects")}
+                        className={`px-6 py-3 font-semibold ${
+                            activeTab === "projects" 
+                                ? "text-blue-500 border-b-2 border-blue-500" 
+                                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                        }`}
+                    >
+                        {t('profile.tabs.projects')}
+                    </button>
+                    <button 
                         onClick={() => setActiveTab("media")}
                         className={`px-6 py-3 font-semibold ${
                             activeTab === "media" 
@@ -186,6 +243,60 @@ export default function Profile()
                     ) : (
                         <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
                             {t('profile.noPosts')}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {activeTab === "projects" && (
+                <div className="space-y-4">
+                    {user.projects && user.projects.filter(p => p.validated).length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {user.projects.filter(p => p.validated).map(project => (
+                                <div 
+                                    key={project.id} 
+                                    className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition border-l-4 border-green-500"
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                            {project.name}
+                                        </h3>
+                                        <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold px-2 py-1 rounded">
+                                            ✓ {t('profile.projects.validated')}
+                                        </span>
+                                    </div>
+                                    
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-gray-600 dark:text-gray-400">
+                                                {t('profile.projects.grade')}:
+                                            </span>
+                                            <span className={`font-bold ${
+                                                project.finalMark >= 100 ? 'text-green-600 dark:text-green-400' : 
+                                                project.finalMark >= 75 ? 'text-blue-600 dark:text-blue-400' : 
+                                                'text-gray-600 dark:text-gray-400'
+                                            }`}>
+                                                {project.finalMark}/100
+                                            </span>
+                                        </div>
+                                        
+                                        {project.markedAt && (
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-gray-600 dark:text-gray-400">
+                                                    {t('profile.projects.date')}:
+                                                </span>
+                                                <span className="text-gray-700 dark:text-gray-300">
+                                                    {new Date(project.markedAt).toLocaleDateString()}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
+                            {t('profile.projects.noProjects')}
                         </div>
                     )}
                 </div>
@@ -253,6 +364,88 @@ export default function Profile()
                             Aucun post liké pour le moment
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* Modal de changement d'avatar */}
+            {showAvatarModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                {t('profile.uploadAvatar')}
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    setShowAvatarModal(false);
+                                    setSelectedFile(null);
+                                    setUploadError(null);
+                                }}
+                                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                            >
+                                <FiX size={24} />
+                            </button>
+                        </div>
+
+                        {/* Preview de l'image sélectionnée */}
+                        {selectedFile && (
+                            <div className="mb-4 flex justify-center">
+                                <img
+                                    src={URL.createObjectURL(selectedFile)}
+                                    alt="Preview"
+                                    className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+                                />
+                            </div>
+                        )}
+
+                        {/* Input fichier */}
+                        <div className="mb-4">
+                            <label className="block w-full">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileSelect}
+                                    className="hidden"
+                                    id="avatar-upload"
+                                />
+                                <div className="cursor-pointer bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-500 transition">
+                                    <FiImage className="mx-auto text-4xl text-gray-400 mb-2" />
+                                    <p className="text-gray-600 dark:text-gray-300">
+                                        {selectedFile ? selectedFile.name : t('profile.selectImage')}
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
+                        {/* Erreur */}
+                        {uploadError && (
+                            <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded">
+                                {uploadError}
+                            </div>
+                        )}
+
+                        {/* Boutons */}
+                        <div className="flex space-x-3">
+                            <button
+                                onClick={() => {
+                                    setShowAvatarModal(false);
+                                    setSelectedFile(null);
+                                    setUploadError(null);
+                                }}
+                                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                                disabled={uploading}
+                            >
+                                {t('profile.cancel')}
+                            </button>
+                            <button
+                                onClick={handleAvatarUpload}
+                                disabled={!selectedFile || uploading}
+                                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            >
+                                {uploading ? t('profile.uploading') : t('profile.changeAvatar')}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

@@ -77,14 +77,28 @@
     "posts": "posts",
     "followers": "abonnés",
     "following": "abonnements",
+    "changeAvatar": "Changer la photo",
+    "uploadAvatar": "Télécharger une nouvelle photo",
+    "uploading": "Téléchargement...",
+    "uploadSuccess": "Photo mise à jour avec succès",
+    "uploadError": "Erreur lors du téléchargement",
+    "selectImage": "Sélectionner une image",
+    "cancel": "Annuler",
     "tabs": {
       "posts": "Posts",
+      "projects": "Projets 42",
       "media": "Médias",
       "likes": "Likes"
     },
     "noPosts": "Aucun post pour le moment",
     "noMedia": "Aucun média pour le moment",
-    "noLikes": "Aucun like pour le moment"
+    "noLikes": "Aucun like pour le moment",
+    "projects": {
+      "validated": "Validé",
+      "grade": "Note",
+      "date": "Date",
+      "noProjects": "Aucun projet disponible"
+    }
   },
   "post": {
     "create": "Quoi de neuf ?",

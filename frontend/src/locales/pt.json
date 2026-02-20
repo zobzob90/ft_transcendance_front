@@ -77,14 +77,28 @@
     "posts": "publicações",
     "followers": "seguidores",
     "following": "seguindo",
+    "changeAvatar": "Alterar foto",
+    "uploadAvatar": "Fazer upload de uma nova foto",
+    "uploading": "Enviando...",
+    "uploadSuccess": "Foto atualizada com sucesso",
+    "uploadError": "Erro ao enviar a foto",
+    "selectImage": "Selecionar uma imagem",
+    "cancel": "Cancelar",
     "tabs": {
       "posts": "Publicações",
+      "projects": "Projetos 42",
       "media": "Mídia",
       "likes": "Curtidas"
     },
     "noPosts": "Ainda não há publicações",
     "noMedia": "Ainda não há mídia",
-    "noLikes": "Ainda não há curtidas"
+    "noLikes": "Ainda não há curtidas",
+    "projects": {
+      "validated": "Validado",
+      "grade": "Nota",
+      "date": "Data",
+      "noProjects": "Nenhum projeto disponível"
+    }
   },
   "post": {
     "create": "O que há de novo?",

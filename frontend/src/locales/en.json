@@ -77,14 +77,28 @@
     "posts": "posts",
     "followers": "followers",
     "following": "following",
+    "changeAvatar": "Change photo",
+    "uploadAvatar": "Upload a new photo",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Photo updated successfully",
+    "uploadError": "Error uploading photo",
+    "selectImage": "Select an image",
+    "cancel": "Cancel",
     "tabs": {
       "posts": "Posts",
+      "projects": "42 Projects",
       "media": "Media",
       "likes": "Likes"
     },
     "noPosts": "No posts yet",
     "noMedia": "No media yet",
-    "noLikes": "No likes yet"
+    "noLikes": "No likes yet",
+    "projects": {
+      "validated": "Validated",
+      "grade": "Grade",
+      "date": "Date",
+      "noProjects": "No projects available"
+    }
   },
   "post": {
     "create": "What's new?",
