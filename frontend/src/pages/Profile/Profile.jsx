@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:20 by eric              #+#    #+#             */
-/*   Updated: 2026/02/20 09:44:37 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/03 10:47:38 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,18 +123,20 @@ export default function Profile()
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 transition-colors">
                 <div className="flex items-start space-x-6">
                     {/* Avatar */}
-                    <div className="relative group">
-                        <img
-                            src={user.avatar}
-                            alt={user.username}
-                            className="w-32 h-32 rounded-full border-4 border-blue-500"
-                        />
-                        <button
-                            onClick={() => setShowAvatarModal(true)}
-                            className="absolute inset-0 w-32 h-32 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-all"
-                        >
-                            <FiCamera className="text-white opacity-0 group-hover:opacity-100 text-3xl" />
-                        </button>
+                    <div className="group">
+                        <div className="relative">
+                            <img
+                                src={user.avatar}
+                                alt={user.username}
+                                className="w-32 h-32 rounded-full border-4 border-blue-500"
+                            />
+                            <button
+                                onClick={() => setShowAvatarModal(true)}
+                                className="absolute inset-0 w-32 h-32 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-all"
+                            >
+                                <FiCamera className="text-white opacity-0 group-hover:opacity-100 text-3xl" />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Infos utilisateur */}
@@ -371,7 +373,7 @@ export default function Profile()
 
             {/* Modal de changement d'avatar */}
             {showAvatarModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[55]">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">

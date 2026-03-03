@@ -60,7 +60,7 @@ export default function SearchModal({ isOpen, onClose }) {
 
 	return (
 		<div
-			className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-50 flex items-start justify-center pt-20 px-4"
+			className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-[60] flex items-start justify-center pt-20 px-4"
 			onClick={onClose}
 		>
 			<div

@@ -47,8 +47,8 @@ async function main() {
 			data: {
 				username: 'pbernard',
 				email: 'pbernard@student.42.fr',
-				firstName: 'Pierre',
-				lastName: 'Bernard',
+				firstName: 'Alain',
+				lastName: 'Akbar',
 				bio: 'DevOps enthusiast 🚀',
 				campus: 'Paris',
 				cursus: '42cursus',

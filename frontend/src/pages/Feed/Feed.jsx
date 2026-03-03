@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:04 by eric              #+#    #+#             */
-/*   Updated: 2026/02/20 09:44:37 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/03 11:15:57 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ export default function Feed()
     };
     return (
         <div className="max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">{t('feed.title')}</h1>
+            <div className="flex items-center gap-3 mb-6">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('feed.title')}</h1>
+            </div>
 
             <CreatePostForm onSubmit={handleCreatePost} />
 

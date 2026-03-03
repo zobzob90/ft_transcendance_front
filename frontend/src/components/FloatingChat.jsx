@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 15:30:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/20 09:25:50 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/03 10:47:39 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ export default function FloatingChat({ onClose }) {
 	const currentMessages = selectedConversation ? messages[selectedConversation.id] || [] : [];
 
 	return (
-		<div className="fixed bottom-0 right-8 w-80 bg-white dark:bg-gray-800 rounded-t-lg shadow-2xl border border-gray-200 dark:border-gray-700 z-50 transition-colors">
+		<div className="fixed bottom-0 right-8 w-80 bg-white dark:bg-gray-800 rounded-t-lg shadow-2xl border border-gray-200 dark:border-gray-700 z-40 transition-colors">
 			{/* HEADER */}
 			<div className="flex items-center justify-between p-3 border-b dark:border-gray-700 bg-blue-600 text-white rounded-t-lg">
 				<h3 className="font-semibold">
