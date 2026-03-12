@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   App.jsx                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/12 15:59:56 by eric              #+#    #+#             */
+/*   Updated: 2026/03/12 16:10:21 by eric             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 import { MessagesProvider } from "./context/MessagesContext";
@@ -7,6 +19,7 @@ import Callback from "./pages/Callback";
 import Feed from "./pages/Feed/Feed";
 import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";
+import PublicProfile from "./pages/Profile/PublicProfile";
 import Settings from "./pages/Settings/Settings";
 import Layout from "./components/Layout";
 import Followers from "./pages/Followers/Followers";
@@ -29,6 +42,7 @@ function App()
             <Route path="/messages" element={<Layout><Messages /></Layout>}  />
             <Route path="/notifications" element={<Layout><Notifications /></Layout>}  />
             <Route path="/profile" element={<Layout><Profile /></Layout>} />
+            <Route path="/profile/:username" element={<Layout><PublicProfile /></Layout> } />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
             <Route path="/followers" element={<Layout><Followers /></Layout>} />
 
