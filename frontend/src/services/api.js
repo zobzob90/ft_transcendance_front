@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/03/12 17:00:23 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/13 11:39:50 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -413,9 +413,14 @@ export const commentsAPI = {
 // ===================================
 
 export const searchAPI = {
-	// Rechercher des utilisateurs 42
+	// Rechercher des utilisateurs 42 (via API intra)
 	search42Users: async (query) => {
 		return fetchWithAuth(`/search/42users?query=${encodeURIComponent(query)}`);
+	},
+
+	// Rechercher des utilisateurs inscrits sur 42Hub (BDD locale)
+	searchLocalUsers: async (query) => {
+		return fetchWithAuth(`/search/users?query=${encodeURIComponent(query)}`);
 	},
 };
 

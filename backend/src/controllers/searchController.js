@@ -1,4 +1,5 @@
 import axios from 'axios';
+import prisma from '../config/database.js';
 
 // Récupérer le token d'accès à l'API 42
 const get42AccessToken = async () => {
@@ -58,5 +59,43 @@ export const search42Users = async (req, res) => {
 	} catch (error) {
 		console.error('Erreur search42Users:', error.response?.data || error.message);
 		res.status(500).json({ error: 'Erreur lors de la recherche' });
+	}
+};
+
+// Rechercher des utilisateurs inscrits dans la BDD 42Hub
+export const searchLocalUsers = async (req, res) => {
+	try {
+		const { query } = req.query;
+
+		if (!query || query.trim() === '') {
+			return res.status(400).json({ error: 'La recherche ne peut pas être vide' });
+		}
+
+		const users = await prisma.user.findMany({
+			where: {
+				OR: [
+					{ username: { contains: query, mode: 'insensitive' } },
+					{ firstName: { contains: query, mode: 'insensitive' } },
+					{ lastName: { contains: query, mode: 'insensitive' } },
+				],
+			},
+			select: {
+				id: true,
+				username: true,
+				firstName: true,
+				lastName: true,
+				avatar: true,
+				campus: true,
+				cursus: true,
+				level: true,
+				bio: true,
+			},
+			take: 10,
+		});
+
+		res.json({ users });
+	} catch (error) {
+		console.error('Erreur searchLocalUsers:', error.message);
+		res.status(500).json({ error: 'Erreur lors de la recherche locale' });
 	}
 };
