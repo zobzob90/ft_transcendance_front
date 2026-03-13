@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 10:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/17 14:28:11 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/13 13:24:47 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ export const markAsRead = async (req, res) => {
 
 		await prisma.notification.update({
 			where: { id: parseInt(id) },
-			data: { read: true }
+			data: { isRead: true }
 		});
 
 		res.json({ message: 'Notification marquée comme lue' });
@@ -71,9 +71,9 @@ export const markAllAsRead = async (req, res) => {
 		await prisma.notification.updateMany({
 			where: {
 				userId: req.user.id,
-				read: false
+				isRead: false
 			},
-			data: { read: true }
+			data: { isRead: true }
 		});
 
 		res.json({ message: 'Toutes les notifications marquées comme lues' });

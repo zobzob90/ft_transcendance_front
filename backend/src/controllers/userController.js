@@ -6,11 +6,12 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:33:55 by eric              #+#    #+#             */
-/*   Updated: 2026/03/12 17:45:05 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/13 13:24:45 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import prisma from '../config/database.js';
+import { createNotification } from '../utils/notifications.js';
 
 /**
  * Récupère tous les utilisateurs (avec pagination)
@@ -374,11 +375,19 @@ export const followUserByUsername = async (req, res) => {
             return res.status(400).json({ error: 'Vous suivez déjà cet utilisateur' });
         }
 
-        await prisma.follower.create({
+    		await prisma.follower.create({
             data: {
                 followerId: req.user.id,
                 followingId: userToFollow.id,
             }
+        });
+
+        // Notifier l'utilisateur suivi
+        await createNotification({
+            userId: userToFollow.id,
+            senderId: req.user.id,
+            type: 'follow',
+            content: `a commencé à vous suivre`,
         });
 
         res.status(201).json({ message: 'Utilisateur suivi avec succès' });

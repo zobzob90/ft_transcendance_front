@@ -33,7 +33,8 @@ model User {
 
 	sentMessages		Message[]		@relation("SentMessages")
 	receivedMessages	Message[]		@relation("ReceivedMessages")
-	notifications		Notification[]
+	notifications		Notification[]	@relation("NotificationReceiver")
+	sentNotifications	Notification[]	@relation("NotificationSender")
 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@updatedAt
@@ -107,12 +108,15 @@ model	Message {
 
 model	Notification {
 	id			Int			@id @default(autoincrement())
-	type		String		// like, follow, message, system
+	type		String		// like, follow, comment, message, system
 	content		String?		@db.Text
 	isRead		Boolean		@default(false)
 
 	userId		Int
-	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+	user		User		@relation("NotificationReceiver", fields: [userId], references: [id], onDelete: Cascade)
+
+	senderId	Int?
+	sender		User?		@relation("NotificationSender", fields: [senderId], references: [id], onDelete: SetNull)
 
 	createdAt	DateTime	@default(now())
 

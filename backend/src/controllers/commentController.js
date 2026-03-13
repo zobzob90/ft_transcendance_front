@@ -1,4 +1,5 @@
 import prisma from '../config/database.js';
+import { createNotification } from '../utils/notifications.js';
 
 // Récupérer tous les commentaires d'un post
 export const getCommentsByPost = async (req, res) => {
@@ -84,16 +85,13 @@ export const createComment = async (req, res) => {
 			}
 		});
 		
-		// Créer une notification pour l'auteur du post (si ce n'est pas lui qui commente)
-		if (post.userId !== userId) {
-			await prisma.notification.create({
-				data: {
-					type: 'comment',
-					content: `a commenté votre post`,
-					userId: post.userId,
-				}
-			});
-		}
+		// Notifier l'auteur du post (si ce n'est pas lui qui commente)
+		await createNotification({
+			userId: post.userId,
+			senderId: userId,
+			type: 'comment',
+			content: `a commenté votre post`,
+		});
 		
 		res.status(201).json(comment);
 	} catch (error) {

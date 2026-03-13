@@ -6,13 +6,13 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 14:12:55 by eric              #+#    #+#             */
-/*   Updated: 2026/03/12 17:07:33 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/13 13:41:42 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { postsAPI } from '../services/api';
+import { postsAPI, notificationsAPI } from '../services/api';
 
 const AppContext = createContext();
 
@@ -40,17 +40,13 @@ export const AppProvider = ({ children }) => {
         return [];
     });
 
-    // Notifications
-    const [notifications, setNotifications] = useState(() => {
-        const saved = localStorage.getItem('notifications');
-        return saved ? JSON.parse(saved) : [];
-    });
+    // Notifications — chargées depuis l'API, pas localStorage
+    const [notifications, setNotifications] = useState([]);
 
     // Flag pour savoir si la notification de bienvenue a été ajoutée
     const [welcomeNotificationAdded, setWelcomeNotificationAdded] = useState(() => {
         return localStorage.getItem('welcomeNotificationAdded') === 'true';
     });
-
     // Theme (light, dark, auto)
     const [theme, setTheme] = useState(() => {
         const saved = localStorage.getItem('theme');
@@ -70,6 +66,21 @@ export const AppProvider = ({ children }) => {
         localStorage.setItem('language', lang);
         console.log('🌍 Langue changée:', lang);
     };
+
+    // Charger les notifications depuis l'API quand l'user est connecté
+    const fetchNotifications = useCallback(async () => {
+        if (!user) return;
+        try {
+            const data = await notificationsAPI.getNotifications();
+            setNotifications(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error('❌ Erreur chargement notifications:', error);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, [fetchNotifications]);
 
     // Charger les posts depuis l'API au démarrage
     useEffect(() => {
@@ -131,10 +142,6 @@ export const AppProvider = ({ children }) => {
     }, [user, welcomeNotificationAdded, t]);
 
 
-
-    useEffect(() => {
-        localStorage.setItem('notifications', JSON.stringify(notifications));
-    }, [notifications]);
 
     // Sauvegarder le thème et l'appliquer au DOM
     useEffect(() => {
@@ -238,17 +245,34 @@ export const AppProvider = ({ children }) => {
             isRead: false,
             createdAt: new Date().toISOString(),
         };
-        setNotifications([newNotif, ...notifications]);
+        setNotifications(prev => [newNotif, ...prev]);
     };
 
-    const markNotificationAsRead = (notifId) => {
-        setNotifications(notifications.map(notif =>
-            notif.id === notifId ? { ...notif, isRead: true } : notif
-        ));
+    const markNotificationAsRead = async (notifId) => {
+        // Mise à jour optimiste
+        setNotifications(prev =>
+            prev.map(n => n.id === notifId ? { ...n, isRead: true } : n)
+        );
+        try {
+            await notificationsAPI.markAsRead(notifId);
+        } catch (error) {
+            console.error('❌ Erreur markAsRead:', error);
+            // Rollback
+            setNotifications(prev =>
+                prev.map(n => n.id === notifId ? { ...n, isRead: false } : n)
+            );
+        }
     };
 
-    const markAllNotificationsAsRead = () => {
-        setNotifications(notifications.map(notif => ({ ...notif, isRead: true })));
+    const markAllNotificationsAsRead = async () => {
+        // Mise à jour optimiste
+        setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        try {
+            await notificationsAPI.markAllAsRead();
+        } catch (error) {
+            console.error('❌ Erreur markAllAsRead:', error);
+            await fetchNotifications(); // Recharger l'état réel en cas d'erreur
+        }
     };
 
     const getUnreadCount = () => {
@@ -274,6 +298,7 @@ export const AppProvider = ({ children }) => {
         markNotificationAsRead,
         markAllNotificationsAsRead,
         getUnreadCount,
+        fetchNotifications,
         
         // Theme
         theme,

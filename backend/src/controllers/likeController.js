@@ -6,11 +6,12 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 10:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/17 14:28:07 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/13 13:24:46 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import prisma from '../config/database.js';
+import { createNotification } from '../utils/notifications.js';
 
 export const likePost = async (req, res) => {
 	try {
@@ -45,6 +46,14 @@ export const likePost = async (req, res) => {
 				userId: req.user.id,
 				postId: parseInt(postId)
 			}
+		});
+
+		// Notifier l'auteur du post
+		await createNotification({
+			userId: post.userId,
+			senderId: req.user.id,
+			type: 'like',
+			content: `a aimé votre post`,
 		});
 
 		res.status(201).json({ message: 'Post liké avec succès' });
