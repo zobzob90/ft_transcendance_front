@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:12:07 by eric              #+#    #+#             */
-/*   Updated: 2026/03/16 16:47:43 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 13:50:18 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ export default function Register42() {
 		firstName:	"",
 		lastName:	"",
 		avatar:		"",
+		password:	"",
+		confirmPassword: "",
+		campus:		"",
+		cursus:		"",
+		level:		0,
 	});
 	
 	const [errors, setErrors] = useState({})
@@ -50,7 +55,11 @@ export default function Register42() {
 				firstName:	parsed.firstName	|| "",
 				lastName:	parsed.lastName		|| "",
 				avatar:		parsed.avatar		|| "",
-				
+				password:	"",
+				confirmPassword: "",
+				campus:		parsed.campus 		|| "",
+				cursus:		parsed.cursus 		|| "",
+				level:		parsed.level 		|| 0,
 			});
 			setTempToken(token);
 		} catch {
@@ -71,6 +80,10 @@ export default function Register42() {
 			newErrors.firstName = "Prénom requis";
 		if (!form.lastName)
 			newErrors.lastName = "Nom requis";
+		if (!form.password || form.password.length < 6)
+			newErrors.password = "Minimum 6 caractères requis";
+		if (form.password !== form.confirmPassword)
+			newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
 		
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
@@ -95,6 +108,17 @@ export default function Register42() {
 		}
 	};
 
+	const handleAvatarChange = (e) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				setForm({ ...form, avatar: event.target.result });
+			};
+			reader.readAsDataURL(file);
+		}
+	};
+
 	return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 w-full max-w-md">
@@ -114,12 +138,21 @@ export default function Register42() {
 
 				{/* Avatar preview */}
                 {form.avatar && (
-                    <div className="flex justify-center mb-6">
+                    <div className="flex flex-col items-center gap-3 mb-6">
                         <img
                             src={form.avatar}
                             alt="Avatar"
                             className="w-24 h-24 rounded-full border-4 border-blue-500 object-cover"
                         />
+                        <label className="text-sm text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
+                            Changer l'avatar
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleAvatarChange}
+                                className="hidden"
+                            />
+                        </label>
                     </div>
                 )}
 
@@ -203,6 +236,46 @@ export default function Register42() {
                             )}
                         </div>
 					</div>
+
+                    {/* Mot de passe */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Mot de passe
+                        </label>
+                        <input
+                            type="password"
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                                errors.password ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                            }`}
+                            placeholder="••••••••"
+                            required
+                        />
+                        {errors.password && (
+                            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                        )}
+                    </div>
+
+                    {/* Confirmer mot de passe */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Confirmer le mot de passe
+                        </label>
+                        <input
+                            type="password"
+                            value={form.confirmPassword}
+                            onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                                errors.confirmPassword ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                            }`}
+                            placeholder="••••••••"
+                            required
+                        />
+                        {errors.confirmPassword && (
+                            <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
+                        )}
+                    </div>
 
                     {/* Submit */}
                     <button

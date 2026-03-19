@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:46:31 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 14:20:58 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ import {
     FiUser,
     FiLock,
     FiBell,
-    FiShield,
     FiGlobe,
     FiAlertTriangle
 } from "react-icons/fi";
@@ -46,17 +45,9 @@ export default function Settings() {
     });
 
     const [notifications, setNotifications] = useState({
-        emailNotif: true,
-        pushNotif: false,
-        messages: true,
         likes: true,
+        follows: true,
         comments: false
-    });
-
-    const [privacy, setPrivacy] = useState({
-        profilePublic: true,
-        showEmail: false,
-        showProjects: true
     });
 
     // La langue vient maintenant du contexte (plus besoin de useState local)
@@ -84,10 +75,6 @@ export default function Settings() {
 
     const handleNotifToggle = (key) => {
         setNotifications({ ...notifications, [key]: !notifications[key] });
-    };
-
-    const handlePrivacyToggle = (key) => {
-        setPrivacy({ ...privacy, [key]: !privacy[key] });
     };
 
     const handleLanguageChange = (e) => {
@@ -148,11 +135,12 @@ export default function Settings() {
         setLoading(true);
 
         try {
-            // TODO: Implémenter l'endpoint backend pour changer le mot de passe
-            // await usersAPI.changePassword(user.id, {
-            //     currentPassword: formData.currentPassword,
-            //     newPassword: formData.newPassword
-            // });
+            // Appel API pour changer le mot de passe
+            await usersAPI.changePassword(
+                formData.currentPassword,
+                formData.newPassword,
+                formData.confirmPassword
+            );
             
             setSuccess("Mot de passe modifié avec succès !");
             
@@ -306,39 +294,6 @@ export default function Settings() {
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
                         <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.notifications.email')}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.notifications.emailDesc')}</p>
-                        </div>
-                        <ToggleSwitch
-                            checked={notifications.emailNotif}
-                            onChange={() => handleNotifToggle('emailNotif')}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.notifications.push')}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.notifications.pushDesc')}</p>
-                        </div>
-                        <ToggleSwitch
-                            checked={notifications.pushNotif}
-                            onChange={() => handleNotifToggle('pushNotif')}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.notifications.messages')}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.notifications.messagesDesc')}</p>
-                        </div>
-                        <ToggleSwitch
-                            checked={notifications.messages}
-                            onChange={() => handleNotifToggle('messages')}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <div>
                             <p className="font-medium text-gray-900 dark:text-white">{t('settings.notifications.likes')}</p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.notifications.likesDesc')}</p>
                         </div>
@@ -350,54 +305,23 @@ export default function Settings() {
 
                     <div className="flex justify-between items-center">
                         <div>
+                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.notifications.follows')}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.notifications.followsDesc')}</p>
+                        </div>
+                        <ToggleSwitch
+                            checked={notifications.follows}
+                            onChange={() => handleNotifToggle('follows')}
+                        />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div>
                             <p className="font-medium text-gray-900 dark:text-white">{t('settings.notifications.comments')}</p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.notifications.commentsDesc')}</p>
                         </div>
                         <ToggleSwitch
                             checked={notifications.comments}
                             onChange={() => handleNotifToggle('comments')}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Section Confidentialité */}
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
-                <h2 className="text-xl font-bold mb-4 flex items-center space-x-2 text-gray-900 dark:text-white">
-                    <FiShield className="text-blue-500" />
-                    <span>{t('settings.privacy.title')}</span>
-                </h2>
-                <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.privacy.profilePublic')}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.privacy.profilePublicDesc')}</p>
-                        </div>
-                        <ToggleSwitch
-                            checked={privacy.profilePublic}
-                            onChange={() => handlePrivacyToggle('profilePublic')}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.privacy.showEmail')}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.privacy.showEmailDesc')}</p>
-                        </div>
-                        <ToggleSwitch
-                            checked={privacy.showEmail}
-                            onChange={() => handlePrivacyToggle('showEmail')}
-                        />
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className="font-medium text-gray-900 dark:text-white">{t('settings.privacy.showProjects')}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{t('settings.privacy.showProjectsDesc')}</p>
-                        </div>
-                        <ToggleSwitch
-                            checked={privacy.showProjects}
-                            onChange={() => handlePrivacyToggle('showProjects')}
                         />
                     </div>
                 </div>

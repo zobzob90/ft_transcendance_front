@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:15:38 by eric              #+#    #+#             */
-/*   Updated: 2026/03/16 17:29:14 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 14:36:19 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,20 @@ passport.use(new FortyTwoStrategy(
 			});
 
 			if (user) {
-				// USER EXISTANT → mettre à jour level/cursus, NE PAS écraser avatar si personnalisé
+				// Récupérer le campus - vérifier la structure exacte
+				let campus = null;
+				if (ftData.campus && Array.isArray(ftData.campus) && ftData.campus.length > 0) {
+					campus = ftData.campus[0].name;
+				} else if (ftData.campus && typeof ftData.campus === 'object' && ftData.campus.name) {
+					campus = ftData.campus.name;
+				}
+				
 				user = await prisma.user.update({
 					where: { id: user.id },
 					data: {
 						level:  mainCursus?.level || user.level,
 						cursus: mainCursus?.cursus?.name || user.cursus,
+						campus: campus || user.campus,
 						// Ne pas écraser l'avatar si l'user l'a personnalisé
 						avatar: user.avatar || ftData.image?.link || null,
 					}
@@ -55,6 +63,15 @@ passport.use(new FortyTwoStrategy(
 			} else {
 				// NOUVEL USER → passer les données 42 brutes, pas encore créé en DB
 				// Le callback redirigera vers /register/42 pour confirmation
+				
+				// Récupérer le campus - vérifier la structure exacte
+				let campus = null;
+				if (ftData.campus && Array.isArray(ftData.campus) && ftData.campus.length > 0) {
+					campus = ftData.campus[0].name;
+				} else if (ftData.campus && typeof ftData.campus === 'object' && ftData.campus.name) {
+					campus = ftData.campus.name;
+				}
+				
 				user = {
 					isNewUser:  true,
 					ftId:       ftData.id,
@@ -64,7 +81,7 @@ passport.use(new FortyTwoStrategy(
 					firstName:  ftData.first_name,
 					lastName:   ftData.last_name,
 					avatar:     ftData.image?.link || null,
-					campus:     ftData.campus?.[0]?.name || null,
+					campus:     campus,
 					cursus:     mainCursus?.cursus?.name || null,
 					level:      mainCursus?.level || 0,
 				};

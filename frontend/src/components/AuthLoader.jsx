@@ -14,7 +14,7 @@ export default function AuthLoader({ children }) {
             const token = localStorage.getItem('access_token');
             
             // Si pas de token et pas sur une page publique, rediriger vers login
-            const publicPaths = ['/login', '/register', '/callback'];
+            const publicPaths = ['/login', '/register', '/callback', '/register/42'];
             if (!token && !publicPaths.includes(location.pathname)) {
                 navigate('/login');
                 setLoading(false);

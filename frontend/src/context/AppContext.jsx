@@ -114,6 +114,61 @@ export const AppProvider = ({ children }) => {
         loadPosts();
     }, []);
 
+    // Fonction pour rafraîchir les posts manuellement
+    const fetchPosts = useCallback(async () => {
+        try {
+            console.log("🔄 Actualisation du feed...");
+            const response = await postsAPI.getFeed(1, 20);
+            
+            const formattedPosts = response.posts?.map(p => ({
+                id: p.id,
+                author: p.user?.username || p.user?.firstName || 'Anonyme',
+                avatar: p.user?.avatar || `https://ui-avatars.com/api/?name=${p.user?.firstName || 'User'}&background=3b82f6&color=fff`,
+                content: p.content,
+                likes: p._count?.likes || 0,
+                liked: false,
+                date: new Date(p.createdAt).toLocaleDateString('fr-FR'),
+                userId: p.userId,
+                createdAt: p.createdAt,
+            })) || [];
+            
+            console.log("✅ Feed actualisé:", formattedPosts.length);
+            setPosts(formattedPosts);
+            return formattedPosts;
+        } catch (error) {
+            console.error("❌ Erreur actualisation feed:", error);
+            return [];
+        }
+    }, []);
+
+    // Fonction pour vérifier s'il y a de nouveaux posts sans les charger
+    const checkForNewPosts = useCallback(async () => {
+        try {
+            const response = await postsAPI.getFeed(1, 20);
+            const newPostIds = response.posts?.map(p => p.id) || [];
+            const currentPostIds = posts.map(p => p.id);
+            
+            // Vérifier s'il y a des posts qui ne sont pas dans la liste actuelle
+            const hasNew = newPostIds.some(id => !currentPostIds.includes(id));
+            return hasNew;
+        } catch (error) {
+            console.error("❌ Erreur vérification posts:", error);
+            return false;
+        }
+    }, [posts]);
+
+    // Polling passif toutes les 30 secondes pour détecter les nouveaux posts
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            if (user && posts.length > 0) {
+                const hasNew = await checkForNewPosts();
+                // Note: on pourrait émettre un événement ici si nécessaire
+            }
+        }, 30000); // Toutes les 30 secondes
+
+        return () => clearInterval(interval);
+    }, [user, posts, checkForNewPosts]);
+
     // Sauvegarder dans localStorage à chaque changement
     useEffect(() => {
         if (user) {
@@ -290,6 +345,7 @@ export const AppProvider = ({ children }) => {
         addPost,
         toggleLike,
         deletePost,
+        fetchPosts,
         
         // Notifications
         notifications,

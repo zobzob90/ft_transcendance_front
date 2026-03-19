@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:20 by eric              #+#    #+#             */
-/*   Updated: 2026/03/13 11:03:31 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 14:21:00 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,16 +197,6 @@ export default function Profile()
                         {t('profile.tabs.posts')}
                     </button>
                     <button 
-                        onClick={() => setActiveTab("projects")}
-                        className={`px-6 py-3 font-semibold ${
-                            activeTab === "projects" 
-                                ? "text-blue-500 border-b-2 border-blue-500" 
-                                : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                        }`}
-                    >
-                        {t('profile.tabs.projects')}
-                    </button>
-                    <button 
                         onClick={() => setActiveTab("media")}
                         className={`px-6 py-3 font-semibold ${
                             activeTab === "media" 
@@ -244,60 +234,6 @@ export default function Profile()
                     ) : (
                         <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
                             {t('profile.noPosts')}
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {activeTab === "projects" && (
-                <div className="space-y-4">
-                    {user.projects && user.projects.filter(p => p.validated).length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {user.projects.filter(p => p.validated).map(project => (
-                                <div 
-                                    key={project.id} 
-                                    className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition border-l-4 border-green-500"
-                                >
-                                    <div className="flex items-start justify-between mb-3">
-                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                                            {project.name}
-                                        </h3>
-                                        <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold px-2 py-1 rounded">
-                                            ✓ {t('profile.projects.validated')}
-                                        </span>
-                                    </div>
-                                    
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-600 dark:text-gray-400">
-                                                {t('profile.projects.grade')}:
-                                            </span>
-                                            <span className={`font-bold ${
-                                                project.finalMark >= 100 ? 'text-green-600 dark:text-green-400' : 
-                                                project.finalMark >= 75 ? 'text-blue-600 dark:text-blue-400' : 
-                                                'text-gray-600 dark:text-gray-400'
-                                            }`}>
-                                                {project.finalMark}/100
-                                            </span>
-                                        </div>
-                                        
-                                        {project.markedAt && (
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-gray-600 dark:text-gray-400">
-                                                    {t('profile.projects.date')}:
-                                                </span>
-                                                <span className="text-gray-700 dark:text-gray-300">
-                                                    {new Date(project.markedAt).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-                            {t('profile.projects.noProjects')}
                         </div>
                     )}
                 </div>

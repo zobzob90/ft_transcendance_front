@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/03/16 16:46:40 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 13:45:13 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,17 @@ const fetchWithAuth = async (endpoint, options = {}) => {
 	console.log('📥 Réponse status:', response.status);
 	
 	// Si token perime ou invalide on redirige vers login
+	// SAUF si on est déjà sur la page de login/register
 	if (response.status === 401) {
-		localStorage.removeItem('access_token');
-		localStorage.removeItem('refresh_token');
-		window.location.href = '/login';
-		throw new Error('Session expirée');
+		const currentPath = window.location.pathname;
+		const publicPaths = ['/login', '/register', '/callback', '/register/42'];
+		
+		if (!publicPaths.includes(currentPath)) {
+			localStorage.removeItem('access_token');
+			localStorage.removeItem('refresh_token');
+			window.location.href = '/login';
+		}
+		throw new Error('Session expirée ou identifiants incorrects');
 	}
 
 	// Erreur HTTP
@@ -83,10 +89,9 @@ export const authAPI = {
 	},
 
 	// Connexion OAuth 42
-	// Redirige USER vers la page d'auth de 42
-	login42: () => {
-    	const backendAuthUrl = `${API_BASE_URL}/auth/42`;
-    	window.location.href = backendAuthUrl;
+	// Retourne l'URL de redirection pour OAuth 42
+	getOAuth42Url: () => {
+    	return `${API_BASE_URL}/auth/42`;
 	},
 	
 	// Callback OAuth 42
@@ -100,7 +105,7 @@ export const authAPI = {
 
 	// Inscription avec 42
 	confirm42: async (data) => {
-		return fetchWithAuth('auth/42/confirm', {
+		return fetchWithAuth('/auth/42/confirm', {
 			method: 'POST',
 			body: JSON.stringify(data),
 		});
@@ -238,6 +243,18 @@ export const usersAPI = {
 	getUserPosts: async (userId, page = 1, limit = 10) => {
 		return fetchWithAuth(`/users/${userId}/posts?page=${page}&limit=${limit}`);
 	},
+
+	// Changer le mot de passe
+	changePassword: async (currentPassword, newPassword, confirmPassword) => {
+		return fetchWithAuth('/auth/change-password', {
+			method: 'POST',
+			body: JSON.stringify({
+				currentPassword,
+				newPassword,
+				confirmPassword
+			}),
+		});
+	},
 };
 
 // ===================================
@@ -285,6 +302,14 @@ export const postsAPI = {
 	deletePost: async (postId) => {
 		return fetchWithAuth(`/posts/${postId}`, {
 			method: 'DELETE',
+		});
+	},
+
+	// Éditer un post (seulement si c'est le sien)
+	updatePost: async (postId, content) => {
+		return fetchWithAuth(`/posts/${postId}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ content }),
 		});
 	},
 

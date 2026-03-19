@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:33:49 by eric              #+#    #+#             */
-/*   Updated: 2026/03/16 17:29:16 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 13:50:18 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,9 @@ export const handleOAuthCallback = (req, res) => {
             firstName: user.firstName,
             lastName:  user.lastName,
             avatar:    user.avatar,
+            campus:    user.campus,
+            cursus:    user.cursus,
+            level:     user.level,
         })).toString('base64');
 
         res.redirect(`${process.env.FRONTEND_URL}/register/42?tempToken=${tempToken}&data=${data}`);
@@ -157,7 +160,7 @@ export const handleOAuthCallback = (req, res) => {
 // ===================================
 export const confirmRegister42 = async (req, res) => {
     try {
-        const { username, email, firstName, lastName, avatar, tempToken } = req.body;
+        const { username, email, firstName, lastName, avatar, tempToken, campus, cursus, level } = req.body;
 
         if (!tempToken)
             return res.status(401).json({ error: 'Token manquant' });
@@ -198,6 +201,9 @@ export const confirmRegister42 = async (req, res) => {
                 avatar:    avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&background=3b82f6&color=fff`,
                 intraId:   decoded.intraId.toString(),
                 password:  null,
+                campus:    campus || null,
+                cursus:    cursus || null,
+                level:     level || 0,
             }
         });
 
@@ -256,4 +262,57 @@ export const getMe = async (req, res) => {
 // ===================================
 export const logout = (req, res) => {
     res.json({ message: 'Déconnexion réussie' });
+};
+
+// ===================================
+// CHANGE PASSWORD
+// ===================================
+export const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+        const userId = req.user.id;
+
+        // Validations
+        if (!newPassword || !confirmPassword)
+            return res.status(400).json({ error: 'Nouveau mot de passe et confirmation requis' });
+
+        if (newPassword !== confirmPassword)
+            return res.status(400).json({ error: 'Les mots de passe ne correspondent pas' });
+
+        if (newPassword.length < 6)
+            return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 6 caractères' });
+
+        // Récupérer l'utilisateur
+        const user = await prisma.user.findUnique({
+            where: { id: userId }
+        });
+
+        if (!user)
+            return res.status(404).json({ error: 'Utilisateur non trouvé' });
+
+        // Si l'utilisateur a déjà un password (inscrit classique), vérifier l'ancien
+        if (user.password && currentPassword) {
+            const valid = await bcrypt.compare(currentPassword, user.password);
+            if (!valid)
+                return res.status(401).json({ error: 'Mot de passe actuel incorrect' });
+        } else if (user.password && !currentPassword) {
+            return res.status(400).json({ error: 'Mot de passe actuel requis' });
+        }
+
+        // Hasher le nouveau password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Mettre à jour l'utilisateur
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword }
+        });
+
+        const { password: _, ...userWithoutPassword } = updatedUser;
+
+        res.json({ message: 'Mot de passe changé avec succès', user: userWithoutPassword });
+    } catch (error) {
+        console.error('Erreur changePassword:', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
 };

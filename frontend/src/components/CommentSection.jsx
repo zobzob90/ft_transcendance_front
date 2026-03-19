@@ -152,6 +152,7 @@ export default function CommentSection({ postId }) {
 											{comment.user?.firstName} {comment.user?.lastName}
 										</p>
 										<p className="text-gray-800 dark:text-gray-200 text-sm">{comment.content}</p>
+										{comment.isEdited && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">(modifié)</p>}
 									</div>
 									<div className="flex gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
 										<span>{new Date(comment.createdAt).toLocaleDateString()}</span>

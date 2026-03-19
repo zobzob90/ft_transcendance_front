@@ -32,25 +32,12 @@
     },
     "notifications": {
       "title": "Benachrichtigungen",
-      "email": "E-Mail-Benachrichtigungen",
-      "emailDesc": "E-Mail-Benachrichtigungen erhalten",
-      "push": "Push-Benachrichtigungen",
-      "pushDesc": "Browser-Benachrichtigungen erhalten",
-      "messages": "Nachrichten",
-      "messagesDesc": "Benachrichtigungen für neue Nachrichten",
       "likes": "Likes",
       "likesDesc": "Benachrichtigungen wenn jemand Ihre Beiträge mag",
+      "follows": "Follower",
+      "followsDesc": "Benachrichtigungen wenn jemand Ihnen folgt",
       "comments": "Kommentare",
       "commentsDesc": "Benachrichtigungen für neue Kommentare"
-    },
-    "privacy": {
-      "title": "Datenschutz",
-      "profilePublic": "Öffentliches Profil",
-      "profilePublicDesc": "Anderen erlauben, Ihr Profil zu sehen",
-      "showEmail": "E-Mail anzeigen",
-      "showEmailDesc": "Ihre E-Mail in Ihrem Profil sichtbar machen",
-      "showProjects": "Projekte anzeigen",
-      "showProjectsDesc": "Ihre 42-Projekte in Ihrem Profil anzeigen"
     },
     "appearance": {
       "title": "Erscheinungsbild",

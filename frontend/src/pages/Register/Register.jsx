@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:11:40 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:05:54 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 13:25:54 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,6 @@ export default function Register()
 		}
 	}
 
-	const handle42Login = () => {
-		authAPI.login42();
-	}
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors">
 			<form
@@ -131,18 +128,16 @@ export default function Register()
 				</div>
 
 				{/* BOUTON 42 OAUTH */}
-				<button
-					type="button"
-					onClick={handle42Login}
-					className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition mb-4"
-					disabled={loading}
+				<a
+					href={authAPI.getOAuth42Url()}
+					className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition mb-4 no-underline"
 				>
 					<svg className="w-6 h-6" viewBox="0 0 256 256" fill="currentColor">
 						<polygon points="128,0 256,74 256,182 128,256 0,182 0,74"/>
 						<text x="128" y="180" fontSize="180" fontWeight="bold" textAnchor="middle" fill="#000">42</text>
 					</svg>
 					S'inscrire avec 42
-				</button>
+				</a>
 
 				<p className="text-center text-sm text-gray-600 dark:text-gray-400">
 					Déjà un compte ?{" "}

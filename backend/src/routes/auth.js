@@ -7,7 +7,8 @@ confirmRegister42,
 login,
 register,
 getMe,
-logout
+logout,
+changePassword
 } from '../controllers/authController.js';
 
 const router = express.Router();
@@ -32,6 +33,9 @@ handleOAuthCallback
 
 // POST /api/auth/42/confirm -> confirmation inscription OAuth 42
 router.post('/42/confirm', confirmRegister42);
+
+// POST /api/auth/change-password -> changer le mot de passe (protected)
+router.post('/change-password', authenticateToken, changePassword);
 
 // GET /api/auth/me -> recupere l'utilisateur connecté (protected)
 router.get('/me', authenticateToken, getMe);

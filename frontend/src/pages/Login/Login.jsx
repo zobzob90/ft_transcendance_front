@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:17:00 by eric              #+#    #+#             */
-/*   Updated: 2026/03/12 17:27:23 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/19 11:23:15 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,6 @@ export default function Login()
 		} finally {
 			setLoading(false);
 		}
-	}
-
-	const handle42Login = () => {
-		authAPI.login42();
 	}
 
 	return (
@@ -110,10 +106,9 @@ export default function Login()
 				</div>
 
 				{/* BOUTON 42 OAUTH */}
-				<button
-					type="button"
-					onClick={handle42Login}
-					className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition mb-4"
+				<a
+					href={authAPI.getOAuth42Url()}
+					className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition mb-4 no-underline"
 				>
 					Se connecter avec
 					<img 
@@ -121,7 +116,7 @@ export default function Login()
 						alt="42 Logo" 
 						className="w-6 h-6 object-contain invert brightness-0 invert"
 					/>
-				</button>
+				</a>
 				
 				<p className="text-center text-sm text-gray-600 dark:text-gray-400">
 					Pas encore de compte ?{" "}
