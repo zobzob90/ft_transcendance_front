@@ -15,7 +15,7 @@ Cette documentation liste **toutes les requêtes API** du projet 42Hub, organis�
 - **Total:** 46 requêtes
 - **GET:** 20
 - **POST:** 13
-- **PATCH:** 7
+- **PUT:** 7
 - **DELETE:** 6
 
 ---
@@ -43,7 +43,7 @@ Gestion du profil personnel, avatar et statistiques.
 |----|---------	|---------------------------|-----------------------------------------------|--------|
 | 8  | GET 		| `/users/{username}` 		| Récupère un profil public par username		| ❌ Non	|
 | 9  | GET 		| `/users/me` 				| Récupère le profil personnel 					| ✅ Oui |
-| 10 | PATCH 	| `/users/me` 				| Modifie le profil (bio, nom, etc.) 			| ✅ Oui |
+| 10 | PUT 		| `/users/me` 				| Modifie le profil (bio, nom, etc.) 			| ✅ Oui |
 | 11 | POST 	| `/users/me/avatar` 		| Upload un avatar (FormData) 					| ✅ Oui |
 | 12 | GET 		| `/users/{username}/posts` | Récupère les posts d'un utilisateur 			| ❌ Non |
 | 13 | GET 		| `/users/{username}/media` | Récupère les média d'un utilisateur 			| ❌ Non |
@@ -59,7 +59,7 @@ Gestion globale des utilisateurs.
 | 15 | GET 		| `/users` 				  | Récupère tous les utilisateurs (pagination) | ❌ Non |
 | 16 | GET 		| `/users/{userId}` 	  | Récupère un utilisateur par ID 				| ❌ Non |
 | 17 | GET 		| `/users/search?q=...`   | Recherche des utilisateurs 					| ❌ Non |
-| 18 | PATCH 	| `/users/{userId}` 	  | Modifie un utilisateur 						| ✅ Oui |
+| 18 | PUT 		| `/users/{userId}` 	  | Modifie un utilisateur 						| ✅ Oui |
 | 19 | GET 		| `/users/{userId}/posts` | Posts d'un utilisateur par ID 				| ❌ Non |
 --------------------------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ Gestion des posts, likes et interactions.
 | 20 | GET 	   | `/posts` 				| Récupère tous les posts (feed principal) 		| ❌ Non |
 | 21 | POST    | `/posts` 				| Crée un post (JSON ou FormData avec média)	| ✅ Oui |
 | 22 | DELETE  | `/posts/{postId}` 		| Supprime un post 								| ✅ Oui |
-| 23 | PATCH   | `/posts/{postId}` 		| Modifie un post 								| ✅ Oui |
+| 23 | PUT     | `/posts/{postId}` 		| Modifie un post 								| ✅ Oui |
 | 24 | POST    | `/posts/{postId}/like` | Like un post 									| ✅ Oui |
 | 25 | DELETE  | `/posts/{postId}/like` | Retire le like 								| ✅ Oui |
 -------------------------------------------------------------------------------------------------
@@ -96,8 +96,8 @@ Gestion des notifications utilisateur.
 | #  | Méthode | Endpoint 								| Description 						| Auth   |
 |----|---------|----------------------------------------|-----------------------------------|--------|
 | 30 | GET 	   | `/notifications` 						| Récupère toutes les notifications | ✅ Oui |
-| 31 | PATCH   | `/notifications/{notificationId}/read` | Marquer comme lue 				| ✅ Oui |
-| 32 | PATCH   | `/notifications/read-all` 				| Marquer tout comme lu 			| ✅ Oui |
+| 31 | PUT     | `/notifications/{notificationId}/read` | Marquer comme lue 				| ✅ Oui |
+| 32 | PUT     | `/notifications/read-all` 				| Marquer tout comme lu 			| ✅ Oui |
 -----------------------------------------------------------------------------------------------------
 
 ## 💬 Messages (MESSAGES API)
@@ -119,7 +119,7 @@ Gestion des commentaires sur les posts.
 |----|---------|---------------------------|-------------------------------------|--------|
 | 36 | GET 	   | `/comments/post/{postId}` | Récupère les commentaires d'un post | ❌ Non |
 | 37 | POST    | `/comments/post/{postId}` | Crée un commentaire 				 | ✅ Oui |
-| 38 | PATCH   | `/comments/{commentId}`   | Modifie un commentaire              | ✅ Oui |
+| 38 | PUT     | `/comments/{commentId}`   | Modifie un commentaire              | ✅ Oui |
 | 39 | DELETE  | `/comments/{commentId}`   | Supprime un commentaire             | ✅ Oui |
 ------------------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ Recherche d'utilisateurs et ressources.
 /search/... (queries)
 ```
 
-### PATCH (7 requêtes) - Modification partielle
+### PUT (7 requêtes) - Modification complète
 ```
 /users/me
 /posts/{postId}
@@ -211,7 +211,7 @@ Recherche d'utilisateurs et ressources.
 ## 📝 Notes Importantes
 
 1. **JWT Token** - Obtenu lors du login ou OAuth 42, valide pendant 24h
-2. **PATCH vs PUT** - On utilise **PATCH** pour les modifications partielles
+2. **PUT** - On utilise **PUT** pour les modifications (remplace la ressource)
 3. **FormData** - Utilisé pour l'upload de fichiers (avatar, média)
 4. **Pagination** - Par défaut page=1, limit=10 (variable par endpoint)
 5. **Rate Limiting** - À ajouter pour l'API publique (future)

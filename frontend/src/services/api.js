@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/03/20 13:36:32 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/20 14:51:59 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ export const profileAPI = {
 	// MAJ son profil (bio, name, ...)
 	updateProfile: async (profileData) => {
 		return fetchWithAuth('/users/me', {
-			method: 'PATCH',
+			method: 'PUT',
 			body: JSON.stringify(profileData),
 		});
 	},
@@ -234,7 +234,7 @@ export const usersAPI = {
 	// Mettre à jour un utilisateur
 	updateUser: async (userId, userData) => {
 		return fetchWithAuth(`/users/${userId}`, {
-			method: 'PATCH',
+			method: 'PUT',
 			body: JSON.stringify(userData),
 		});
 	},
@@ -308,7 +308,7 @@ export const postsAPI = {
 	// Éditer un post (seulement si c'est le sien)
 	updatePost: async (postId, content) => {
 		return fetchWithAuth(`/posts/${postId}`, {
-			method: 'PATCH',
+			method: 'PUT',
 			body: JSON.stringify({ content }),
 		});
 	},
@@ -371,14 +371,14 @@ export const notificationsAPI = {
 	// Marquer une notification comme lue
 	markAsRead: async (notificationId) => {
 		return fetchWithAuth(`/notifications/${notificationId}/read`, {
-			method: 'PATCH',
+			method: 'PUT',
 		});
 	},
 
 	// Marquer toutes les notifications comme lues
 	markAllAsRead: async () => {
 		return fetchWithAuth('/notifications/read-all', {
-			method: 'PATCH',
+			method: 'PUT',
 		});
 	},
 };
@@ -428,7 +428,7 @@ export const commentsAPI = {
 	// Modifier un commentaire
 	updateComment: async (commentId, content) => {
 		return fetchWithAuth(`/comments/${commentId}`, {
-			method: 'PATCH',
+			method: 'PUT',
 			body: JSON.stringify({ content }),
 		});
 	},
