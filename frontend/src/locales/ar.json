@@ -184,6 +184,19 @@
     "typeToSearch": "اكتب للبحث عن مستخدمي 42...",
     "pressEsc": "اضغط ESC للإغلاق",
     "level": "المستوى",
-    "errorSearching": "خطأ في البحث"
+    "errorSearching": "خطأ في البحث"  },
+  "terms": {
+    "title": "شروط الخدمة",
+    "lastUpdated": "آخر تحديث: 23 مارس 2026",
+    "back": "العودة",
+    "contactUs": "اتصل بنا",
+    "contactEmail": "إذا كان لديك أي أسئلة حول هذه الشروط، يرجى الاتصال بنا على support@example.com"
+  },
+  "privacy": {
+    "title": "سياسة الخصوصية",
+    "lastUpdated": "آخر تحديث: 23 مارس 2026",
+    "back": "العودة",
+    "contactUs": "اتصل بنا",
+    "contactEmail": "لأي أسئلة حول سياسة الخصوصية هذه أو بيانات، يرجى الاتصال بنا على privacy@example.com"
   }
 }

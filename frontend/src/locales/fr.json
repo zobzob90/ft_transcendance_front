@@ -185,5 +185,19 @@
     "pressEsc": "ESC pour fermer",
     "level": "Niveau",
     "errorSearching": "Erreur lors de la recherche"
+  },
+  "terms": {
+    "title": "Conditions d'Utilisation",
+    "lastUpdated": "Dernière mise à jour : 23 mars 2026",
+    "back": "Retour",
+    "contactUs": "Nous Contacter",
+    "contactEmail": "Si vous avez des questions concernant ces conditions, veuillez nous contacter à support@example.com"
+  },
+  "privacy": {
+    "title": "Politique de Confidentialité",
+    "lastUpdated": "Dernière mise à jour : 23 mars 2026",
+    "back": "Retour",
+    "contactUs": "Nous Contacter",
+    "contactEmail": "Pour toute question concernant cette politique de confidentialité ou vos données, veuillez nous contacter à privacy@example.com"
   }
 }

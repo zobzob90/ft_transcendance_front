@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 00:01:19 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:05:54 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/23 16:40:00 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ export function Input({ label, type, value, onChange, placeholder, required, nam
 	);
 }
 
-export function Button({ children, type = "button", variant = "blue", disabled = false })
+export function Button({ children, type = "button", variant = "blue", disabled = false, onClick })
 {
 	const colors = 
 	{
@@ -41,6 +41,7 @@ export function Button({ children, type = "button", variant = "blue", disabled =
 	<button
 		type={type}
 		disabled={disabled}
+		onClick={onClick}
 		className={`w-full ${colors[variant]} text-white py-2 rounded transition mb-4 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
 	>
 		{children}

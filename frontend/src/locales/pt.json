@@ -185,5 +185,19 @@
     "pressEsc": "ESC para fechar",
     "level": "Nível",
     "errorSearching": "Erro ao pesquisar"
+  },
+  "terms": {
+    "title": "Termos de Serviço",
+    "lastUpdated": "Última atualização: 23 de março de 2026",
+    "back": "Voltar",
+    "contactUs": "Entre em Contato",
+    "contactEmail": "Se tiver dúvidas sobre estes termos, entre em contato conosco em support@example.com"
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "lastUpdated": "Última atualização: 23 de março de 2026",
+    "back": "Voltar",
+    "contactUs": "Entre em Contato",
+    "contactEmail": "Para qualquer dúvida sobre esta política de privacidade ou seus dados, entre em contato conosco em privacy@example.com"
   }
 }

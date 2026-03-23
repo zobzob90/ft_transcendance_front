@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/03/20 15:45:51 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/23 16:11:40 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ export const profileAPI = {
 	// MAJ son profil (bio, name, ...)
 	updateProfile: async (profileData) => {
 		return fetchWithAuth('/users/me', {
-			method: 'PUT',
+			method: 'PATCH',
 			body: JSON.stringify(profileData),
 		});
 	},
@@ -371,14 +371,14 @@ export const notificationsAPI = {
 	// Marquer une notification comme lue
 	markAsRead: async (notificationId) => {
 		return fetchWithAuth(`/notifications/${notificationId}/read`, {
-			method: 'PUT',
+			method: 'PATCH',
 		});
 	},
 
 	// Marquer toutes les notifications comme lues
 	markAllAsRead: async () => {
 		return fetchWithAuth('/notifications/read-all', {
-			method: 'PUT',
+			method: 'PATCH',
 		});
 	},
 };
@@ -428,7 +428,7 @@ export const commentsAPI = {
 	// Modifier un commentaire
 	updateComment: async (commentId, content) => {
 		return fetchWithAuth(`/comments/${commentId}`, {
-			method: 'PUT',
+			method: 'PATCH',
 			body: JSON.stringify({ content }),
 		});
 	},

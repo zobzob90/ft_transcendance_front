@@ -185,5 +185,19 @@
     "pressEsc": "Press ESC to close",
     "level": "Level",
     "errorSearching": "Error while searching"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: March 23, 2026",
+    "back": "Back",
+    "contactUs": "Contact Us",
+    "contactEmail": "If you have any questions about these terms, please contact us at support@example.com"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: March 23, 2026",
+    "back": "Back",
+    "contactUs": "Contact Us",
+    "contactEmail": "For any questions about this privacy policy or your data, please contact us at privacy@example.com"
   }
 }
