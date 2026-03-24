@@ -57,6 +57,13 @@
       "title": "Gestión de cuenta",
       "deactivate": "Desactivar cuenta",
       "delete": "Eliminar cuenta"
+    },
+    "legal": {
+      "title": "Condiciones Legales",
+      "termsDescription": "Revise nuestros términos de servicio para entender sus derechos y obligaciones.",
+      "termsButton": "Ver Términos de Servicio",
+      "privacyDescription": "Descubra nuestra política de privacidad y cómo protegemos sus datos.",
+      "privacyButton": "Ver Política de Privacidad"
     }
   },
   "profile": {
@@ -95,14 +102,14 @@
     "comment": "Comentar",
     "delete": "Eliminar",
     "edit": "Editar",
+    "edited": "(editado)",
     "confirmDelete": "¿Eliminar esta publicación?"
   },
   "comment": {
     "add": "Agregar un comentario...",
     "validate": "Validar",
     "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "confirmDelete": "¿Eliminar este comentario?"
+    "delete": "Eliminar",    "edited": "(editado)",    "confirmDelete": "¿Eliminar este comentario?"
   },
   "messages": {
     "title": "Mensajes",
@@ -191,6 +198,63 @@
     "lastUpdated": "Última actualización: 23 de marzo de 2026",
     "back": "Atrás",
     "contactUs": "Contáctenos",
+    "sections": {
+      "acceptance": {
+        "title": "1. Aceptación de Términos",
+        "content": "Al crear una cuenta y usar esta plataforma, usted acepta completamente estos términos de servicio. Si no acepta estos términos, no debe usar este servicio."
+      },
+      "account": {
+        "title": "2. Cuenta de Usuario",
+        "content": "Usted es responsable de mantener la confidencialidad de sus credenciales y contraseña. Acepta toda responsabilidad por todas las actividades que ocurran en su cuenta.",
+        "items": [
+          "Usted garantiza que la información proporcionada es exacta y completa",
+          "Debe informarnos inmediatamente de cualquier acceso no autorizado a su cuenta",
+          "Usted acepta no compartir su cuenta con otras personas"
+        ]
+      },
+      "content": {
+        "title": "3. Contenido del Usuario",
+        "content": "Reconoce que es responsable de todo el contenido (mensajes, imágenes, archivos) que publica o comparte en la plataforma. Usted acepta que su contenido:",
+        "items": [
+          "No viola ningún derecho de autor o propiedad intelectual",
+          "No es ilegal, difamatorio, abusivo o discriminatorio",
+          "No contiene malware o código malicioso",
+          "Respeta los derechos y la dignidad de otros usuarios"
+        ]
+      },
+      "behavior": {
+        "title": "4. Comportamiento del Usuario",
+        "content": "Se compromete a usar la plataforma de manera responsable. Los siguientes comportamientos están estrictamente prohibidos:",
+        "items": [
+          "Acoso o amenazas hacia otros usuarios",
+          "Spam, publicidad no deseada o contenido repetitivo",
+          "Intentos de pirateo o acceso no autorizado",
+          "Suplantación de identidad o engaño",
+          "Contenido sexual, violento o impactante"
+        ]
+      },
+      "intellectual": {
+        "title": "5. Propiedad Intelectual",
+        "content": "El contenido, diseño y funciones de esta plataforma están protegidos por derechos de autor y otras leyes de propiedad intelectual. No puede copiar, modificar o distribuir este contenido sin autorización previa."
+      },
+      "liability": {
+        "title": "6. Limitación de Responsabilidad",
+        "content": "Esta plataforma se proporciona 'tal cual' sin garantía de ningún tipo. No podemos ser responsables de:",
+        "items": [
+          "Daños directos o indirectos resultantes del uso del servicio",
+          "Pérdida de datos o acceso",
+          "Contenido de terceros o acciones de otros usuarios"
+        ]
+      },
+      "modifications": {
+        "title": "7. Modificación de Términos",
+        "content": "Nos reservamos el derecho de modificar estos términos en cualquier momento. Las modificaciones serán efectivas inmediatamente después de su publicación. Su uso continuado del servicio constituye su aceptación de los términos modificados."
+      },
+      "applicable": {
+        "title": "8. Ley Aplicable",
+        "content": "Estos términos se rigen por las leyes aplicables. Cualquier disputa derivada de estos términos estará sujeta a la jurisdicción del tribunal competente."
+      }
+    },
     "contactEmail": "Si tiene preguntas sobre estos términos, contáctenos en support@example.com"
   },
   "privacy": {
@@ -198,6 +262,84 @@
     "lastUpdated": "Última actualización: 23 de marzo de 2026",
     "back": "Atrás",
     "contactUs": "Contáctenos",
+    "sections": {
+      "introduction": {
+        "title": "1. Introducción",
+        "content": "Damos gran importancia a la protección de sus datos personales. Esta política de privacidad explica cómo recopilamos, utilizamos, compartimos y protegemos su información cuando utiliza nuestra plataforma."
+      },
+      "data": {
+        "title": "2. Datos que Recopilamos",
+        "content": "Recopilamos la siguiente información:",
+        "items": [
+          "Información de Cuenta: Nombre de usuario, correo electrónico, contraseña (encriptada)",
+          "Perfil: Nombre, apellido, biografía, avatar",
+          "Contenido Creado: Publicaciones, comentarios, mensajes",
+          "Datos de Conexión: Dirección IP, tipo de dispositivo, navegador",
+          "Interacciones: Me gusta, seguimiento de usuarios, notificaciones"
+        ]
+      },
+      "usage": {
+        "title": "3. Uso de Sus Datos",
+        "content": "Sus datos se utilizan para:",
+        "items": [
+          "Proporcionar y mejorar los servicios de la plataforma",
+          "Autenticar su cuenta y asegurar su sesión",
+          "Personalizar su experiencia de usuario",
+          "Enviar notificaciones según sus preferencias",
+          "Analizar el uso del servicio (datos anónimos)",
+          "Cumplir con nuestras obligaciones legales"
+        ]
+      },
+      "sharing": {
+        "title": "4. Compartir Sus Datos",
+        "content": "Nunca vendemos sus datos personales. Sin embargo, podemos compartir su información:",
+        "items": [
+          "Con Otros Usuarios: Su perfil público y publicaciones son visibles según su configuración de privacidad",
+          "Con Proveedores de Servicios: Para alojamiento, servicios de pago (si aplica)",
+          "Cumplimiento Legal: Si lo exige la ley o para proteger nuestros derechos"
+        ]
+      },
+      "security": {
+        "title": "5. Seguridad de Datos",
+        "content": "Implementamos las siguientes medidas técnicas y organizacionales:",
+        "items": [
+          "Encriptación de contraseñas con bcrypt",
+          "Conexión HTTPS para proteger datos en tránsito",
+          "Autenticación segura de tokens JWT",
+          "Acceso restringido a datos sensibles",
+          "Controles de acceso basados en funciones"
+        ]
+      },
+      "rights": {
+        "title": "6. Sus Derechos",
+        "content": "Usted tiene los siguientes derechos respecto a sus datos:",
+        "items": [
+          "Acceso: Puede ver sus datos personales",
+          "Corrección: Puede modificar su información en la configuración",
+          "Supresión: Puede solicitar la eliminación de su cuenta",
+          "Portabilidad: Puede exportar sus datos",
+          "Oposición: Puede rechazar ciertos tratamientos"
+        ]
+      },
+      "cookies": {
+        "title": "7. Cookies y Tecnologías de Seguimiento",
+        "content": "Utilizamos almacenamiento local (localStorage) para:",
+        "items": [
+          "Almacenar sus tokens de autenticación",
+          "Recordar sus preferencias (tema, idioma)",
+          "Mejorar su experiencia de usuario"
+        ],
+        "note": "Puede borrar su localStorage en cualquier momento a través de la configuración de su navegador."
+      },
+      "retention": {
+        "title": "8. Retención de Datos",
+        "content": "Retenemos sus datos mientras su cuenta esté activa. Si elimina su cuenta, sus datos se eliminarán en 30 días, a menos que la ley requiera lo contrario."
+      },
+      "modifications": {
+        "title": "9. Modificaciones a Esta Política",
+        "content": "Podemos actualizar esta política de privacidad en cualquier momento. Los cambios se publicarán en esta página con una nueva fecha de actualización."
+      }
+    },
     "contactEmail": "Para cualquier pregunta sobre esta política de privacidad o sus datos, contáctenos en privacy@example.com"
   }
 }

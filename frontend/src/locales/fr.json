@@ -57,6 +57,13 @@
       "title": "Gestion du compte",
       "deactivate": "Désactiver le compte",
       "delete": "Supprimer le compte"
+    },
+    "legal": {
+      "title": "Conditions Légales",
+      "termsDescription": "Consultez nos conditions d'utilisation pour comprendre vos droits et obligations.",
+      "termsButton": "Voir les conditions d'utilisation",
+      "privacyDescription": "Découvrez notre politique de confidentialité et comment nous protégeons vos données.",
+      "privacyButton": "Voir la politique de confidentialité"
     }
   },
   "profile": {
@@ -95,6 +102,7 @@
     "comment": "Commenter",
     "delete": "Supprimer",
     "edit": "Modifier",
+    "edited": "(modifié)",
     "confirmDelete": "Supprimer ce post ?"
   },
   "comment": {
@@ -102,6 +110,7 @@
     "validate": "Valider",
     "cancel": "Annuler",
     "delete": "Supprimer",
+    "edited": "(modifié)",
     "confirmDelete": "Supprimer ce commentaire ?"
   },
   "messages": {
@@ -191,6 +200,63 @@
     "lastUpdated": "Dernière mise à jour : 23 mars 2026",
     "back": "Retour",
     "contactUs": "Nous Contacter",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptation des Conditions",
+        "content": "En créant un compte et en utilisant cette plateforme, vous acceptez pleinement ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser ce service."
+      },
+      "account": {
+        "title": "2. Compte Utilisateur",
+        "content": "Vous êtes responsable de maintenir la confidentialité de vos identifiants et de votre mot de passe. Vous acceptez l'entière responsabilité de toutes les activités qui se produisent sous votre compte.",
+        "items": [
+          "Vous garantissez que les informations fournies sont exactes et complètes",
+          "Vous devez informer immédiatement de tout accès non autorisé à votre compte",
+          "Vous acceptez de ne pas partager votre compte avec d'autres personnes"
+        ]
+      },
+      "content": {
+        "title": "3. Contenu Utilisateur",
+        "content": "Vous reconnaissez que vous êtes responsable de tout contenu (messages, images, fichiers) que vous publiez ou partagez sur la plateforme. Vous acceptez que votre contenu :",
+        "items": [
+          "Ne viole aucun droit d'auteur ou de propriété intellectuelle",
+          "N'est pas illégal, diffamatoire, abusif ou discriminatoire",
+          "Ne contient pas de malware ou code malveillant",
+          "Respecte les droits et la dignité d'autres utilisateurs"
+        ]
+      },
+      "behavior": {
+        "title": "4. Comportement Utilisateur",
+        "content": "Vous vous engagez à utiliser la plateforme de manière responsable. Les comportements suivants sont strictement interdits :",
+        "items": [
+          "Harcèlement ou menaces envers d'autres utilisateurs",
+          "Spam, publicité non consentie ou contenu répétitif",
+          "Tentatives de piratage ou d'accès non autorisé",
+          "Usurpation d'identité ou tromperie",
+          "Contenu sexuel, violent ou choquant"
+        ]
+      },
+      "intellectual": {
+        "title": "5. Propriété Intellectuelle",
+        "content": "Le contenu, le design et les fonctionnalités de cette plateforme sont protégés par les droits d'auteur et autres lois de propriété intellectuelle. Vous ne pouvez pas copier, modifier ou distribuer ce contenu sans autorisation préalable."
+      },
+      "liability": {
+        "title": "6. Limitation de Responsabilité",
+        "content": "Cette plateforme est fournie \"tel quel\" sans garantie d'aucune sorte. Nous ne pouvons pas être tenus responsables de :",
+        "items": [
+          "Les dommages directs ou indirects résultant de l'utilisation du service",
+          "Les pertes de données ou d'accès",
+          "Les contenus tiers ou les actions d'autres utilisateurs"
+        ]
+      },
+      "modifications": {
+        "title": "7. Modification des Conditions",
+        "content": "Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications seront effectives immédiatement après leur publication. Votre utilisation continue du service constitue votre acceptation des conditions modifiées."
+      },
+      "applicable": {
+        "title": "8. Droit Applicable",
+        "content": "Ces conditions sont régies par les lois applicables. Tout litige découlant de ces conditions sera soumis à la juridiction compétente."
+      }
+    },
     "contactEmail": "Si vous avez des questions concernant ces conditions, veuillez nous contacter à support@example.com"
   },
   "privacy": {
@@ -198,6 +264,84 @@
     "lastUpdated": "Dernière mise à jour : 23 mars 2026",
     "back": "Retour",
     "contactUs": "Nous Contacter",
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Nous accordons une grande importance à la protection de vos données personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons, partageons et protégeons vos informations lorsque vous utilisez notre plateforme."
+      },
+      "data": {
+        "title": "2. Données que Nous Collectons",
+        "content": "Nous collectons les informations suivantes :",
+        "items": [
+          "Informations de compte : Nom d'utilisateur, email, mot de passe (chiffré)",
+          "Profil : Prénom, nom, bio, avatar",
+          "Contenu créé : Posts, commentaires, messages",
+          "Données de connexion : Adresse IP, type d'appareil, navigateur",
+          "Interactions : Likes, suivi d'utilisateurs, notifications"
+        ]
+      },
+      "usage": {
+        "title": "3. Utilisation de Vos Données",
+        "content": "Vos données sont utilisées pour :",
+        "items": [
+          "Fournir et améliorer les services de la plateforme",
+          "Authentifier votre compte et sécuriser votre session",
+          "Personnaliser votre expérience utilisateur",
+          "Envoyer des notifications selon vos préférences",
+          "Analyser l'utilisation du service (données anonymisées)",
+          "Respecter nos obligations légales"
+        ]
+      },
+      "sharing": {
+        "title": "4. Partage de Vos Données",
+        "content": "Nous ne vendons jamais vos données personnelles. Cependant, nous pouvons partager vos informations :",
+        "items": [
+          "Avec d'autres utilisateurs : Votre profil public et vos posts sont visibles selon vos paramètres de confidentialité",
+          "Avec des prestataires : Pour l'hébergement, les services de paiement (le cas échéant)",
+          "Conformité légale : Si requis par la loi ou pour protéger nos droits"
+        ]
+      },
+      "security": {
+        "title": "5. Sécurité des Données",
+        "content": "Nous mettons en place les mesures techniques et organisationnelles suivantes :",
+        "items": [
+          "Chiffrement des mots de passe avec bcrypt",
+          "Connexion HTTPS pour protéger les données en transit",
+          "Authentification par tokens JWT sécurisés",
+          "Accès restreint aux données sensibles",
+          "Contrôles d'accès basés sur les rôles"
+        ]
+      },
+      "rights": {
+        "title": "6. Vos Droits",
+        "content": "Vous avez les droits suivants concernant vos données :",
+        "items": [
+          "Accès : Vous pouvez consulter vos données personnelles",
+          "Correction : Vous pouvez modifier vos informations dans les paramètres",
+          "Suppression : Vous pouvez demander la suppression de votre compte",
+          "Portabilité : Vous pouvez exporter vos données",
+          "Opposition : Vous pouvez refuser certains traitements"
+        ]
+      },
+      "cookies": {
+        "title": "7. Cookies et Technologies de Suivi",
+        "content": "Nous utilisons le stockage local (localStorage) pour :",
+        "items": [
+          "Stocker vos tokens d'authentification",
+          "Mémoriser vos préférences (thème, langue)",
+          "Améliorer votre expérience utilisateur"
+        ],
+        "note": "Vous pouvez nettoyer votre localStorage à tout moment via les paramètres de votre navigateur."
+      },
+      "retention": {
+        "title": "8. Rétention des Données",
+        "content": "Nous conservons vos données tant que votre compte est actif. Si vous supprimez votre compte, vos données seront supprimées dans les 30 jours, sauf si la loi nous oblige à les conserver plus longtemps."
+      },
+      "modifications": {
+        "title": "9. Modifications de cette Politique",
+        "content": "Nous pouvons mettre à jour cette politique de confidentialité à tout moment. Les modifications seront publiées sur cette page avec une nouvelle date de mise à jour."
+      }
+    },
     "contactEmail": "Pour toute question concernant cette politique de confidentialité ou vos données, veuillez nous contacter à privacy@example.com"
   }
 }

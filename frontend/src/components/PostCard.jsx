@@ -78,7 +78,7 @@ export default function PostCard({ post, onLike, onDelete })
 							</Link>
 							<p className="text-sm text-gray-500 dark:text-gray-400">
 								{post.date}
-								{post.isEdited && <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">(modifié)</span>}
+								{post.isEdited && <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">{t('post.edited')}</span>}
 							</p>
 						</div>
 					</div>

@@ -56,8 +56,13 @@
     "danger": {
       "title": "Gerenciamento de conta",
       "deactivate": "Desativar conta",
-      "delete": "Excluir conta"
-    }
+      "delete": "Excluir conta"    },
+    "legal": {
+      "title": "Condições Legais",
+      "termsDescription": "Revise nossos termos de serviço para entender seus direitos e obrigações.",
+      "termsButton": "Ver Termos de Serviço",
+      "privacyDescription": "Descubra nossa política de privacidade e como protegemos seus dados.",
+      "privacyButton": "Ver Política de Privacidade"    }
   },
   "profile": {
     "edit": "Editar perfil",
@@ -95,6 +100,7 @@
     "comment": "Comentar",
     "delete": "Excluir",
     "edit": "Editar",
+    "edited": "(editado)",
     "confirmDelete": "Excluir esta publicação?"
   },
   "comment": {
@@ -102,6 +108,7 @@
     "validate": "Validar",
     "cancel": "Cancelar",
     "delete": "Excluir",
+    "edited": "(editado)",
     "confirmDelete": "Excluir este comentário?"
   },
   "messages": {
@@ -190,14 +197,147 @@
     "title": "Termos de Serviço",
     "lastUpdated": "Última atualização: 23 de março de 2026",
     "back": "Voltar",
-    "contactUs": "Entre em Contato",
-    "contactEmail": "Se tiver dúvidas sobre estes termos, entre em contato conosco em support@example.com"
+    "contactUs": "Entre em Contato",    "sections": {
+      "acceptance": {
+        "title": "1. Aceitação dos Termos",
+        "content": "Ao criar uma conta e usar esta plataforma, você aceita plenamente estes termos de serviço. Se você não aceitar estes termos, não deve usar este serviço."
+      },
+      "account": {
+        "title": "2. Conta do Usuário",
+        "content": "Você é responsável por manter a confidencialidade de suas credenciais e senha. Você aceita responsabilidade total por todas as atividades que ocorrem em sua conta.",
+        "items": [
+          "Você garante que as informações fornecidas são precisas e completas",
+          "Você deve nos informar imediatamente sobre qualquer acesso não autorizado à sua conta",
+          "Você concorda em não compartilhar sua conta com outras pessoas"
+        ]
+      },
+      "content": {
+        "title": "3. Conteúdo do Usuário",
+        "content": "Você reconhece que é responsável por todo o conteúdo (mensagens, imagens, arquivos) que você publica ou compartilha na plataforma. Você aceita que seu conteúdo:",
+        "items": [
+          "Não viola nenhum direito autoral ou de propriedade intelectual",
+          "Não é ilegal, difamatório, abusivo ou discriminatório",
+          "Não contém malware ou código malicioso",
+          "Respeita os direitos e a dignidade de outros usuários"
+        ]
+      },
+      "behavior": {
+        "title": "4. Comportamento do Usuário",
+        "content": "Você se compromete a usar a plataforma de forma responsável. Os comportamentos a seguir são estritamente proibidos:",
+        "items": [
+          "Assédio ou ameaças contra outros usuários",
+          "Spam, publicidade não solicitada ou conteúdo repetitivo",
+          "Tentativas de pirataria ou acesso não autorizado",
+          "Falsificación de identidade ou engaño",
+          "Conteúdo sexual, violento ou chocante"
+        ]
+      },
+      "intellectual": {
+        "title": "5. Propriedade Intelectual",
+        "content": "O conteúdo, design e recursos desta plataforma são protegidos por copyright e outras leis de propriedade intelectual. Você não pode copiar, modificar ou distribuir este conteúdo sem autorização prévia."
+      },
+      "liability": {
+        "title": "6. Limitação de Responsabilidade",
+        "content": "Esta plataforma é fornecida 'como está' sem qualquer garantia. Não podemos ser responsabilizados por:",
+        "items": [
+          "Danos diretos ou indiretos resultantes do uso do serviço",
+          "Perda de dados ou acesso",
+          "Conteúdo de terceiros ou ações de outros usuários"
+        ]
+      },
+      "modifications": {
+        "title": "7. Modificação dos Termos",
+        "content": "Reservamos o direito de modificar estes termos a qualquer momento. As modificações serão efetivas imediatamente após a publicação. Seu uso continuado do serviço constitui sua aceitação dos termos modificados."
+      },
+      "applicable": {
+        "title": "8. Lei Aplicável",
+        "content": "Estes termos são regidos pelas leis aplicáveis. Qualquer disputa decorrente destes termos estará sujeita à jurisdição do tribunal competente."
+      }
+    },    "contactEmail": "Se tiver dúvidas sobre estes termos, entre em contato conosco em support@example.com"
   },
   "privacy": {
     "title": "Política de Privacidade",
     "lastUpdated": "Última atualização: 23 de março de 2026",
     "back": "Voltar",
     "contactUs": "Entre em Contato",
+    "sections": {
+      "introduction": {
+        "title": "1. Introdução",
+        "content": "Damos grande importância à proteção de seus dados pessoais. Esta política de privacidade explica como coletamos, usamos, compartilhamos e protegemos suas informações quando você usa nossa plataforma."
+      },
+      "data": {
+        "title": "2. Dados que Coletamos",
+        "content": "Coletamos as seguintes informações:",
+        "items": [
+          "Informações da Conta: Nome de usuário, e-mail, senha (criptografada)",
+          "Perfil: Nome, sobrenome, biografia, avatar",
+          "Conteúdo Criado: Publicações, comentários, mensagens",
+          "Dados de Conexão: Endereço IP, tipo de dispositivo, navegador",
+          "Interações: Curtidas, rastreamento de usuários, notificações"
+        ]
+      },
+      "usage": {
+        "title": "3. Uso de Seus Dados",
+        "content": "Seus dados são usados para:",
+        "items": [
+          "Fornecer e melhorar os serviços da plataforma",
+          "Autenticar sua conta e proteger sua sessão",
+          "Personalizar sua experiência de usuário",
+          "Enviar notificações de acordo com suas preferências",
+          "Analisar o uso do serviço (dados anonimizados)",
+          "Cumprir nossas obrigações legais"
+        ]
+      },
+      "sharing": {
+        "title": "4. Compartilhamento de Seus Dados",
+        "content": "Nunca vendemos seus dados pessoais. No entanto, podemos compartilhar suas informações:",
+        "items": [
+          "Com Outros Usuários: Seu perfil público e publicações são visíveis de acordo com suas configurações de privacidade",
+          "Com Provedores de Serviços: Para hospedagem, serviços de pagamento (se aplicável)",
+          "Cumprimento Legal: Se exigido por lei ou para proteger nossos direitos"
+        ]
+      },
+      "security": {
+        "title": "5. Segurança de Dados",
+        "content": "Implementamos as seguintes medidas técnicas e organizacionais:",
+        "items": [
+          "Criptografia de senhas com bcrypt",
+          "Conexão HTTPS para proteger dados em trânsito",
+          "Autenticação segura de token JWT",
+          "Acesso restrito a dados sensíveis",
+          "Controles de acesso baseados em funções"
+        ]
+      },
+      "rights": {
+        "title": "6. Seus Direitos",
+        "content": "Você tem os seguintes direitos em relação a seus dados:",
+        "items": [
+          "Acesso: Você pode visualizar seus dados pessoais",
+          "Correção: Você pode modificar suas informações nas configurações",
+          "Exclusão: Você pode solicitar a exclusão de sua conta",
+          "Portabilidade: Você pode exportar seus dados",
+          "Oposição: Você pode recusar certos processamentos"
+        ]
+      },
+      "cookies": {
+        "title": "7. Cookies e Tecnologias de Rastreamento",
+        "content": "Usamos armazenamento local (localStorage) para:",
+        "items": [
+          "Armazenar seus tokens de autenticação",
+          "Lembrar suas preferências (tema, idioma)",
+          "Melhorar sua experiência de usuário"
+        ],
+        "note": "Você pode limpar seu localStorage a qualquer momento nas configurações do seu navegador."
+      },
+      "retention": {
+        "title": "8. Retenção de Dados",
+        "content": "Retemos seus dados enquanto sua conta estiver ativa. Se você excluir sua conta, seus dados serão excluídos em 30 dias, a menos que a lei exija retê-los por mais tempo."
+      },
+      "modifications": {
+        "title": "9. Modificações desta Política",
+        "content": "Podemos atualizar esta política de privacidade a qualquer momento. As alterações serão publicadas nesta página com uma nova data de atualização."
+      }
+    },
     "contactEmail": "Para qualquer dúvida sobre esta política de privacidade ou seus dados, entre em contato conosco em privacy@example.com"
   }
 }

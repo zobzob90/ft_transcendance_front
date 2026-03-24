@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/03/23 16:39:58 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/23 17:02:27 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,12 +426,12 @@ export default function Settings() {
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
                 <h2 className="text-xl font-bold mb-4 flex items-center space-x-2 text-gray-900 dark:text-white">
                     <FiAlertTriangle className="text-blue-500" />
-                    <span>Conditions Légales</span>
+                    <span>{t('settings.legal.title')}</span>
                 </h2>
                 <div className="space-y-4">
                     <div>
                         <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                            Consultez nos conditions d'utilisation pour comprendre vos droits et obligations.
+                            {t('settings.legal.termsDescription')}
                         </p>
                         <a
                             href="/terms"
@@ -439,12 +439,12 @@ export default function Settings() {
                             rel="noopener noreferrer"
                             className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition"
                         >
-                            Voir les conditions d'utilisation
+                            {t('settings.legal.termsButton')}
                         </a>
                     </div>
                     <div>
                         <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                            Découvrez notre politique de confidentialité et comment nous protégeons vos données.
+                            {t('settings.legal.privacyDescription')}
                         </p>
                         <a
                             href="/privacy"
@@ -452,7 +452,7 @@ export default function Settings() {
                             rel="noopener noreferrer"
                             className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition"
                         >
-                            Voir la politique de confidentialité
+                            {t('settings.legal.privacyButton')}
                         </a>
                     </div>
                 </div>

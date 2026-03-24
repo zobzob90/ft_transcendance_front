@@ -57,6 +57,13 @@
       "title": "Kontoverwaltung",
       "deactivate": "Konto deaktivieren",
       "delete": "Konto löschen"
+    },
+    "legal": {
+      "title": "Rechtliche Bedingungen",
+      "termsDescription": "Überprüfen Sie unsere Nutzungsbedingungen, um Ihre Rechte und Pflichten zu verstehen.",
+      "termsButton": "Nutzungsbedingungen anzeigen",
+      "privacyDescription": "Entdecken Sie unsere Datenschutzrichtlinie und wie wir Ihre Daten schützen.",
+      "privacyButton": "Datenschutzrichtlinie anzeigen"
     }
   },
   "profile": {
@@ -95,6 +102,7 @@
     "comment": "Kommentieren",
     "delete": "Löschen",
     "edit": "Bearbeiten",
+    "edited": "(bearbeitet)",
     "confirmDelete": "Diesen Beitrag löschen?"
   },
   "comment": {
@@ -102,6 +110,7 @@
     "validate": "Bestätigen",
     "cancel": "Abbrechen",
     "delete": "Löschen",
+    "edited": "(bearbeitet)",
     "confirmDelete": "Diesen Kommentar löschen?"
   },
   "messages": {
@@ -190,14 +199,147 @@
     "title": "Nutzungsbedingungen",
     "lastUpdated": "Zuletzt aktualisiert: 23. März 2026",
     "back": "Zurück",
-    "contactUs": "Kontaktieren Sie Uns",
-    "contactEmail": "Wenn Sie Fragen zu diesen Bedingungen haben, kontaktieren Sie uns bitte unter support@example.com"
+    "contactUs": "Kontaktieren Sie Uns",    "sections": {
+      "acceptance": {
+        "title": "1. Annahme der Bedingungen",
+        "content": "Durch das Erstellen eines Kontos und die Verwendung dieser Plattform akzeptieren Sie diese Nutzungsbedingungen vollständig. Wenn Sie diese Bedingungen nicht akzeptieren, dürfen Sie diesen Dienst nicht nutzen."
+      },
+      "account": {
+        "title": "2. Benutzerkonto",
+        "content": "Sie sind dafür verantwortlich, die Vertraulichkeit Ihrer Anmeldedaten und Ihres Passworts zu wahren. Sie akzeptieren die vollständige Verantwortung für alle Aktivitäten unter Ihrem Konto.",
+        "items": [
+          "Sie garantieren, dass die bereitgestellten Informationen korrekt und vollständig sind",
+          "Sie müssen uns sofort über unbefugten Zugriff auf Ihr Konto informieren",
+          "Sie stimmen zu, Ihr Konto nicht mit anderen Personen zu teilen"
+        ]
+      },
+      "content": {
+        "title": "3. Benutzerinhalte",
+        "content": "Sie bestätigen, dass Sie für alle Inhalte (Nachrichten, Bilder, Dateien) verantwortlich sind, die Sie auf der Plattform veröffentlichen oder weitergeben. Sie akzeptieren, dass Ihre Inhalte:",
+        "items": [
+          "Keine Urheber- oder Eigentumsrechte verletzen",
+          "Nicht illegal, verleumdend, missbrauchend oder diskriminierend sind",
+          "Keine Malware oder bösartigen Code enthalten",
+          "Die Rechte und Würde anderer Benutzer respektieren"
+        ]
+      },
+      "behavior": {
+        "title": "4. Benutzerverhalten",
+        "content": "Sie verpflichten sich, die Plattform verantwortungsvoll zu nutzen. Die folgenden Verhaltensweisen sind streng verboten:",
+        "items": [
+          "Belästigung oder Bedrohungen gegen andere Benutzer",
+          "Spam, ungewünschte Werbung oder wiederholte Inhalte",
+          "Versuchtes Hacking oder unbefugter Zugriff",
+          "Identitätstäuschung oder Betüg",
+          "Sexuelle, gewalttätige oder schockierende Inhalte"
+        ]
+      },
+      "intellectual": {
+        "title": "5. Geistiges Eigentum",
+        "content": "Der Inhalt, das Design und die Funktionen dieser Plattform sind durch Urheberrecht und andere Gesetze zum Schutz des geistigen Eigentums geschützt. Sie dürfen diesen Inhalt ohne vorherige Genehmigung nicht kopieren, ändern oder verteilen."
+      },
+      "liability": {
+        "title": "6. Haftungsbeschränkung",
+        "content": "Diese Plattform wird 'wie vorhanden' ohne jegliche Garantie bereitgestellt. Wir können nicht haftbar gemacht werden für:",
+        "items": [
+          "Direkte oder indirekte Schäden, die sich aus der Nutzung des Dienstes ergeben",
+          "Datenverlust oder Zugriffsverlust",
+          "Inhalte von Dritten oder Handlungen anderer Benutzer"
+        ]
+      },
+      "modifications": {
+        "title": "7. Änderung der Bedingungen",
+        "content": "Wir behalten uns das Recht vor, diese Bedingungen jederzeit zu ändern. Änderungen werden unmittelbar nach Veröffentlichung wirksam. Die fortgesetzte Nutzung des Dienstes stellt Ihre Akzeptanz der geänderten Bedingungen dar."
+      },
+      "applicable": {
+        "title": "8. Anwendbares Recht",
+        "content": "Diese Bedingungen unterliegen dem anwendbaren Recht. Alle Verträge, die sich aus diesen Bedingungen ergeben, unterliegen der Gerichtsbarkeit des zuständigen Gerichts."
+      }
+    },    "contactEmail": "Wenn Sie Fragen zu diesen Bedingungen haben, kontaktieren Sie uns bitte unter support@example.com"
   },
   "privacy": {
     "title": "Datenschutzrichtlinie",
     "lastUpdated": "Zuletzt aktualisiert: 23. März 2026",
     "back": "Zurück",
     "contactUs": "Kontaktieren Sie Uns",
+    "sections": {
+      "introduction": {
+        "title": "1. Einführung",
+        "content": "Wir legen großen Wert auf den Schutz Ihrer persönlichen Daten. Diese Datenschutzrichtlinie erklärt, wie wir Ihre Informationen erfassen, nutzen, weitergeben und schützen, wenn Sie unsere Plattform verwenden."
+      },
+      "data": {
+        "title": "2. Welche Daten Wir Erfassen",
+        "content": "Wir erfassen die folgenden Informationen:",
+        "items": [
+          "Kontoinformationen: Benutzername, E-Mail, Passwort (verschlüsselt)",
+          "Profil: Vorname, Nachname, Bio, Avatar",
+          "Erstellte Inhalte: Beiträge, Kommentare, Nachrichten",
+          "Verbindungsdaten: IP-Adresse, Gerätetyp, Browser",
+          "Interaktionen: Likes, Benutzerverfolgung, Benachrichtigungen"
+        ]
+      },
+      "usage": {
+        "title": "3. Nutzung Ihrer Daten",
+        "content": "Ihre Daten werden verwendet für:",
+        "items": [
+          "Bereitstellung und Verbesserung der Plattformdienste",
+          "Authentifizierung Ihres Kontos und Sicherung Ihrer Sitzung",
+          "Personalisierung Ihrer Benutzererfahrung",
+          "Senden von Benachrichtigungen gemäß Ihren Voreinstellungen",
+          "Analyse der Servicenutzung (anonymisierte Daten)",
+          "Erfüllung unserer rechtlichen Verpflichtungen"
+        ]
+      },
+      "sharing": {
+        "title": "4. Weitergabe Ihrer Daten",
+        "content": "Wir verkaufen Ihre persönlichen Daten niemals. Wir können Ihre Informationen jedoch weitergeben:",
+        "items": [
+          "Mit Anderen Benutzern: Ihr öffentliches Profil und Beiträge sind laut Ihren Datenschutzeinstellungen sichtbar",
+          "Mit Dienstleistern: Für Hosting, Zahlungsdienste (falls zutreffend)",
+          "Rechtliche Erfüllung: Falls gesetzlich erforderlich oder zum Schutz unserer Rechte"
+        ]
+      },
+      "security": {
+        "title": "5. Datensicherheit",
+        "content": "Wir implementieren die folgenden technischen und organisatorischen Maßnahmen:",
+        "items": [
+          "Passwortverschüsselung mit bcrypt",
+          "HTTPS-Verbindung zum Schutz von Daten im Transit",
+          "Sichere JWT-Token-Authentifizierung",
+          "Beschränktem Zugriff auf sensible Daten",
+          "Rollenbasierte Zugriffskontrolle"
+        ]
+      },
+      "rights": {
+        "title": "6. Ihre Rechte",
+        "content": "Sie haben folgende Rechte bezglich Ihrer Daten:",
+        "items": [
+          "Zugang: Sie können Ihre persönlichen Daten anzeigen",
+          "Berichtigung: Sie können Ihre Informationen in den Einstellungen ändern",
+          "Löschung: Sie können die Löschung Ihres Kontos beantragen",
+          "Portabilität: Sie können Ihre Daten exportieren",
+          "Widerspruch: Sie können bestimmten Verarbeitungen widersprechen"
+        ]
+      },
+      "cookies": {
+        "title": "7. Cookies und Tracking-Technologien",
+        "content": "Wir verwenden lokalen Speicher (localStorage) für:",
+        "items": [
+          "Speichern Ihrer Authentifizierungs-Token",
+          "Speichern Ihrer Voreinstellungen (Design, Sprache)",
+          "Verbesserung Ihrer Benutzererfahrung"
+        ],
+        "note": "Sie können Ihren localStorage jederzeit über die Browsereinstellungen löschen."
+      },
+      "retention": {
+        "title": "8. Datenspeicherung",
+        "content": "Wir speichern Ihre Daten, solange Ihr Konto aktiv ist. Wenn Sie Ihr Konto löschen, werden Ihre Daten innerhalb von 30 Tagen gelöscht, es sei denn, das Gesetz erfordert eine längere Speicherung."
+      },
+      "modifications": {
+        "title": "9. Änderungen dieser Richtlinie",
+        "content": "Wir können diese Datenschutzrichtlinie jederzeit aktualisieren. Änderungen werden auf dieser Seite mit einem neuen Aktualisierungsdatum veröffentlicht."
+      }
+    },
     "contactEmail": "Bei Fragen zu dieser Datenschutzrichtlinie oder Ihren Daten kontaktieren Sie uns bitte unter privacy@example.com"
   }
 }

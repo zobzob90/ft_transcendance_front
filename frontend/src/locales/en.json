@@ -57,6 +57,13 @@
       "title": "Account management",
       "deactivate": "Deactivate account",
       "delete": "Delete account"
+    },
+    "legal": {
+      "title": "Legal Conditions",
+      "termsDescription": "Review our terms of service to understand your rights and obligations.",
+      "termsButton": "View Terms of Service",
+      "privacyDescription": "Discover our privacy policy and how we protect your data.",
+      "privacyButton": "View Privacy Policy"
     }
   },
   "profile": {
@@ -95,6 +102,7 @@
     "comment": "Comment",
     "delete": "Delete",
     "edit": "Edit",
+    "edited": "(edited)",
     "confirmDelete": "Delete this post?"
   },
   "comment": {
@@ -102,6 +110,7 @@
     "validate": "Validate",
     "cancel": "Cancel",
     "delete": "Delete",
+    "edited": "(edited)",
     "confirmDelete": "Delete this comment?"
   },
   "messages": {
@@ -191,6 +200,63 @@
     "lastUpdated": "Last updated: March 23, 2026",
     "back": "Back",
     "contactUs": "Contact Us",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "content": "By creating an account and using this platform, you fully accept these terms of service. If you do not accept these terms, you must not use this service."
+      },
+      "account": {
+        "title": "2. User Account",
+        "content": "You are responsible for maintaining the confidentiality of your credentials and password. You accept full responsibility for all activities occurring under your account.",
+        "items": [
+          "You guarantee that the information provided is accurate and complete",
+          "You must immediately inform us of any unauthorized access to your account",
+          "You agree not to share your account with other people"
+        ]
+      },
+      "content": {
+        "title": "3. User Content",
+        "content": "You acknowledge that you are responsible for all content (messages, images, files) that you post or share on the platform. You accept that your content:",
+        "items": [
+          "Does not violate any copyright or intellectual property rights",
+          "Is not illegal, defamatory, abusive or discriminatory",
+          "Does not contain malware or malicious code",
+          "Respects the rights and dignity of other users"
+        ]
+      },
+      "behavior": {
+        "title": "4. User Behavior",
+        "content": "You commit to using the platform responsibly. The following behaviors are strictly prohibited:",
+        "items": [
+          "Harassment or threats against other users",
+          "Spam, unsolicited advertising or repetitive content",
+          "Attempted hacking or unauthorized access",
+          "Identity spoofing or deception",
+          "Sexual, violent or shocking content"
+        ]
+      },
+      "intellectual": {
+        "title": "5. Intellectual Property",
+        "content": "The content, design and features of this platform are protected by copyright and other intellectual property laws. You may not copy, modify or distribute this content without prior authorization."
+      },
+      "liability": {
+        "title": "6. Limitation of Liability",
+        "content": "This platform is provided \"as is\" without warranty of any kind. We cannot be held responsible for:",
+        "items": [
+          "Direct or indirect damages resulting from use of the service",
+          "Data loss or access loss",
+          "Third-party content or actions of other users"
+        ]
+      },
+      "modifications": {
+        "title": "7. Modification of Terms",
+        "content": "We reserve the right to modify these terms at any time. Modifications will be effective immediately after publication. Your continued use of the service constitutes your acceptance of the modified terms."
+      },
+      "applicable": {
+        "title": "8. Applicable Law",
+        "content": "These terms are governed by applicable laws. Any dispute arising from these terms will be subject to the jurisdiction of the competent court."
+      }
+    },
     "contactEmail": "If you have any questions about these terms, please contact us at support@example.com"
   },
   "privacy": {
@@ -198,6 +264,84 @@
     "lastUpdated": "Last updated: March 23, 2026",
     "back": "Back",
     "contactUs": "Contact Us",
+    "sections": {
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "We place great importance on protecting your personal data. This privacy policy explains how we collect, use, share and protect your information when you use our platform."
+      },
+      "data": {
+        "title": "2. Data We Collect",
+        "content": "We collect the following information:",
+        "items": [
+          "Account Information: Username, email, password (encrypted)",
+          "Profile: First name, last name, bio, avatar",
+          "Created Content: Posts, comments, messages",
+          "Connection Data: IP address, device type, browser",
+          "Interactions: Likes, user tracking, notifications"
+        ]
+      },
+      "usage": {
+        "title": "3. Use of Your Data",
+        "content": "Your data is used for:",
+        "items": [
+          "Provide and improve platform services",
+          "Authenticate your account and secure your session",
+          "Personalize your user experience",
+          "Send notifications according to your preferences",
+          "Analyze service usage (anonymized data)",
+          "Comply with our legal obligations"
+        ]
+      },
+      "sharing": {
+        "title": "4. Sharing Your Data",
+        "content": "We never sell your personal data. However, we may share your information:",
+        "items": [
+          "With Other Users: Your public profile and posts are visible according to your privacy settings",
+          "With Service Providers: For hosting, payment services (if applicable)",
+          "Legal Compliance: If required by law or to protect our rights"
+        ]
+      },
+      "security": {
+        "title": "5. Data Security",
+        "content": "We implement the following technical and organizational measures:",
+        "items": [
+          "Password encryption with bcrypt",
+          "HTTPS connection to protect data in transit",
+          "Secure JWT token authentication",
+          "Restricted access to sensitive data",
+          "Role-based access controls"
+        ]
+      },
+      "rights": {
+        "title": "6. Your Rights",
+        "content": "You have the following rights regarding your data:",
+        "items": [
+          "Access: You can view your personal data",
+          "Correction: You can modify your information in settings",
+          "Deletion: You can request deletion of your account",
+          "Portability: You can export your data",
+          "Opposition: You can refuse certain processing"
+        ]
+      },
+      "cookies": {
+        "title": "7. Cookies and Tracking Technologies",
+        "content": "We use local storage (localStorage) for:",
+        "items": [
+          "Store your authentication tokens",
+          "Remember your preferences (theme, language)",
+          "Improve your user experience"
+        ],
+        "note": "You can clear your localStorage at any time via your browser settings."
+      },
+      "retention": {
+        "title": "8. Data Retention",
+        "content": "We retain your data as long as your account is active. If you delete your account, your data will be deleted within 30 days, unless the law requires us to retain it longer."
+      },
+      "modifications": {
+        "title": "9. Modifications to this Policy",
+        "content": "We may update this privacy policy at any time. Changes will be published on this page with a new update date."
+      }
+    },
     "contactEmail": "For any questions about this privacy policy or your data, please contact us at privacy@example.com"
   }
 }
