@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:04 by eric              #+#    #+#             */
-/*   Updated: 2026/03/20 13:35:51 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/25 16:07:37 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ import PostCard from "../../components/PostCard";
 import CreatePostForm from "../../components/CreatePostForm";
 import FloatingChat from "../../components/FloatingChat";
 import { FiMessageCircle, FiRefreshCw } from "react-icons/fi";
+import { likesAPI, postsAPI } from "../../services/api";
 
 export default function Feed() 
 {
@@ -27,8 +28,14 @@ export default function Feed()
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMorePosts, setHasMorePosts] = useState(true);
+    const [displayedPosts, setDisplayedPosts] = useState([]); // State local pour accumuler les posts
     const observerTarget = useRef(null);
     const { posts, addPost, toggleLike, deletePost, fetchPosts } = useAppContext();
+
+    // Sync displayedPosts avec posts du contexte quand ils changent
+    useEffect(() => {
+        setDisplayedPosts(posts);
+    }, [posts]);
 
     const handleCreatePost = (postData) => {
         console.log("Création post:", postData);
@@ -49,34 +56,36 @@ export default function Feed()
         setIsLoadingMore(true);
         try {
             const nextPage = currentPage + 1;
-            const response = await fetch(`/api/posts?page=${nextPage}&limit=5`);
-            const data = await response.json();
+            const response = await postsAPI.getFeed(nextPage, 5);
             
-            if (data.posts && data.posts.length > 0) {
+            if (response.posts && response.posts.length > 0) {
+                // Récupérer les likes de l'utilisateur courant
+                let likedPostIds = [];
+                try {
+                    const likesData = await likesAPI.getMyLikes();
+                    likedPostIds = likesData.likedPostIds || [];
+                } catch (error) {
+                    console.warn("⚠️ Impossible de récupérer les likes:", error);
+                }
+                
                 // Formatter les nouveaux posts
-                const formattedPosts = data.posts.map(p => ({
+                const formattedPosts = response.posts.map(p => ({
                     id: p.id,
                     author: p.user?.username || p.user?.firstName || 'Anonyme',
                     avatar: p.user?.avatar || `https://ui-avatars.com/api/?name=${p.user?.firstName || 'User'}&background=3b82f6&color=fff`,
                     content: p.content,
                     likes: p._count?.likes || 0,
-                    liked: false,
+                    liked: likedPostIds.includes(p.id),
                     date: new Date(p.createdAt).toLocaleDateString('fr-FR'),
                     userId: p.userId,
                     createdAt: p.createdAt,
+                    isEdited: p.isEdited || false,
                 }));
                 
-                // Ajouter les nouveaux posts à la fin
-                if (posts && typeof posts.concat === 'function') {
-                    addPost._addMultiple?.(formattedPosts) || 
-                    // Fallback: ajouter les posts un par un si pas de méthode multiple
-                    formattedPosts.forEach(p => {
-                        // On va utiliser une approche différente - ajouter directement à posts
-                    });
-                }
-                
-                setCurrentPage(nextPage);
+                // ✅ CORRECTED: Ajouter les nouveaux posts à la fin de la liste existante
+                setDisplayedPosts(prev => [...prev, ...formattedPosts]);
                 console.log(`✅ ${formattedPosts.length} posts chargés (page ${nextPage})`);
+                setCurrentPage(nextPage);
             } else {
                 setHasMorePosts(false);
             }
@@ -108,12 +117,11 @@ export default function Feed()
             // Faire une requête discrète pour vérifier s'il y a de nouveaux posts
             // Simplement comparer le timestamp du dernier post
             try {
-                const response = await fetch('/api/posts?limit=1');
-                const data = await response.json();
-                if (data.posts && data.posts.length > 0) {
-                    const latestPostTime = new Date(data.posts[0].createdAt).getTime();
-                    const oldestLoadedTime = posts.length > 0 
-                        ? new Date(posts[0].createdAt).getTime() 
+                const response = await postsAPI.getFeed(1, 1);
+                if (response.posts && response.posts.length > 0) {
+                    const latestPostTime = new Date(response.posts[0].createdAt).getTime();
+                    const oldestLoadedTime = displayedPosts.length > 0 
+                        ? new Date(displayedPosts[0].createdAt).getTime() 
                         : 0;
                     
                     if (latestPostTime > oldestLoadedTime) {
@@ -126,7 +134,7 @@ export default function Feed()
         }, 15000); // Vérifier toutes les 15 secondes
 
         return () => clearInterval(interval);
-    }, [posts]);
+    }, [displayedPosts]);
 
     // Intersection Observer pour charger plus de posts au scroll
     useEffect(() => {
@@ -148,7 +156,7 @@ export default function Feed()
                 observer.unobserve(observerTarget.current);
             }
         };
-    }, [isLoadingMore, hasMorePosts]);
+    }, [isLoadingMore, hasMorePosts, loadMorePosts]);
     return (
         <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-between gap-3 mb-6">
@@ -172,9 +180,9 @@ export default function Feed()
 
 
             <div className="space-y-4">
-                {posts.length > 0 ? (
+                {displayedPosts.length > 0 ? (
                     <>
-                        {posts.map(post => (
+                        {displayedPosts.map(post => (
                             <PostCard 
                                 key={post.id} 
                                 post={post} 

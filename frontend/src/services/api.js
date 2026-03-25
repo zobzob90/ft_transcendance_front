@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 14:15:22 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/25 15:58:43 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,6 +328,17 @@ export const postsAPI = {
             method: 'DELETE',
         });
     },
+};
+
+// ===================================
+// API LIKES
+// ===================================
+
+export const likesAPI = {
+	// Récupérer les IDs des posts likés par l'utilisateur courant
+	getMyLikes: async () => {
+		return fetchWithAuth('/likes/me');
+	},
 };
 
 // ===================================

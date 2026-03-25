@@ -6,13 +6,13 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 14:12:55 by eric              #+#    #+#             */
-/*   Updated: 2026/03/20 13:35:53 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/25 16:04:38 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { postsAPI, notificationsAPI } from '../services/api';
+import { postsAPI, notificationsAPI, likesAPI } from '../services/api';
 
 const AppContext = createContext();
 
@@ -87,7 +87,18 @@ export const AppProvider = ({ children }) => {
         const loadPosts = async () => {
             try {
                 console.log("📥 Chargement des posts depuis l'API...");
-                const response = await postsAPI.getFeed(1, 20);
+                const response = await postsAPI.getFeed(1, 1);
+                
+                // Récupérer les likes de l'utilisateur courant
+                let likedPostIds = [];
+                try {
+                    const likesData = await likesAPI.getMyLikes();
+                    likedPostIds = likesData.likedPostIds || [];
+                    console.log("❤️ Posts likés:", likedPostIds);
+                } catch (error) {
+                    console.warn("⚠️ Impossible de récupérer les likes:", error);
+                    // Continuer même si on ne peut pas récupérer les likes
+                }
                 
                 // Formatter les posts pour l'affichage
                 const formattedPosts = response.posts?.map(p => ({
@@ -96,7 +107,7 @@ export const AppProvider = ({ children }) => {
                     avatar: p.user?.avatar || `https://ui-avatars.com/api/?name=${p.user?.firstName || 'User'}&background=3b82f6&color=fff`,
                     content: p.content,
                     likes: p._count?.likes || 0,
-                    liked: false, // TODO: vérifier si l'user a liké
+                    liked: likedPostIds.includes(p.id),
                     date: new Date(p.createdAt).toLocaleDateString('fr-FR'),
                     userId: p.userId,
                     createdAt: p.createdAt,
@@ -118,7 +129,18 @@ export const AppProvider = ({ children }) => {
     const fetchPosts = useCallback(async () => {
         try {
             console.log("🔄 Actualisation du feed...");
-            const response = await postsAPI.getFeed(1, 20);
+            const response = await postsAPI.getFeed(1, 1);
+            
+            // Récupérer les likes de l'utilisateur courant
+            let likedPostIds = [];
+            try {
+                const likesData = await likesAPI.getMyLikes();
+                likedPostIds = likesData.likedPostIds || [];
+                console.log("❤️ Posts likés:", likedPostIds);
+            } catch (error) {
+                console.warn("⚠️ Impossible de récupérer les likes:", error);
+                // Continuer même si on ne peut pas récupérer les likes
+            }
             
             const formattedPosts = response.posts?.map(p => ({
                 id: p.id,
@@ -126,7 +148,7 @@ export const AppProvider = ({ children }) => {
                 avatar: p.user?.avatar || `https://ui-avatars.com/api/?name=${p.user?.firstName || 'User'}&background=3b82f6&color=fff`,
                 content: p.content,
                 likes: p._count?.likes || 0,
-                liked: false,
+                liked: likedPostIds.includes(p.id),
                 date: new Date(p.createdAt).toLocaleDateString('fr-FR'),
                 userId: p.userId,
                 createdAt: p.createdAt,
@@ -144,7 +166,7 @@ export const AppProvider = ({ children }) => {
     // Fonction pour vérifier s'il y a de nouveaux posts sans les charger
     const checkForNewPosts = useCallback(async () => {
         try {
-            const response = await postsAPI.getFeed(1, 20);
+            const response = await postsAPI.getFeed(1, 1);
             const newPostIds = response.posts?.map(p => p.id) || [];
             const currentPostIds = posts.map(p => p.id);
             

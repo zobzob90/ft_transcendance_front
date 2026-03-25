@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 17:08:43 by eric              #+#    #+#             */
-/*   Updated: 2026/02/19 17:08:49 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/25 13:59:19 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,31 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    // Support RTL avec Tailwind
+    function({ addUtilities }) {
+      addUtilities({
+        '.rtl-mr': {
+          '[dir=rtl] &': {
+            marginRight: 'auto',
+            marginLeft: 'calc(var(--tw-space-x) * var(--tw-space-reverse, -1))',
+          },
+        },
+        '.rtl-ml': {
+          '[dir=rtl] &': {
+            marginLeft: 'auto',
+            marginRight: 'calc(var(--tw-space-x) * var(--tw-space-reverse, -1))',
+          },
+        },
+        '.ltr\\:flex-row-reverse': {
+          '[dir=ltr] &': {
+            flexDirection: 'row',
+          },
+          '[dir=rtl] &': {
+            flexDirection: 'row-reverse',
+          },
+        },
+      });
+    },
+  ],
 }
