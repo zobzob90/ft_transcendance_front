@@ -6,13 +6,14 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:11:40 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 13:28:48 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 13:38:49 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "../../utils/index";
+import { validateUsername, validateEmail, validatePassword } from "../../utils/validation";
 import { authAPI } from "../../services/api";
 import { useAppContext } from "../../context/AppContext";
 
@@ -33,6 +34,24 @@ export default function Register()
 		e.preventDefault();
 		setError("");
 		
+		// Validation username
+		if (!validateUsername(username)) {
+			setError("Username invalide (3-12 caractères, alphanumériques avec - ou ')");
+			return;
+		}
+
+		// Validation email
+		if (!validateEmail(email)) {
+			setError("Email invalide");
+			return;
+		}
+
+		// Validation password
+		if (!validatePassword(password)) {
+			setError("Password invalide (3-10 caractères, pas d'espaces)");
+			return;
+		}
+
 		if (password !== confirmPassword)
 		{
 			setError("Les mots de passe ne correspondent pas !");
@@ -99,6 +118,7 @@ export default function Register()
 					placeholder="Votre pseudo"
 					required
 					disabled={loading}
+					hint="3-12 caractères, alphanumériques avec - ou '"
 				/>
 				<Input
 					label="Email"
@@ -108,6 +128,7 @@ export default function Register()
 					placeholder="email@example.com"
 					required
 					disabled={loading}
+					hint="Format: user@domain.com"
 				/>
 				<Input
 					label="Mot de passe"
@@ -117,6 +138,7 @@ export default function Register()
 					placeholder="••••••••"
 					required
 					disabled={loading}
+					hint="3-10 caractères, pas d'espaces"
 				/>
 				<Input
 					label="Confirmer le mot de passe"
@@ -126,6 +148,7 @@ export default function Register()
 					placeholder="••••••••"
 					required
 					disabled={loading}
+					hint="Doit correspondre au mot de passe ci-dessus"
 				/>
 
 				{/* TERMS OF SERVICE CHECKBOX */}
@@ -170,11 +193,12 @@ export default function Register()
 					href={authAPI.getOAuth42Url()}
 					className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition mb-4 no-underline"
 				>
-					<svg className="w-6 h-6" viewBox="0 0 256 256" fill="currentColor">
-						<polygon points="128,0 256,74 256,182 128,256 0,182 0,74"/>
-						<text x="128" y="180" fontSize="180" fontWeight="bold" textAnchor="middle" fill="#000">42</text>
-					</svg>
-					S'inscrire avec 42
+					S'inscrire avec
+					<img 
+						src="/42_logo.png" 
+						alt="42 Logo" 
+						className="w-6 h-6 object-contain invert brightness-0 invert dark:invert"
+					/>
 				</a>
 
 				<p className="text-center text-sm text-gray-600 dark:text-gray-400">

@@ -116,6 +116,7 @@
   "messages": {
     "title": "Messages",
     "search": "Search conversations...",
+    "searchUsers": "Search for a user...",
     "typeMessage": "Type your message...",
     "send": "Send",
     "noConversations": "No conversations",

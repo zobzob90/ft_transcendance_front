@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/16 16:12:07 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 14:15:22 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 16:04:10 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ export default function Register42() {
 
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                    <img src="/42_logo.png" alt="42" className="w-10 h-10" />
+                    <img src="/42_logo.png" alt="42" className="w-10 h-10 dark:invert" />
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                             Finaliser mon inscription

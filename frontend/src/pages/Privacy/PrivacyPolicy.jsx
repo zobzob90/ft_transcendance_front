@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 12:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 11:26:34 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 13:17:32 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,19 @@ export default function PrivacyPolicy() {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="mt-8 flex gap-4 justify-center w-full">
-                    <div className="w-48">
-                        <Button
-                            onClick={() => navigate('/settings')}
-                            variant="blue"
-                        >
-                            {t('privacy.back')}
-                        </Button>
-                    </div>
+                <div className="mt-8 flex gap-4 justify-center items-center">
+                    <Button
+                        onClick={() => navigate('/privacy')}
+                        variant="blue"
+                    >
+                        {t('privacy.title')}
+                    </Button>
+                    <Button
+                        onClick={() => navigate('/terms')}
+                        variant="secondary"
+                    >
+                        {t('terms.title')}
+                    </Button>
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 14:41:05 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 11:26:25 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 13:17:37 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,19 @@ export default function TermsOfService() {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="mt-8 flex gap-4 justify-center w-full">
-                    <div className="w-48">
-                        <Button
-                            onClick={() => navigate('/settings')}
-                            variant="blue"
-                        >
-                            {t('terms.back')}
-                        </Button>
-                    </div>
+                <div className="mt-8 flex gap-4 justify-center items-center">
+                    <Button
+                        onClick={() => navigate('/privacy')}
+                        variant="secondary"
+                    >
+                        {t('privacy.title')}
+                    </Button>
+                    <Button
+                        onClick={() => navigate('/terms')}
+                        variant="blue"
+                    >
+                        {t('terms.title')}
+                    </Button>
                 </div>
             </div>
         </div>

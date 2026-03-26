@@ -116,6 +116,7 @@
   "messages": {
     "title": "الرسائل",
     "search": "البحث عن محادثة...",
+    "searchUsers": "البحث عن مستخدم...",
     "typeMessage": "اكتب رسالتك...",
     "send": "إرسال",
     "noConversations": "لا توجد محادثات",

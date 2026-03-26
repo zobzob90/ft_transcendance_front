@@ -6,13 +6,14 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:17:00 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 13:28:48 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 16:04:08 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Input, Button } from "../../utils";
+import { validateEmail, validatePassword } from "../../utils/validation";
 import { authAPI } from "../../services/api";
 import { useAppContext } from "../../context/AppContext";
 
@@ -38,6 +39,19 @@ export default function Login()
 	{
 		e.preventDefault();
 		setError("");
+
+		// Validation email ou username
+		if (!validateEmail(login) && login.length < 3) {
+			setError("Email ou username invalide");
+			return;
+		}
+
+		// Validation password
+		if (!validatePassword(password)) {
+			setError("Password invalide (3-10 caractères, pas d'espaces)");
+			return;
+		}
+
 		setLoading(true);
 
 		try {
@@ -95,29 +109,24 @@ export default function Login()
 					disabled={loading}
 				/>
 
-				<Input
-					label="Mot de passe"
-					type="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					placeholder="••••••••"
-					required
-					disabled={loading}
-				/>
+			<Input
+				label="Mot de passe"
+				type="password"
+				value={password}
+				onChange={(e) => setPassword(e.target.value)}
+				placeholder="••••••••"
+				required
+				disabled={loading}
+			/>
 
-				<Button type="submit" variant="blue" disabled={loading}>
-					{loading ? "Connexion..." : "Se connecter"}
-				</Button>
-
-				{/* SEPARATEUR */}
-				<div className="relative my-6">
-					<div className="absolute inset-0 flex items-center">
-						<div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-					</div>
-					<div className="relative flex justify-center text-sm">
-						<span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">ou</span>
-					</div>
+			<div className="relative flex justify-center text-sm mt-4">
+				<div className="absolute inset-0 flex items-center">
+					<div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
 				</div>
+				<div className="relative flex justify-center text-sm">
+					<span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">ou</span>
+				</div>
+			</div>
 
 				{/* BOUTON 42 OAUTH */}
 				<a
@@ -128,7 +137,7 @@ export default function Login()
 					<img 
 						src="/42_logo.png" 
 						alt="42 Logo" 
-						className="w-6 h-6 object-contain invert brightness-0 invert"
+						className="w-6 h-6 object-contain invert brightness-0 invert dark:invert"
 					/>
 				</a>
 				

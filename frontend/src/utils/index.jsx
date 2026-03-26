@@ -6,17 +6,22 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 00:01:19 by eric              #+#    #+#             */
-/*   Updated: 2026/03/23 17:17:22 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 13:38:49 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-export function Input({ label, type, value, onChange, placeholder, required, name })
+export function Input({ label, type, value, onChange, placeholder, required, name, hint })
 {
 	return (
 		<div className="mb-4">
 			<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
 				{label}
 			</label>
+			{hint && (
+				<p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+					{hint}
+				</p>
+			)}
 			<input
 				type={type}
 				name={name}

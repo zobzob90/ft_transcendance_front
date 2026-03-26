@@ -6,14 +6,15 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:04:31 by eric              #+#    #+#             */
-/*   Updated: 2026/02/20 09:25:50 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 16:06:19 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useMessages } from "../../context/MessagesContext";
-import { FiSearch } from "react-icons/fi";
+import { usersAPI } from "../../services/api";
+import { FiSearch, FiX } from "react-icons/fi";
 
 export default function Messages()
 {
@@ -29,6 +30,9 @@ export default function Messages()
 	
 	const [newMessage, setNewMessage] = useState("");
 	const [searchQuery, setSearchQuery] = useState("");
+	const [userSearchQuery, setUserSearchQuery] = useState("");
+	const [searchResults, setSearchResults] = useState([]);
+	const [searchLoading, setSearchLoading] = useState(false);
 
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
@@ -41,6 +45,47 @@ export default function Messages()
 		} catch (error) {
 			console.error("Erreur envoi message:", error);
 		}
+	};
+
+	// Rechercher des utilisateurs
+	useEffect(() => {
+		const searchUsers = async () => {
+			if (userSearchQuery.trim() === "") {
+				setSearchResults([]);
+				return;
+			}
+
+			setSearchLoading(true);
+			try {
+				const results = await usersAPI.searchUsers(userSearchQuery);
+				setSearchResults(results.users || []);
+			} catch (error) {
+				console.error("Erreur recherche utilisateurs:", error);
+				setSearchResults([]);
+			} finally {
+				setSearchLoading(false);
+			}
+		};
+
+		const debounceTimer = setTimeout(searchUsers, 300);
+		return () => clearTimeout(debounceTimer);
+	}, [userSearchQuery]);
+
+	// Commencer une conversation avec un utilisateur recherché
+	const handleStartConversation = (user) => {
+		// Créer une conversation locale ou utiliser existante
+		const newConversation = {
+			id: user.id,
+			user: `${user.firstName} ${user.lastName}`,
+			avatar: user.avatar,
+			online: user.online || false,
+			unread: 0,
+			lastMessage: "",
+			time: ""
+		};
+		selectConversation(newConversation);
+		setUserSearchQuery("");
+		setSearchResults([]);
 	};
 
 	const filteredConversations = conversations.filter(conv =>
@@ -56,27 +101,71 @@ export default function Messages()
 			</div>
 		);
 	}
-
-	if (conversations.length === 0) {
-		return (
-			<div className="max-w-4xl mx-auto p-6">
-				<h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">{t('messages.title')}</h1>
-				<div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-center text-gray-500 dark:text-gray-400">
-					<p className="text-lg mb-2">{t('messages.noConversations')}</p>
-					<p className="text-sm">{t('messages.startConversation')}</p>
-				</div>
-			</div>
-		);
-	}
+	
 	return (
         <div className="flex h-[calc(100vh-12rem)] bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors">
             
             {/* Liste des conversations (gauche) */}
-            <div className="w-1/3 border-r dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                <div className="p-4 border-b dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div className="w-1/3 border-r dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex flex-col">
+                <div className="p-4 border-b dark:border-gray-700 bg-white dark:bg-gray-800 flex-shrink-0">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{t('messages.title')}</h2>
                     
-                    {/* Barre de recherche */}
+                    {/* Barre de recherche des utilisateurs (nouvelle conversation) */}
+                    <div className="relative mb-3">
+                        <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="text"
+                            value={userSearchQuery}
+                            onChange={(e) => setUserSearchQuery(e.target.value)}
+                            placeholder={t('messages.searchUsers') || "Chercher un utilisateur..."}
+                            className="w-full pl-10 pr-4 py-2 border dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                        />
+                        {userSearchQuery && (
+                            <button
+                                onClick={() => {
+                                    setUserSearchQuery("");
+                                    setSearchResults([]);
+                                }}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            >
+                                <FiX />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Résultats de recherche des utilisateurs */}
+                    {(userSearchQuery || searchResults.length > 0) && (
+                        <div className="mb-3 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 max-h-48 overflow-y-auto">
+                            {searchLoading ? (
+                                <div className="p-3 text-center text-gray-500 dark:text-gray-400 text-sm">
+                                    {t('common.loading') || "Chargement..."}
+                                </div>
+                            ) : searchResults.length === 0 ? (
+                                <div className="p-3 text-center text-gray-500 dark:text-gray-400 text-sm">
+                                    {userSearchQuery ? (t('messages.noResults') || "Aucun résultat") : ""}
+                                </div>
+                            ) : (
+                                searchResults.map(user => (
+                                    <div
+                                        key={user.id}
+                                        onClick={() => handleStartConversation(user)}
+                                        className="p-3 border-b dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition last:border-b-0 flex items-center space-x-2"
+                                    >
+                                        <img
+                                            src={user.avatar}
+                                            alt={user.username}
+                                            className="w-8 h-8 rounded-full"
+                                        />
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{user.firstName} {user.lastName}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
+                    
+                    {/* Barre de recherche des conversations */}
                     <div className="relative">
                         <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
@@ -89,7 +178,7 @@ export default function Messages()
                     </div>
                 </div>
 
-                <div className="overflow-y-auto h-full">
+                <div className="flex-1 overflow-y-auto">
                     {filteredConversations.length === 0 ? (
                         <div className="p-8 text-center text-gray-500 dark:text-gray-400">
                             <p>{searchQuery ? t('messages.noResults') : t('messages.noConversations')}</p>

@@ -6,13 +6,14 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/03/23 17:02:27 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 13:40:49 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Input, Button } from "../../utils";
+import { validateEmail, validatePassword } from "../../utils/validation";
 import { 
     FiSun, 
     FiMoon, 
@@ -89,9 +90,16 @@ export default function Settings() {
 
     const handleSaveProfile = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setError(null);
         setSuccess(null);
+
+        // Validation email
+        if (!validateEmail(formData.email)) {
+            setError("Email invalide");
+            return;
+        }
+
+        setLoading(true);
 
         try {
             // Appel API pour mettre à jour le profil
@@ -122,13 +130,14 @@ export default function Settings() {
         setError(null);
         setSuccess(null);
 
-        if (formData.newPassword !== formData.confirmPassword) {
-            setError("Les mots de passe ne correspondent pas !");
+        // Validation password
+        if (!validatePassword(formData.newPassword)) {
+            setError("Password invalide (3-10 caractères, pas d'espaces)");
             return;
         }
 
-        if (formData.newPassword.length < 6) {
-            setError("Le mot de passe doit contenir au moins 6 caractères");
+        if (formData.newPassword !== formData.confirmPassword) {
+            setError("Les mots de passe ne correspondent pas !");
             return;
         }
 
@@ -156,6 +165,35 @@ export default function Settings() {
         } catch (err) {
             console.error("Erreur changement mot de passe:", err);
             setError(err.message || "Erreur lors du changement de mot de passe");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Restaurer les infos 42 (avatar, prénom, nom, email)
+    const handleRestore42Profile = async () => {
+        setError(null);
+        setSuccess(null);
+        setLoading(true);
+
+        try {
+            const restoredUser = await usersAPI.restore42Profile(user.id);
+            
+            // Mettre à jour le contexte avec les infos restaurées
+            setUser(restoredUser);
+            setFormData({
+                ...formData,
+                username: restoredUser.username || "",
+                email: restoredUser.mail || restoredUser.email || "",
+                firstName: restoredUser.firstname || "",
+                lastName: restoredUser.lastname || "",
+            });
+            
+            setSuccess("Profil restauré aux informations de 42 ! 🎓");
+            setTimeout(() => setSuccess(null), 3000);
+        } catch (err) {
+            console.error("Erreur restauration 42:", err);
+            setError(err.message || "Erreur lors de la restauration du profil");
         } finally {
             setLoading(false);
         }
@@ -248,6 +286,17 @@ export default function Settings() {
                         {loading ? t('settings.profile.saving') : t('settings.profile.save')}
                     </Button>
                 </form>
+
+                {/* Bouton Restaurer 42 */}
+                {/* Visible pour tous - le BFF rejettera si l'user n'a pas s'est pas inscrit via 42 */}
+                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <Button
+                        onClick={handleRestore42Profile}
+                        disabled={loading}
+                    >
+                        {loading ? 'Restauration...' : 'Restaurer le profil 42'}
+                    </Button>
+                </div>
             </div>
 
             {/* Section Mot de passe */}
@@ -270,6 +319,7 @@ export default function Settings() {
                         type="password"
                         value={formData.newPassword}
                         onChange={handleInputChange}
+                        hint="3-10 caractères, pas d'espaces"
                     />
                     <Input
                         label={t('settings.password.confirm')}
@@ -278,6 +328,7 @@ export default function Settings() {
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
                         required
+                        hint="Doit correspondre au nouveau mot de passe"
                     />
                     <Button type="submit" disabled={loading}>
                         {loading ? t('settings.password.changing') : t('settings.password.change')}
@@ -428,33 +479,23 @@ export default function Settings() {
                     <FiAlertTriangle className="text-blue-500" />
                     <span>{t('settings.legal.title')}</span>
                 </h2>
-                <div className="space-y-4">
-                    <div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                            {t('settings.legal.termsDescription')}
-                        </p>
-                        <a
-                            href="/terms"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition"
-                        >
-                            {t('settings.legal.termsButton')}
-                        </a>
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                            {t('settings.legal.privacyDescription')}
-                        </p>
-                        <a
-                            href="/privacy"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition"
-                        >
-                            {t('settings.legal.privacyButton')}
-                        </a>
-                    </div>
+                <div className="flex flex-col gap-4">
+                    <a
+                        href="/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition text-center"
+                    >
+                        {t('settings.legal.termsButton')}
+                    </a>
+                    <a
+                        href="/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition text-center"
+                    >
+                        {t('settings.legal.privacyButton')}
+                    </a>
                 </div>
             </div>
 

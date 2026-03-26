@@ -114,6 +114,7 @@
   "messages": {
     "title": "Mensajes",
     "search": "Buscar conversaciones...",
+    "searchUsers": "Buscar un usuario...",
     "typeMessage": "Escribe tu mensaje...",
     "send": "Enviar",
     "noConversations": "Sin conversaciones",

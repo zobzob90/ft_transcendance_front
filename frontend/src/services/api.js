@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 10:35:59 by eric              #+#    #+#             */
-/*   Updated: 2026/03/25 15:58:43 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 12:00:30 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,6 +255,14 @@ export const usersAPI = {
 				newPassword,
 				confirmPassword
 			}),
+		});
+	},
+
+	// Restaurer les infos 42 (avatar, nom, etc) d'un user inscrit via 42
+	// Utilisé quand un user 42 a changé ses infos et veut revenir aux originales
+	restore42Profile: async (userId) => {
+		return fetchWithAuth(`/user/data42/${userId}`, {
+			method: 'PUT',
 		});
 	},
 };

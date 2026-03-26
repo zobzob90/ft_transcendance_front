@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 13:47:42 by eric              #+#    #+#             */
-/*   Updated: 2026/03/23 11:47:31 by eric             ###   ########.fr       */
+/*   Updated: 2026/03/26 16:04:11 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ export default function Navbar()
 						<img 
 							src="/42_logo.png" 
 							alt="42 Logo" 
-							className="w-8 h-8 object-contain"
+							className="w-8 h-8 object-contain dark:invert"
 						/>
 					</Link>
 
@@ -149,21 +149,13 @@ export default function Navbar()
 						<img 
 							src="/42_logo.png" 
 							alt="42 Logo" 
-							className="w-12 h-12 object-contain"
-						/>
-					</Link>
-				</div>
+						className="w-12 h-12 object-contain dark:invert"
+					/>
+				</Link>
+			</div>
 
-				{/* NAV LINKS */}
-				<div className="flex-1 py-6 px-4 space-y-2">
-					<button
-						onClick={() => setIsSearchOpen(true)}
-						className="w-full flex items-center justify-center px-4 py-3 rounded-lg transition text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
-						title={t('navbar.search')}
-					>
-						<FiSearch className="text-2xl" />
-					</button>
-
+			{/* NAV LINKS */}
+			<div className="flex-1 py-6 px-4 space-y-2">
 					<Link
 						to="/feed"
 						className={navLinkClasses('/feed')}
