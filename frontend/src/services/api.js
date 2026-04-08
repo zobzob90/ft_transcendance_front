@@ -11,6 +11,20 @@
 /* ************************************************************************** */
 
 // ===================================
+// HELPER POUR DÉCODER JWT
+// ===================================
+
+const decodeJWT = (token) => {
+	try {
+		const payload = token.split('.')[1];
+		const decoded = JSON.parse(atob(payload));
+		return decoded;
+	} catch (err) {
+		return null;
+	}
+};
+
+// ===================================
 // CONFIG
 // ===================================
 
@@ -239,8 +253,25 @@ export const authAPI = {
 	},
 
 	getCurrentUser: async () => {
-		const userId = localStorage.getItem('user_id');
-		if (!userId) return null;
+		let userId = localStorage.getItem('user_id');
+		
+		// Si pas d'userId en localStorage, essayer de le décoder du JWT
+		if (!userId) {
+			const token = localStorage.getItem('access_token');
+			if (token) {
+				const decodedToken = decodeJWT(token);
+				userId = decodedToken?.userId;
+				if (userId) {
+					localStorage.setItem('user_id', userId);
+					console.log('🔑 [getCurrentUser] userId extrait du JWT:', userId);
+				}
+			}
+		}
+		
+		if (!userId) {
+			console.warn('⚠️ [getCurrentUser] Pas d\'userId trouvé');
+			return null;
+		}
 		
 		try {
 			return await userAPI.getUser(userId);

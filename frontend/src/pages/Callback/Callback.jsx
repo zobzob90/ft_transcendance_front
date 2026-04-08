@@ -15,6 +15,18 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { authAPI } from "../../services/api";
 import { useAppContext } from "../../context/AppContext";
 
+// Décoder un JWT pour extraire le payload
+const decodeJWT = (token) => {
+    try {
+        const payload = token.split('.')[1];
+        const decoded = JSON.parse(atob(payload));
+        return decoded;
+    } catch (err) {
+        console.error('❌ Erreur décodage JWT:', err);
+        return null;
+    }
+};
+
 export default function Callback() 
 {
     const [searchParams] = useSearchParams();
@@ -23,7 +35,7 @@ export default function Callback()
     const { setUser } = useAppContext();
 
     useEffect(() => {
-        const code = searchParams.get('code');
+        const token = searchParams.get('token');
         const errorParam = searchParams.get('error');
 
         if (errorParam) {
@@ -32,25 +44,27 @@ export default function Callback()
             return;
         }
 
-        if (!code) {
-            setError("Code d'authentification manquant");
+        if (!token) {
+            setError("Token d'authentification manquant");
             setTimeout(() => navigate('/login'), 3000);
             return;
         }
 
-        // Envoyer le code au backend
+        // Traiter le token reçu du BFF
         const authenticate = async () => {
             try {
-                console.log("🔐 Callback - Début authentification avec code:", code);
+                console.log("🔐 Callback - Token reçu du BFF");
                 
-                const response = await authAPI.handleAuth42Callback(code);
-                console.log("✅ Callback - Response reçue:", response);
+                // Stocker le token dans localStorage
+                localStorage.setItem('access_token', token);
+
+                // Décoder le JWT pour extraire l'userId
+                const decodedToken = decodeJWT(token);
+                console.log("🔐 Callback - Token décodé:", decodedToken);
                 
-                // Stocker les tokens dans localStorage
-                localStorage.setItem('access_token', response.access_token || response.token);
-                localStorage.setItem('user_id', response.id || response.userId);
-                if (response.refresh_token) {
-                    localStorage.setItem('refresh_token', response.refresh_token);
+                if (decodedToken?.userId) {
+                    localStorage.setItem('user_id', decodedToken.userId);
+                    console.log("💾 Callback - userId sauvegardé:", decodedToken.userId);
                 }
 
                 // Récupérer les infos de l'utilisateur connecté

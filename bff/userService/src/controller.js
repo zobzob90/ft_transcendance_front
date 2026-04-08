@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.createOneUser = async (req, res) => {
   try {
-    const { username, firstName, lastName, avatar, theme, langue } = req.body;
+    const { id, username, firstName, lastName, avatar, theme, langue } = req.body;
 
     if (!username || !firstName || !lastName) {
       return res.status(400).json({ error: 'Username, firstName and lastName are required.' });
@@ -11,7 +11,7 @@ exports.createOneUser = async (req, res) => {
 
     const newUser = await prisma.user.create({
       data: {
-        id: uuidv4(),
+        id: id ?? uuidv4(),
         username,
         firstName,
         lastName,

@@ -40,9 +40,9 @@ const port = normalizePort(process.env.PORT || '3005');
 // NOUVEAU : Configuration SSL
 // ═══════════════════════════════════════════════════════
 const options = {
-  key: fs.readFileSync(process.env.SSL_KEY_PATH || '/certs/bff.key'),
-  cert: fs.readFileSync(process.env.SSL_CERT_PATH || '/certs/bff.crt'),
-  ca: fs.readFileSync(process.env.SSL_CA_PATH || '/certs/ca.crt')
+  key: fs.readFileSync(process.env.SSL_KEY_PATH || './certs/bff.key'),
+  cert: fs.readFileSync(process.env.SSL_CERT_PATH || './certs/bff.crt'),
+  ca: fs.readFileSync(process.env.SSL_CA_PATH || './certs/ca.crt')
 };
 // ═══════════════════════════════════════════════════════
 

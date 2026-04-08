@@ -388,11 +388,59 @@ exports.authHandleCallback = async (req, res) => {
     }
   
     console.log('🟢 [BFF-AUTH] Checking user in auth service:', login);
-    const authResponse = await fetch(`${process.env.AUTH_SERVICE_URL}/login/${login}`);
+    let authResponse = await fetch(`${process.env.AUTH_SERVICE_URL}/login/${login}`);
 
+    // If user not found in AUTH_SERVICE, we need to create them
     if (authResponse.status === 404) {
-      console.warn('⚠️ [BFF-AUTH] No account found for', login);
-      return res.status(404).json({ error: 'No account found.' });
+      console.warn('⚠️ [BFF-AUTH] User not found in AUTH_SERVICE, creating automatically...');
+      
+      // First, try to find or create user in USER_SERVICE
+      const { first_name, last_name, email, image } = user42;
+      const avatar = image?.versions?.medium ?? image?.link ?? null;
+      
+      // Create user in USER_SERVICE
+      const userCreateResp = await fetch(`${process.env.USER_SERVICE_URL}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: login,
+          firstName: first_name || 'User',
+          lastName: last_name || 'Unknown',
+          avatar: avatar,
+          bio: '',
+          theme: 'LIGHT',
+          langue: 'en'
+        })
+      });
+
+      if (!userCreateResp.ok) {
+        console.error('❌ [BFF-AUTH] Failed to create user in USER_SERVICE:', userCreateResp.status);
+        return res.status(503).json({ error: 'User service unavailable.' });
+      }
+
+      const newUser = await userCreateResp.json();
+      const userId = newUser.id;
+      console.log('🟢 [BFF-AUTH] User created in USER_SERVICE with id:', userId);
+
+      // Now create auth record in AUTH_SERVICE
+      const authCreateResp = await fetch(`${process.env.AUTH_SERVICE_URL}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          email: email?.toLowerCase(),
+          password: 'oauth42', // Dummy password for OAuth users
+          login42: login
+        })
+      });
+
+      if (!authCreateResp.ok) {
+        console.error('❌ [BFF-AUTH] Failed to create auth in AUTH_SERVICE:', authCreateResp.status);
+        return res.status(503).json({ error: 'Auth service unavailable.' });
+      }
+
+      console.log('🟢 [BFF-AUTH] Auth record created in AUTH_SERVICE for userId:', userId);
+      authResponse = authCreateResp; // Update authResponse to use the created data
     }
     
     if (!authResponse.ok) {
@@ -437,6 +485,15 @@ exports.authHandleCallback = async (req, res) => {
         console.log('🟢 [BFF-AUTH] User created successfully in USER_SERVICE');
         // Refetch user data after creation
         userResp = await fetch(`${process.env.USER_SERVICE_URL}/${authData.userId}`);
+      } else if (createUserResp.status === 409) {
+        console.warn('⚠️ [BFF-AUTH] User creation failed with 409 (username conflict), trying to fetch by username...');
+        // Try to get user by username (they might already exist with different ID)
+        userResp = await fetch(`${process.env.USER_SERVICE_URL}/username/${authData.login42}`);
+        if (userResp.ok) {
+          console.log('🟢 [BFF-AUTH] User found by username in USER_SERVICE');
+        } else {
+          console.error('❌ [BFF-AUTH] Could not find user by username either, status:', userResp.status);
+        }
       } else {
         console.error('❌ [BFF-AUTH] Failed to create user in USER_SERVICE:', createUserResp.status);
       }
