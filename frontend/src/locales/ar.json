@@ -115,8 +115,7 @@
     "publish": "نشر",
     "publishing": "جاري النشر...",
     "like": "إعجاب",
-    "comment": "تعليق",
-    "delete": "حذف",
+    "comment": "تعليق",    "share": "مشاركة",    "delete": "حذف",
     "edit": "تعديل",
     "edited": "(معدل)",
     "confirmDelete": "حذف هذا المنشور؟"
@@ -127,7 +126,9 @@
     "cancel": "إلغاء",
     "delete": "حذف",
     "edited": "(معدل)",
-    "confirmDelete": "حذف هذا التعليق؟"
+    "confirmDelete": "حذف هذا التعليق؟",
+    "loadMore": "تحميل المزيد",
+    "next": "القادمة"
   },
   "messages": {
     "title": "الرسائل",

@@ -116,6 +116,7 @@
     "publishing": "Publicando...",
     "like": "Me gusta",
     "comment": "Comentar",
+    "share": "Compartir",
     "delete": "Eliminar",
     "edit": "Editar",
     "edited": "(editado)",
@@ -125,7 +126,11 @@
     "add": "Agregar un comentario...",
     "validate": "Validar",
     "cancel": "Cancelar",
-    "delete": "Eliminar",    "edited": "(editado)",    "confirmDelete": "¿Eliminar este comentario?"
+    "delete": "Eliminar",
+    "edited": "(editado)",
+    "confirmDelete": "¿Eliminar este comentario?",
+    "loadMore": "Cargar más",
+    "next": "siguientes"
   },
   "messages": {
     "title": "Mensajes",

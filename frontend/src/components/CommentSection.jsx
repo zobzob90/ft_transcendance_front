@@ -12,18 +12,24 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { commentsAPI } from "../services/api";
 import { FiSend, FiTrash2, FiEdit2 } from "react-icons/fi";
 import { useAppContext } from "../context/AppContext";
 
-export default function CommentSection({ postId }) {
+export default function CommentSection({ postId, onCommentCountChange }) {
 	const { t } = useTranslation();
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [loadingMore, setLoadingMore] = useState(false);
 	const [editingId, setEditingId] = useState(null);
 	const [editContent, setEditContent] = useState("");
+	const [hasMore, setHasMore] = useState(false);
+	const [lastCommentDate, setLastCommentDate] = useState(null);
 	const { user } = useAppContext();
+
+	const COMMENTS_PER_PAGE = 5;
 
 	// Charger les commentaires
 	useEffect(() => {
@@ -32,11 +38,58 @@ export default function CommentSection({ postId }) {
 
 	const loadComments = async () => {
 		try {
-			const response = await commentsAPI.getCommentsByPost(postId);
+			console.log('💬 [CommentSection] Chargement des premiers commentaires (limit: ' + COMMENTS_PER_PAGE + ')');
+			const response = await commentsAPI.getCommentsByPost(postId, COMMENTS_PER_PAGE);
 			// La réponse du BFF est un array directement
-			setComments(Array.isArray(response) ? response : response.comments || []);
+			const commentsArray = Array.isArray(response) ? response : response.comments || [];
+			console.log('💬 [CommentSection] Commentaires chargés:', commentsArray.length, commentsArray);
+			
+			// Vérifier s'il y a plus de commentaires
+			setHasMore(commentsArray.length >= COMMENTS_PER_PAGE);
+			
+			// Sauvegarder la date du dernier commentaire pour la pagination curseur
+			if (commentsArray.length > 0) {
+				setLastCommentDate(commentsArray[commentsArray.length - 1].createdAt);
+			}
+			
+			setComments(commentsArray);
+			// Notifier le parent du nombre de commentaires
+			if (onCommentCountChange) {
+				console.log('💬 [CommentSection] Appelant onCommentCountChange avec:', commentsArray.length);
+				onCommentCountChange(commentsArray.length);
+			} else {
+				console.warn('⚠️ [CommentSection] onCommentCountChange not provided!');
+			}
 		} catch (err) {
 			console.error("Erreur chargement commentaires:", err);
+		}
+	};
+
+	const loadMoreComments = async () => {
+		if (!lastCommentDate || loadingMore) return;
+
+		setLoadingMore(true);
+		try {
+			console.log('💬 [CommentSection] Chargement des commentaires suivants depuis:', lastCommentDate);
+			const moreComments = await commentsAPI.loadMoreComments(postId, lastCommentDate, COMMENTS_PER_PAGE);
+			const moreArray = Array.isArray(moreComments) ? moreComments : moreComments.comments || [];
+			console.log('💬 [CommentSection] Commentaires supplémentaires chargés:', moreArray.length);
+			
+			// Ajouter les nouveaux commentaires
+			const updated = [...comments, ...moreArray];
+			setComments(updated);
+			
+			// Vérifier s'il y a d'autres commentaires
+			setHasMore(moreArray.length >= COMMENTS_PER_PAGE);
+			
+			// Mettre à jour la date du dernier commentaire
+			if (moreArray.length > 0) {
+				setLastCommentDate(moreArray[moreArray.length - 1].createdAt);
+			}
+		} catch (err) {
+			console.error("Erreur chargement plus de commentaires:", err);
+		} finally {
+			setLoadingMore(false);
 		}
 	};
 
@@ -50,8 +103,15 @@ export default function CommentSection({ postId }) {
 			const comment = await commentsAPI.createComment(postId, newComment);
 			console.log('🔵 Commentaire créé:', comment);
 			console.log('🔵 Structure du commentaire:', { id: comment.id, userId: comment.userId, user: comment.user });
-			setComments([comment, ...comments]);
+			const updatedComments = [comment, ...comments];
+			console.log('💬 [CommentSection] Nouveau nombre de commentaires:', updatedComments.length);
+			setComments(updatedComments);
 			setNewComment("");
+			// Notifier le parent du nouveau nombre de commentaires
+			if (onCommentCountChange) {
+				console.log('💬 [CommentSection] Appelant onCommentCountChange avec:', updatedComments.length);
+				onCommentCountChange(updatedComments.length);
+			}
 		} catch (err) {
 			console.error("❌ Erreur création commentaire:", err);
 			alert(`Erreur lors de la création du commentaire: ${err.message}`);
@@ -65,7 +125,14 @@ export default function CommentSection({ postId }) {
 
 		try {
 			await commentsAPI.deleteComment(commentId);
-			setComments(comments.filter((c) => c.id !== commentId));
+			const updatedComments = comments.filter((c) => c.id !== commentId);
+			console.log('💬 [CommentSection] Commentaire supprimé, nouveau nombre:', updatedComments.length);
+			setComments(updatedComments);
+			// Notifier le parent du nouveau nombre de commentaires
+			if (onCommentCountChange) {
+				console.log('💬 [CommentSection] Appelant onCommentCountChange avec:', updatedComments.length);
+				onCommentCountChange(updatedComments.length);
+			}
 		} catch (err) {
 			console.error("Erreur suppression commentaire:", err);
 			alert("Erreur lors de la suppression");
@@ -115,11 +182,13 @@ export default function CommentSection({ postId }) {
 			<div className="space-y-3">
 				{comments.map((comment) => (
 					<div key={comment.id} className="flex gap-3">
-						<img
-							src={comment.user?.avatar || "/default-avatar.png"}
-							alt={comment.user?.username}
-							className="w-8 h-8 rounded-full"
-						/>
+						<Link to={`/profile/${comment.userId}`}>
+							<img
+								src={comment.user?.avatar || "/default-avatar.png"}
+								alt={comment.user?.username}
+								className="w-8 h-8 rounded-full hover:ring-2 hover:ring-blue-500 transition object-cover cursor-pointer"
+							/>
+						</Link>
 						<div className="flex-1">
 							{editingId === comment.id ? (
 								<div className="flex gap-2">
@@ -149,9 +218,9 @@ export default function CommentSection({ postId }) {
 							) : (
 								<>
 									<div className="bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-2">
-										<p className="font-semibold text-sm text-gray-900 dark:text-white">
+										<Link to={`/profile/${comment.userId}`} className="font-semibold text-sm text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition inline-block">
 											{comment.user?.username || 'Anonyme'}
-										</p>
+										</Link>
 										<p className="text-gray-800 dark:text-gray-200 text-sm">{comment.content}</p>
 										{comment.isEdited && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('comment.edited')}</p>}
 									</div>
@@ -182,6 +251,17 @@ export default function CommentSection({ postId }) {
 						</div>
 					</div>
 				))}
+				
+				{/* Bouton Charger plus */}
+				{hasMore && (
+					<button
+						onClick={loadMoreComments}
+						disabled={loadingMore}
+						className="w-full mt-3 py-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						{loadingMore ? 'Chargement...' : `${t('comment.loadMore')} (${COMMENTS_PER_PAGE} ${t('comment.next')})`}
+					</button>
+				)}
 			</div>
 		</div>
 	);

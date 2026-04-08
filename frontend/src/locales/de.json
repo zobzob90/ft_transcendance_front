@@ -115,8 +115,7 @@
     "publish": "Veröffentlichen",
     "publishing": "Wird veröffentlicht...",
     "like": "Gefällt mir",
-    "comment": "Kommentieren",
-    "delete": "Löschen",
+    "comment": "Kommentieren",    "share": "Teilen",    "delete": "Löschen",
     "edit": "Bearbeiten",
     "edited": "(bearbeitet)",
     "confirmDelete": "Diesen Beitrag löschen?"
@@ -127,7 +126,9 @@
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "edited": "(bearbeitet)",
-    "confirmDelete": "Diesen Kommentar löschen?"
+    "confirmDelete": "Diesen Kommentar löschen?",
+    "loadMore": "Mehr laden",
+    "next": "nächste"
   },
   "messages": {
     "title": "Nachrichten",

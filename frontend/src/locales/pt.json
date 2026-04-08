@@ -113,8 +113,7 @@
     "publish": "Publicar",
     "publishing": "Publicando...",
     "like": "Curtir",
-    "comment": "Comentar",
-    "delete": "Excluir",
+    "comment": "Comentar",    "share": "Compartilhar",    "delete": "Excluir",
     "edit": "Editar",
     "edited": "(editado)",
     "confirmDelete": "Excluir esta publicação?"
@@ -125,7 +124,9 @@
     "cancel": "Cancelar",
     "delete": "Excluir",
     "edited": "(editado)",
-    "confirmDelete": "Excluir este comentário?"
+    "confirmDelete": "Excluir este comentário?",
+    "loadMore": "Carregar mais",
+    "next": "próximos"
   },
   "messages": {
     "title": "Mensagens",

@@ -115,8 +115,7 @@
     "publish": "Publier",
     "publishing": "Publication...",
     "like": "J'aime",
-    "comment": "Commenter",
-    "delete": "Supprimer",
+    "comment": "Commenter",    "share": "Partager",    "delete": "Supprimer",
     "edit": "Modifier",
     "edited": "(modifié)",
     "confirmDelete": "Supprimer ce post ?"
@@ -127,7 +126,9 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edited": "(modifié)",
-    "confirmDelete": "Supprimer ce commentaire ?"
+    "confirmDelete": "Supprimer ce commentaire ?",
+    "loadMore": "Charger plus",
+    "next": "suivants"
   },
   "messages": {
     "title": "Messages",

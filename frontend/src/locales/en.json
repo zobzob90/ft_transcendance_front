@@ -116,6 +116,7 @@
     "publishing": "Publishing...",
     "like": "Like",
     "comment": "Comment",
+    "share": "Share",
     "delete": "Delete",
     "edit": "Edit",
     "edited": "(edited)",
@@ -127,7 +128,9 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edited": "(edited)",
-    "confirmDelete": "Delete this comment?"
+    "confirmDelete": "Delete this comment?",
+    "loadMore": "Load more",
+    "next": "next"
   },
   "messages": {
     "title": "Messages",

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Button } from "../utils";
@@ -18,7 +18,7 @@ import { FiHeart, FiMessageCircle, FiShare2, FiTrash2, FiMoreVertical, FiEdit2 }
 import CommentSection from "./CommentSection";
 import { useAppContext } from "../context/AppContext";
 import { useAvatar } from "../hooks/useAvatar";
-import { postsAPI } from "../services/api";
+import { postsAPI, commentsAPI } from "../services/api";
 
 export default function PostCard({ post, onLike, onDelete })
 {
@@ -28,6 +28,7 @@ export default function PostCard({ post, onLike, onDelete })
 	const [isEditing, setIsEditing] = useState(false);
 	const [editContent, setEditContent] = useState(post.content);
 	const [isSaving, setIsSaving] = useState(false);
+	const [commentsCount, setCommentsCount] = useState(0);
 	const { user } = useAppContext();
 
 	// Vérifier si c'est un filename local (pas http/data)
@@ -35,6 +36,22 @@ export default function PostCard({ post, onLike, onDelete })
 	const { imageUrl: avatarUrl } = useAvatar(isLocalAvatar ? post.avatar : null);
 
 	const isOwner = user?.id === post.userId;
+
+	// Charger le nombre de commentaires au démarrage
+	useEffect(() => {
+		const loadCommentsCount = async () => {
+			try {
+				console.log('📊 [PostCard] Chargement du nombre de commentaires pour post:', post.id);
+				const response = await commentsAPI.getCommentsByPost(post.id, 1000); // Charger beaucoup pour avoir le count exact
+				const commentsArray = Array.isArray(response) ? response : response.comments || [];
+				console.log('📊 [PostCard] Nombre de commentaires trouvé:', commentsArray.length);
+				setCommentsCount(commentsArray.length);
+			} catch (err) {
+				console.error('❌ [PostCard] Erreur chargement compte commentaires:', err);
+			}
+		};
+		loadCommentsCount();
+	}, [post.id]);
 
 	const handleDelete = () => {
 		if (confirm(t('post.confirmDelete'))) {
@@ -60,6 +77,11 @@ export default function PostCard({ post, onLike, onDelete })
 		} finally {
 			setIsSaving(false);
 		}
+	};
+
+	const handleCommentCountChange = (count) => {
+		console.log('🔢 [PostCard] commentCount change:', count);
+		setCommentsCount(count);
 	};
 
 	return (
@@ -178,7 +200,7 @@ export default function PostCard({ post, onLike, onDelete })
 					)}
 				</>
 				
-				{/*footer like*/}
+				{/* footer like*/}
 					<div className="flex items-center space-x-6">
 						<button
 							onClick={() => onLike(post.id)}
@@ -194,16 +216,18 @@ export default function PostCard({ post, onLike, onDelete })
 							className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 transition"
 						>
 							<FiMessageCircle />
-							<span>{showComments ? 'Masquer' : 'Commenter'}</span>
+							<span>
+								{commentsCount === 0 ? t('post.comment') : `${commentsCount} commentaire${commentsCount > 1 ? 's' : ''}`}
+							</span>
 						</button>
 						<button className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 transition">
 							<FiShare2 />
-							<span>Partager</span>
+							<span>{t('post.share')}</span>
 						</button>
 					</div>
 
 					{/* Section commentaires */}
-				{showComments && <CommentSection postId={post.id} />}
+				{showComments && <CommentSection postId={post.id} onCommentCountChange={handleCommentCountChange} />}
 			</div>
 		</div>
 	);
