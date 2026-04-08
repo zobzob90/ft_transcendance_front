@@ -16,7 +16,7 @@ import { MessagesProvider } from "./context/MessagesContext";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Register42 from './pages/Register/Register42';
-import Callback from "./pages/Callback";
+import Callback from "./pages/Callback/Callback";
 import Feed from "./pages/Feed/Feed";
 import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";
