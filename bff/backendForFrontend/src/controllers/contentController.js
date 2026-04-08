@@ -207,6 +207,12 @@ exports.modifyOnePost = async (req, res) => {
   try {
     const { postId } = req.params;
 
+    console.log('🔵 [BFF-CONTENT] modifyOnePost called');
+    console.log('🔵 [BFF-CONTENT] postId:', postId);
+    console.log('🔵 [BFF-CONTENT] req.body:', req.body);
+    console.log('🔵 [BFF-CONTENT] req.file:', req.file);
+    console.log('🔵 [BFF-CONTENT] req.userId:', req.userId);
+
     const postCheckResponse = await fetch(`${process.env.CONTENT_SERVICE_URL}/post/${postId}`);
 
     if (postCheckResponse.status === 404) {
@@ -243,6 +249,8 @@ exports.modifyOnePost = async (req, res) => {
       ? `${process.env.BFF_URL}/uploads/pdfs/${req.file.filename}`
       : undefined;
 
+    console.log('🔵 [BFF-CONTENT] Update payload:', { content, image, pdf });
+
     const updateResponse = await fetch(`${process.env.CONTENT_SERVICE_URL}/post/${postId}`, {
       method:  'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -254,13 +262,18 @@ exports.modifyOnePost = async (req, res) => {
     });
 
     if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      console.error('❌ [BFF-CONTENT] CONTENT_SERVICE error:', updateResponse.status, errorText.substring(0, 500));
       return res.status(503).json({ error: 'Content service unavailable.' });
     }
 
-    return res.sendStatus(200);
+    const updatedPost = await updateResponse.json();
+    console.log('🟢 [BFF-CONTENT] Post updated successfully:', updatedPost.id);
+    return res.status(200).json(updatedPost);
 
   }
   catch (error) {
+    console.error('❌ [BFF-CONTENT] modifyOnePost error:', error.message, error.stack);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
@@ -625,4 +638,3 @@ exports.deleteLikeFromPost = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
-

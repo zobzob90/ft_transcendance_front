@@ -28,7 +28,23 @@
       "new": "Nueva contraseña",
       "confirm": "Confirmar contraseña",
       "change": "Cambiar contraseña",
-      "changing": "Cambiando..."
+      "changing": "Cambiando...",
+      "minLength": "Mínimo 3 caracteres",
+      "maxLength": "Máximo 10 caracteres",
+      "noSpaces": "Los espacios no están permitidos",
+      "mismatch": "Las contraseñas no coinciden",
+      "match": "Las contraseñas coinciden",
+      "valid": "¡Todos los campos son válidos, puede enviar!"
+    },
+    "messages": {
+      "profileUpdated": "¡Perfil actualizado con éxito!",
+      "passwordChanged": "¡Contraseña cambiada con éxito!",
+      "profileRestored": "¡Perfil restaurado a información de 42! 🎓",
+      "errors": {
+        "notAuthenticated": "Error: Usuario no autenticado",
+        "invalidEmail": "Email inválido",
+        "invalidPassword": "Contraseña inválida (3-10 caracteres, sin espacios)"
+      }
     },
     "notifications": {
       "title": "Notificaciones",

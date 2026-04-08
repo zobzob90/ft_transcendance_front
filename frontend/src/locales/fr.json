@@ -28,7 +28,23 @@
       "new": "Nouveau mot de passe",
       "confirm": "Confirmer le mot de passe",
       "change": "Changer le mot de passe",
-      "changing": "Modification..."
+      "changing": "Modification...",
+      "minLength": "Minimum 3 caractères",
+      "maxLength": "Maximum 10 caractères",
+      "noSpaces": "Les espaces ne sont pas autorisés",
+      "mismatch": "Les mots de passe ne correspondent pas",
+      "match": "Les mots de passe correspondent",
+      "valid": "Tous les champs sont valides, vous pouvez soumettre!"
+    },
+    "messages": {
+      "profileUpdated": "Profil mis à jour avec succès !",
+      "passwordChanged": "Mot de passe modifié avec succès !",
+      "profileRestored": "Profil restauré aux informations de 42 ! 🎓",
+      "errors": {
+        "notAuthenticated": "Erreur: Utilisateur non authentifié",
+        "invalidEmail": "Email invalide",
+        "invalidPassword": "Password invalide (3-10 caractères, pas d'espaces)"
+      }
     },
     "notifications": {
       "title": "Notifications",

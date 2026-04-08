@@ -219,7 +219,8 @@ exports.classicRegister = async (req, res) => {
           username,
           firstName,
           lastName,
-          avatar
+          avatar,
+          bio: ''
         }),
         agent: httpsAgent,
       });
@@ -426,6 +427,7 @@ exports.authHandleCallback = async (req, res) => {
           firstName: login.split('.')[0] || 'User',
           lastName: login.split('.')[1] || 'Unknown',
           avatar: null,
+          bio: '',
           theme: 'LIGHT',
           langue: 'en'
         })
@@ -660,39 +662,50 @@ exports.authClassic = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { password : oldPassword, newPassword } = req.body;
+    console.log('🔐 [changePassword] Request reçue - userId:', req.userId);
 
     if (!oldPassword || !newPassword) {
+      console.warn('⚠️ [changePassword] Paramètres manquants');
       return res.status(400).json({ error: 'Old password and new password are required.' });
     }
 
+    console.log('📡 [changePassword] Récupération de l\'auth depuis AUTH_SERVICE...');
     const authResponse = await fetch(`${process.env.AUTH_SERVICE_URL}/user/${req.userId}`);
 
     if (!authResponse.ok) {
+      console.error('❌ [changePassword] AUTH_SERVICE indisponible:', authResponse.status);
       return res.status(503).json({ error: 'Auth service unavailable.' });
     }
 
     const auth = await authResponse.json();
+    console.log('✅ [changePassword] Auth data reçue');
 
     let validPassword;
     try {
       validPassword = await bcrypt.compare(oldPassword, auth.password);
+      console.log('🔑 [changePassword] Comparaison password:', validPassword ? 'VALIDE' : 'INVALIDE');
     }
-    catch {
+    catch (err) {
+      console.error('❌ [changePassword] Erreur bcrypt compare:', err);
       return res.status(500).json({ error: 'Internal server error.' });
     }
 
     if (!validPassword) {
+      console.warn('⚠️ [changePassword] Ancien mot de passe invalide');
       return res.status(401).json({ error: 'Invalid password.' });
     }
 
     let hashedPassword;
     try {
       hashedPassword = await bcrypt.hash(newPassword, 10);
+      console.log('✅ [changePassword] Nouveau mot de passe hashé');
     }
-    catch {
+    catch (err) {
+      console.error('❌ [changePassword] Erreur bcrypt hash:', err);
       return res.status(500).json({ error: 'Internal server error.' });
     }
 
+    console.log('📤 [changePassword] Mise à jour du password dans AUTH_SERVICE...');
     const updateResponse = await fetch(`${process.env.AUTH_SERVICE_URL}/user/${req.userId}`, {
       method:  'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -700,14 +713,16 @@ exports.changePassword = async (req, res) => {
     });
 
     if (!updateResponse.ok) {
+      console.error('❌ [changePassword] Erreur mise à jour AUTH_SERVICE:', updateResponse.status);
       return res.status(503).json({ error: 'Auth service unavailable.' });
     }
 
-    return res.sendStatus(200);
+    console.log('🟢 [changePassword] Mot de passe changé avec succès');
+    return res.status(200).json({ success: true, message: 'Password changed successfully.' });
 
   }
   catch (error) {
-    console.error(error);
+    console.error('❌ [changePassword] Error:', error);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };

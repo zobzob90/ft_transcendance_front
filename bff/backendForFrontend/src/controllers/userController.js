@@ -38,6 +38,13 @@ exports.getAllUsers = async (req, res) => {
     const result = users.map((user, index) => {
       const auth = authsByUserId[user.id];
       const [followersCount, friendsCount, postsCount] = countsResponses[index];
+      
+      // Log pour le premier utilisateur seulement
+      if (index === 0) {
+        console.log('🔵 [getAllUsers] Exemple user 0:', user.id, user.username);
+        console.log('   - followersCount response:', followersCount);
+        console.log('   - followersCount?.count:', followersCount?.count);
+      }
 
       return {
         id:             user.id,
@@ -70,15 +77,41 @@ exports.getOneUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const currentUserId = req.userId; // From auth middleware
+    console.log('🔵 [getOneUser] Requête pour userId:', userId, 'currentUserId:', currentUserId);
+
+    const followersCountPromise = fetch(`${process.env.SOCIAL_SERVICE_URL}/followersCount/${userId}`)
+      .then(r => {
+        console.log('🔵 [getOneUser] followersCount response status:', r.status);
+        return r.json();
+      })
+      .catch(e => {
+        console.error('❌ [getOneUser] followersCount fetch error:', e.message);
+        return {};
+      });
+
+    const friendsCountPromise = fetch(`${process.env.SOCIAL_SERVICE_URL}/friendsCount/${userId}`)
+      .then(r => {
+        console.log('🔵 [getOneUser] friendsCount response status:', r.status);
+        return r.json();
+      })
+      .catch(e => {
+        console.error('❌ [getOneUser] friendsCount fetch error:', e.message);
+        return {};
+      });
 
     const [userResponse, authResponse, followersCount, friendsCount, postsCount, isFollowingResponse] = await Promise.all([
       fetch(`${process.env.USER_SERVICE_URL}/${userId}`),
       fetch(`${process.env.AUTH_SERVICE_URL}/user/${userId}`),
-      fetch(`${process.env.SOCIAL_SERVICE_URL}/followersCount/${userId}`).then(r => r.json()),
-      fetch(`${process.env.SOCIAL_SERVICE_URL}/friendsCount/${userId}`).then(r => r.json()),
+      followersCountPromise,
+      friendsCountPromise,
       fetch(`${process.env.CONTENT_SERVICE_URL}/post/count/user/${userId}`).then(r => r.json()),
       currentUserId ? fetch(`${process.env.SOCIAL_SERVICE_URL}/friends/${currentUserId}`).then(r => r.json()).catch(() => []) : Promise.resolve([]),
     ]);
+    
+    console.log('📊 [getOneUser] followersCount reçu:', JSON.stringify(followersCount));
+    console.log('📊 [getOneUser] followersCount.count:', followersCount?.count);
+    console.log('📊 [getOneUser] friendsCount reçu:', JSON.stringify(friendsCount));
+    console.log('📊 [getOneUser] isFollowingResponse:', JSON.stringify(isFollowingResponse));
 
     if (userResponse.status === 404) {
       return res.status(404).json({ error: 'User not found.' });
@@ -98,9 +131,16 @@ exports.getOneUser = async (req, res) => {
     ]);
 
     // Check if current user is following this profile
-    const isFollowing = currentUserId && isFollowingResponse ? isFollowingResponse.some(friend => friend.id === userId) : false;
+    console.log('🔍 [getOneUser] isFollowingResponse type:', typeof isFollowingResponse);
+    console.log('🔍 [getOneUser] isFollowingResponse is array?:', Array.isArray(isFollowingResponse));
+    console.log('🔍 [getOneUser] isFollowingResponse full:', JSON.stringify(isFollowingResponse));
+    console.log('🔍 [getOneUser] Looking for userId:', userId);
+    console.log('🔍 [getOneUser] comparing friendIds:', isFollowingResponse?.map(f => f?.friendId));
+    
+    const isFollowing = currentUserId && isFollowingResponse ? isFollowingResponse.some(friend => friend?.friendId === userId) : false;
+    console.log('🔍 [getOneUser] isFollowing result:', isFollowing);
 
-    return res.status(200).json({
+    const responseData = {
       id:             user.id,
       username:       user.username,
       email:          auth.email,
@@ -115,7 +155,13 @@ exports.getOneUser = async (req, res) => {
       login42:        auth.login42 || null,
       createdAt:      user.createdAt,
       isFollowing:    isFollowing,
-    });
+    };
+    console.log('✅ [getOneUser] CALCUL followersCount:');
+    console.log('   - followersCount objet:', followersCount);
+    console.log('   - followersCount?.count:', followersCount?.count);
+    console.log('   - valeur finale:', responseData.followersCount);
+    console.log('✅ [getOneUser] Réponse avant envoi:', responseData);
+    return res.status(200).json(responseData);
 
   }
   catch (error) {
@@ -139,19 +185,24 @@ exports.modifyOneUser = async (req, res) => {
       return res.status(400).json({ error: 'Invalid user data format.' });
     }
 
-    const { username, firstName, lastName, email } = user;
+    const { username, firstName, lastName, email, bio } = user;
+    console.log('📝 [modifyOneUser] Données reçues:', { username, firstName, lastName, email, bio });
 
     const avatar = req.file ? `${process.env.BFF_URL}/uploads/images/${req.file.filename}` : undefined;
+
+    const userUpdateData = {
+      ...(username  && { username }),
+      ...(firstName && { firstName }),
+      ...(lastName  && { lastName }),
+      ...(bio !== undefined && { bio }),
+      ...(avatar    && { avatar })
+    };
+    console.log('📤 [modifyOneUser] Données envoyées à USER_SERVICE:', userUpdateData);
 
     const userUpdateResponse = await fetch(`${process.env.USER_SERVICE_URL}/${userId}`, {
       method:  'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...(username  && { username }),
-        ...(firstName && { firstName }),
-        ...(lastName  && { lastName }),
-        ...(avatar    && { avatar })
-      }),
+      body: JSON.stringify(userUpdateData),
     });
 
     if (userUpdateResponse.status === 404) {
@@ -178,7 +229,18 @@ exports.modifyOneUser = async (req, res) => {
       }
     }
 
-    return res.sendStatus(200);
+    // Récupérer l'utilisateur mis à jour complètement
+    console.log('📋 [modifyOneUser] Récupération de l\'utilisateur mis à jour...');
+    const updatedUserResponse = await fetch(`${process.env.USER_SERVICE_URL}/${userId}`);
+    
+    if (!updatedUserResponse.ok) {
+      return res.status(503).json({ error: 'User service unavailable.' });
+    }
+
+    const updatedUser = await updatedUserResponse.json();
+    console.log('✅ [modifyOneUser] Utilisateur mis à jour:', updatedUser);
+    
+    return res.status(200).json(updatedUser);
 
   }
   catch (error) {
@@ -287,6 +349,9 @@ exports.deleteOneUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    console.log('🔵 [BFF-USER] deleteOneUser called for userId:', userId);
+    console.log('🔵 [BFF-USER] req.userId:', req.userId);
+
     if (req.userId !== userId) {
       return res.status(403).json({ error: 'Forbidden.' });
     }
@@ -299,17 +364,26 @@ exports.deleteOneUser = async (req, res) => {
     ]);
 
     if (authResponse.status === 404 || userResponse.status === 404) {
+      console.log('❌ [BFF-USER] User not found');
       return res.status(404).json({ error: 'User not found.' });
     }
 
     if (!authResponse.ok || !userResponse.ok || !socialResponse.ok || !contentResponse.ok) {
+      console.error('❌ [BFF-USER] Service unavailable - Response statuses:', {
+        content: contentResponse.status,
+        social: socialResponse.status,
+        auth: authResponse.status,
+        user: userResponse.status
+      });
       return res.status(503).json({ error: 'Service unavailable.' });
     }
 
-    return res.sendStatus(200);
+    console.log('🟢 [BFF-USER] User deleted successfully');
+    return res.status(200).json({ success: true, message: 'Account deleted successfully' });
 
   }
   catch (error) {
+    console.error('❌ [BFF-USER] deleteOneUser error:', error.message, error.stack);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
@@ -317,10 +391,12 @@ exports.deleteOneUser = async (req, res) => {
 exports.getPostsFromUser = async (req, res) => {
   try {
     const { userId } = req.params;
+    const currentUserId = req.userId; // User connected
 
-    const [postsResponse, userResponse] = await Promise.all([
+    const [postsResponse, userResponse, currentUserLikesResponse] = await Promise.all([
       fetch(`${process.env.CONTENT_SERVICE_URL}/post/user/${userId}`),
       fetch(`${process.env.USER_SERVICE_URL}/${userId}`),
+      currentUserId ? fetch(`${process.env.CONTENT_SERVICE_URL}/like/user/${currentUserId}`).catch(() => null) : Promise.resolve(null),
     ]);
 
     if (postsResponse.status === 404) {
@@ -333,6 +409,13 @@ exports.getPostsFromUser = async (req, res) => {
 
     const posts = await postsResponse.json();
     const userData = userResponse.ok ? await userResponse.json() : null;
+    
+    // Get list of posts liked by current user
+    let likedPostIds = new Set();
+    if (currentUserLikesResponse && currentUserLikesResponse.ok) {
+      const userLikes = await currentUserLikesResponse.json();
+      likedPostIds = new Set(userLikes.map(like => like.postId));
+    }
 
     if (posts.length === 0) {
       return res.status(200).json([]);
@@ -361,7 +444,8 @@ exports.getPostsFromUser = async (req, res) => {
         createdAt:     post.createdAt,
         modifiedAt:    post.modifiedAt,
         commentsCount: commentsCount?.count ?? 0,
-        likesCount:    likesCount?.count    ?? 0,
+        likes:         likesCount?.count    ?? 0,
+        isLiked:       likedPostIds.has(post.id),
       };
     });
 
@@ -369,6 +453,7 @@ exports.getPostsFromUser = async (req, res) => {
 
   }
   catch (error) {
+    console.error('❌ [getPostsFromUser] Error:', error);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };

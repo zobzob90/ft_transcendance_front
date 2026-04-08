@@ -148,7 +148,7 @@ exports.getUserFriendsCount = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const { count } = await prisma.social.count({
+    const count = await prisma.social.count({
       where: { userId },
     });
     return res.status(200).json({ count });
@@ -163,7 +163,7 @@ exports.getUserFollowersCount = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const { count } = await prisma.social.count({
+    const count = await prisma.social.count({
       where: { friendId: userId },
     });
     return res.status(200).json({ count });

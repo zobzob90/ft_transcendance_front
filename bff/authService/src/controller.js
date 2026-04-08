@@ -192,8 +192,9 @@ exports.modifyOneAuthByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const { email, password, login42 } = req.body;
+    console.log('📝 [modifyOneAuthByUserId] userId:', userId, '- fields:', { email: !!email, password: !!password, login42: !!login42 });
 
-    await prisma.auth.update({
+    const updatedAuth = await prisma.auth.update({
       where: { userId },
       data: {
         ...(email    && { email: email.toLowerCase() }),
@@ -202,16 +203,19 @@ exports.modifyOneAuthByUserId = async (req, res) => {
       },
     });
 
-    return res.sendStatus(200);
+    console.log('✅ [modifyOneAuthByUserId] Auth mis à jour pour userId:', userId);
+    return res.status(200).json({ success: true, message: 'Auth updated successfully.' });
   }
   catch (error) {
     switch (error.code) {
       case 'P2025':
+        console.warn('⚠️ [modifyOneAuthByUserId] Auth not found for userId:', req.params.userId);
         return res.status(404).json({ error: 'Auth not found.' });
       case 'P2002':
+        console.warn('⚠️ [modifyOneAuthByUserId] Email or login42 already in use');
         return res.status(409).json({ error: 'Email or login42 already in use.' });
       default:
-        console.error(error);
+        console.error('❌ [modifyOneAuthByUserId] Error:', error);
         return res.status(500).json({ error: 'Internal server error.' });
     }
   }

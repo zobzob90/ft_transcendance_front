@@ -77,9 +77,10 @@ exports.getOneUser = async (req, res) => {
 exports.modifyOneUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { username, firstName, lastName, avatar, theme, langue } = req.body;
+    const { username, firstName, lastName, avatar, theme, langue, bio } = req.body;
+    console.log('📝 [modifyOneUser] Données reçues:', { username, firstName, lastName, avatar, theme, langue, bio });
 
-    await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
         ...(username  && { username }),
@@ -88,9 +89,11 @@ exports.modifyOneUser = async (req, res) => {
         ...(avatar    && { avatar }),
         ...(theme     && { theme }),
         ...(langue    && { langue }),
+        ...(bio !== undefined && { bio }),
       },
     });
-    return res.sendStatus(200);
+    console.log('✅ [modifyOneUser] Utilisateur mis à jour:', updatedUser);
+    return res.status(200).json(updatedUser);
   }
   catch (error) {
     switch (error.code) {

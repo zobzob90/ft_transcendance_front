@@ -28,7 +28,23 @@
       "new": "Nova senha",
       "confirm": "Confirmar senha",
       "change": "Alterar senha",
-      "changing": "Alterando..."
+      "changing": "Alterando...",
+      "minLength": "Mínimo 3 caracteres",
+      "maxLength": "Máximo 10 caracteres",
+      "noSpaces": "Espaços não são permitidos",
+      "mismatch": "As senhas não coincidem",
+      "match": "As senhas coincidem",
+      "valid": "Todos os campos são válidos, você pode enviar!"
+    },
+    "messages": {
+      "profileUpdated": "Perfil atualizado com sucesso!",
+      "passwordChanged": "Senha alterada com sucesso!",
+      "profileRestored": "Perfil restaurado para informações de 42! 🎓",
+      "errors": {
+        "notAuthenticated": "Erro: Usuário não autenticado",
+        "invalidEmail": "E-mail inválido",
+        "invalidPassword": "Senha inválida (3-10 caracteres, sem espaços)"
+      }
     },
     "notifications": {
       "title": "Notificações",

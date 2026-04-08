@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 14:12:55 by eric              #+#    #+#             */
-/*   Updated: 2026/04/01 16:20:01 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/07 17:27:53 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ const AppContext = createContext();
 const normalizeUserData = (userData) => {
     if (!userData) return null;
     
+    // Récupérer l'id depuis userData ou localStorage
+    const userId = userData?.id || localStorage.getItem('user_id');
+    
     return {
+        id: userId,
         ...userData,
         _count: {
             followers: userData?._count?.followers ?? userData?.followersCount ?? 0,

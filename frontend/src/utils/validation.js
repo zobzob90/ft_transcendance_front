@@ -196,7 +196,7 @@ export const validateEmail = (email) => {
   const rule = {
     value: email,
     expectedType: "string",
-    mask: /^[^\s@]{1,25}@[^\s.@]{1,18}\.[^\s.@]{1,5}$/
+    mask: /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s.@]{2,6}$/
   };
   return validateField(email, rule).isValid;
 };

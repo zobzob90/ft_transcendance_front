@@ -107,10 +107,10 @@ export default function Register()
 
 			// Register returns 201 with no user data, so we just store empty token
 			// The user will need to login after registration
-			console.log('✅ Inscription réussie, redirection vers login');
+			console.log('✅ Inscription réussie, redirection vers feed');
 			
-			// Afficher un message de succes et rediriger
-			navigate('/login', { state: { message: 'Inscription réussie! Veuillez vous connecter.' } });
+			// Rediriger directement vers le feed
+			navigate('/');
 		} catch (err) {
 			setError(err.message || "Erreur lors de l'inscription");
 			console.error("Register error:", err);

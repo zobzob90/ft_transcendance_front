@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Input, Button } from "../../utils";
 import { validateEmail, validatePassword } from "../../utils/validation";
@@ -25,14 +26,17 @@ import {
     FiAlertTriangle
 } from "react-icons/fi";
 import { useAppContext } from "../../context/AppContext";
-import { usersAPI } from "../../services/api";
+import { usersAPI, authAPI } from "../../services/api";
 
 export default function Settings() {
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const { user, setUser, theme: contextTheme, setTheme: setContextTheme, language, setLanguage } = useAppContext();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deletePassword, setDeletePassword] = useState("");
 
     const [formData, setFormData] = useState({
         username: user?.username || "",
@@ -43,6 +47,11 @@ export default function Settings() {
         currentPassword: "",
         newPassword: "",
         confirmPassword: ""
+    });
+
+    const [passwordErrors, setPasswordErrors] = useState({
+        newPassword: null,
+        confirmPassword: null
     });
 
     const [notifications, setNotifications] = useState({
@@ -72,6 +81,37 @@ export default function Settings() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+        
+        // Validation en temps réel pour les mots de passe
+        if (name === 'newPassword') {
+            validatePasswordField(value, formData.confirmPassword);
+        } else if (name === 'confirmPassword') {
+            validatePasswordField(formData.newPassword, value);
+        }
+    };
+
+    const validatePasswordField = (newPwd, confirmPwd) => {
+        const errors = { newPassword: null, confirmPassword: null };
+        
+        // Validation du nouveau mot de passe
+        if (newPwd) {
+            if (newPwd.length < 3) {
+                errors.newPassword = t('settings.password.minLength');
+            } else if (newPwd.length > 10) {
+                errors.newPassword = t('settings.password.maxLength');
+            } else if (/\s/.test(newPwd)) {
+                errors.newPassword = t('settings.password.noSpaces');
+            }
+        }
+        
+        // Validation de la confirmation
+        if (confirmPwd) {
+            if (newPwd && confirmPwd !== newPwd) {
+                errors.confirmPassword = t('settings.password.mismatch');
+            }
+        }
+        
+        setPasswordErrors(errors);
     };
 
     const handleNotifToggle = (key) => {
@@ -93,9 +133,18 @@ export default function Settings() {
         setError(null);
         setSuccess(null);
 
+        // Vérifier que user.id existe
+        console.log('👤 [Settings] User object:', user);
+        console.log('👤 [Settings] User ID:', user?.id);
+        
+        if (!user?.id) {
+            setError(t('settings.messages.errors.notAuthenticated'));
+            return;
+        }
+
         // Validation email
         if (!validateEmail(formData.email)) {
-            setError("Email invalide");
+            setError(t('settings.messages.errors.invalidEmail'));
             return;
         }
 
@@ -103,7 +152,9 @@ export default function Settings() {
 
         try {
             // Appel API pour mettre à jour le profil
-            const updatedUser = await usersAPI.updateUser(user.id, {
+            console.log('📝 [Settings] Mise à jour avec userId:', user.id);
+            console.log('📝 [Settings] Données envoyées:', { bio: formData.bio, firstName: formData.firstName, lastName: formData.lastName, username: formData.username, email: formData.email });
+            await usersAPI.updateUser(user.id, {
                 bio: formData.bio,
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -111,9 +162,10 @@ export default function Settings() {
                 email: formData.email
             });
 
-            // Mettre à jour le contexte
+            // Récupérer l'utilisateur mis à jour du serveur
+            const updatedUser = await authAPI.getCurrentUser();
             setUser(updatedUser);
-            setSuccess("Profil mis à jour avec succès !");
+            setSuccess(t('settings.messages.profileUpdated'));
             
             // Effacer le message de succès après 3 secondes
             setTimeout(() => setSuccess(null), 3000);
@@ -132,7 +184,7 @@ export default function Settings() {
 
         // Validation password
         if (!validatePassword(formData.newPassword)) {
-            setError("Password invalide (3-10 caractères, pas d'espaces)");
+            setError(t('settings.messages.errors.invalidPassword'));
             return;
         }
 
@@ -145,13 +197,14 @@ export default function Settings() {
 
         try {
             // Appel API pour changer le mot de passe
-            await usersAPI.changePassword(
+            console.log('🔐 [Settings] Changement de mot de passe - currentPassword:', formData.currentPassword.length, 'chars');
+            const response = await authAPI.changePassword(
                 formData.currentPassword,
-                formData.newPassword,
-                formData.confirmPassword
+                formData.newPassword
             );
+            console.log('🟢 [Settings] Réponse changement password:', response);
             
-            setSuccess("Mot de passe modifié avec succès !");
+            setSuccess(t('settings.messages.passwordChanged'));
             
             // Réinitialiser les champs de mot de passe
             setFormData({
@@ -163,7 +216,7 @@ export default function Settings() {
 
             setTimeout(() => setSuccess(null), 3000);
         } catch (err) {
-            console.error("Erreur changement mot de passe:", err);
+            console.error("❌ Erreur changement mot de passe:", err);
             setError(err.message || "Erreur lors du changement de mot de passe");
         } finally {
             setLoading(false);
@@ -189,13 +242,42 @@ export default function Settings() {
                 lastName: restoredUser.lastname || "",
             });
             
-            setSuccess("Profil restauré aux informations de 42 ! 🎓");
+            setSuccess(t('settings.messages.profileRestored'));
             setTimeout(() => setSuccess(null), 3000);
         } catch (err) {
             console.error("Erreur restauration 42:", err);
             setError(err.message || "Erreur lors de la restauration du profil");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        if (!deletePassword.trim()) {
+            setError(t('settings.messages.errors.invalidPassword'));
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            console.log('⚠️ [Settings] Suppression de compte');
+            await usersAPI.deleteAccount(user.id);
+            
+            // Logout
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            setUser(null);
+            
+            // Rediriger immédiatement vers login
+            navigate('/login');
+        } catch (err) {
+            console.error("Erreur suppression compte:", err);
+            setError(err.message || "Erreur lors de la suppression du compte");
+            setLoading(false);
+            setShowDeleteModal(false);
+            setDeletePassword("");
         }
     };
 
@@ -313,31 +395,61 @@ export default function Settings() {
                     <span>{t('settings.password.title')}</span>
                 </h2>
                 <form onSubmit={handleChangePassword} className="space-y-4">
-                    <Input
-                        label={t('settings.password.current')}
-                        name="currentPassword"
-                        type="password"
-                        value={formData.currentPassword}
-                        onChange={handleInputChange}
-                    />
-                    <Input
-                        label={t('settings.password.new')}
-                        name="newPassword"
-                        type="password"
-                        value={formData.newPassword}
-                        onChange={handleInputChange}
-                        hint="3-10 caractères, pas d'espaces"
-                    />
-                    <Input
-                        label={t('settings.password.confirm')}
-                        name="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        required
-                        hint="Doit correspondre au nouveau mot de passe"
-                    />
-                    <Button type="submit" disabled={loading}>
+                    <div>
+                        <Input
+                            label={t('settings.password.current')}
+                            name="currentPassword"
+                            type="password"
+                            value={formData.currentPassword}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div>
+                        <Input
+                            label={t('settings.password.new')}
+                            name="newPassword"
+                            type="password"
+                            value={formData.newPassword}
+                            onChange={handleInputChange}
+                            hint={!passwordErrors.newPassword ? "3-10 caractères, pas d'espaces" : null}
+                        />
+                        {passwordErrors.newPassword && (
+                            <p className="mt-1 text-sm text-red-500 flex items-center space-x-1">
+                                <span>⚠️</span>
+                                <span>{passwordErrors.newPassword}</span>
+                            </p>
+                        )}
+                    </div>
+                    <div>
+                        <Input
+                            label={t('settings.password.confirm')}
+                            name="confirmPassword"
+                            type="password"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            required
+                            hint={!passwordErrors.confirmPassword ? "Doit correspondre au nouveau mot de passe" : null}
+                        />
+                        {passwordErrors.confirmPassword && (
+                            <p className="mt-1 text-sm text-red-500 flex items-center space-x-1">
+                                <span>⚠️</span>
+                                <span>{passwordErrors.confirmPassword}</span>
+                            </p>
+                        )}
+                        {formData.confirmPassword && !passwordErrors.confirmPassword && formData.newPassword === formData.confirmPassword && (
+                            <p className="mt-1 text-sm text-green-500 flex items-center space-x-1">
+                                <span>✅</span>
+                                <span>{t('settings.password.match')}</span>
+                            </p>
+                        )}
+                    </div>
+                    {formData.currentPassword && formData.newPassword && formData.confirmPassword && !passwordErrors.newPassword && !passwordErrors.confirmPassword && (
+                        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded p-3 flex items-center space-x-2">
+                            <span className="text-green-600 dark:text-green-400 text-lg">✅</span>
+                            <span className="text-green-700 dark:text-green-300 font-medium">{t('settings.password.valid')}</span>
+                        </div>
+                    )}
+                    <Button type="submit" disabled={loading || !!passwordErrors.newPassword || !!passwordErrors.confirmPassword || !formData.newPassword || !formData.confirmPassword}>
                         {loading ? t('settings.password.changing') : t('settings.password.change')}
                     </Button>
                 </form>
@@ -513,14 +625,56 @@ export default function Settings() {
                     <span>{t('settings.danger.title')}</span>
                 </h2>
                 <div className="space-y-3">
-                    <button className="w-full bg-white dark:bg-gray-800 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition">
-                        {t('settings.danger.deactivate')}
-                    </button>
-                    <button className="w-full bg-red-600 dark:bg-red-700 text-white py-2 rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition">
-                        {t('settings.danger.delete')}
+                    <button 
+                        onClick={() => setShowDeleteModal(true)}
+                        disabled={loading}
+                        className="w-full bg-red-600 dark:bg-red-700 text-white py-2 rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition disabled:opacity-50"
+                    >
+                        {loading ? "..." : t('settings.danger.delete')}
                     </button>
                 </div>
             </div>
+
+            {/* Modal de confirmation suppression */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md">
+                        <h3 className="text-lg font-bold text-red-600 dark:text-red-400 mb-4">
+                            ⚠️ {t('settings.danger.delete')}
+                        </h3>
+                        <p className="text-gray-700 dark:text-gray-300 mb-6">
+                            Cette action est irréversible. Tous vos données seront supprimées.
+                        </p>
+                        <div className="space-y-4">
+                            <input
+                                type="password"
+                                placeholder={t('settings.password.current')}
+                                value={deletePassword}
+                                onChange={(e) => setDeletePassword(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                            />
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => {
+                                        setShowDeleteModal(false);
+                                        setDeletePassword("");
+                                    }}
+                                    className="flex-1 px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition"
+                                >
+                                    {t('settings.profile.cancel')}
+                                </button>
+                                <button
+                                    onClick={handleDeleteAccount}
+                                    disabled={loading}
+                                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+                                >
+                                    {loading ? "..." : t('settings.danger.delete')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

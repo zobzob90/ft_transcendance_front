@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 10:35:58 by eric              #+#    #+#             */
-/*   Updated: 2026/04/03 14:35:56 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/07 11:19:26 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,10 +224,18 @@ export const authAPI = {
 	},
 
 	changePassword: async (password, newPassword) => {
-		return fetchWithAuth('/auth', {
-			method: 'PUT',
-			body: JSON.stringify({ password, newPassword }),
-		});
+		console.log('🔐 [API] changePassword - Envoi de:', { password: password.length + ' chars', newPassword: newPassword.length + ' chars' });
+		try {
+			const response = await fetchWithAuth('/auth', {
+				method: 'PUT',
+				body: JSON.stringify({ password, newPassword }),
+			});
+			console.log('✅ [API] changePassword - Réponse:', response);
+			return response;
+		} catch (error) {
+			console.error('❌ [API] changePassword - Erreur:', error.message);
+			throw error;
+		}
 	},
 
 	getCurrentUser: async () => {
@@ -274,10 +282,34 @@ export const userAPI = {
 		});
 
 		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.error || 'Erreur lors de la mise à jour');
+			console.error('❌ [updateProfile] Response status:', response.status);
+			const text = await response.text();
+			console.error('❌ [updateProfile] Response body:', text);
+			try {
+				const error = JSON.parse(text);
+				throw new Error(error.error || 'Erreur lors de la mise à jour');
+			} catch (e) {
+				throw new Error('Erreur lors de la mise à jour du profil');
+			}
 		}
-		return response.json();
+		
+		const text = await response.text();
+		console.log('✅ [updateProfile] Response text:', text);
+		
+		if (!text || text.trim() === '') {
+			console.warn('⚠️ [updateProfile] Réponse vide du serveur, retour des données envoyées');
+			return { ...userData, id: userId }; // Return the sent data with id
+		}
+		
+		try {
+			const parsed = JSON.parse(text);
+			console.log('✅ [updateProfile] Parsed response:', parsed);
+			return parsed;
+		} catch (e) {
+			console.error('❌ [updateProfile] Erreur parsing JSON:', e, 'Text:', text);
+			// Si le serveur retourne quelque chose qui n'est pas du JSON
+			return { ...userData, id: userId }; // Return the sent data with id
+		}
 	},
 
 	restore42Profile: async (userId) => {
@@ -292,6 +324,9 @@ export const userAPI = {
 		return fetchWithAuth(`/search42Users/${encodeURIComponent(login)}`);
 	},
 };
+
+// Aliases pour updateUser
+userAPI.updateUser = userAPI.updateProfile;
 
 // ===================================
 // API POSTS
@@ -330,7 +365,7 @@ export const postsAPI = {
 
 	updatePost: async (postId, content, mediaFile = null) => {
 		const formData = new FormData();
-		formData.append('content', content);
+		formData.append('post', JSON.stringify({ content }));
 		if (mediaFile) formData.append('media', mediaFile);
 
 		const response = await fetch(`${API_BASE_URL}/post/${postId}`, {
@@ -455,18 +490,46 @@ export const socialAPI = {
 		return fetchWithAuth('/social/followers');
 	},
 
+	getFollowersOfUser: async (userId) => {
+		console.log('🔵 [socialAPI] GET /social/followers/' + userId);
+		const result = await fetchWithAuth(`/social/followers/${userId}`);
+		console.log('✅ [socialAPI] Followers reçus:', result?.length);
+		return result;
+	},
+
+	getFollowing: async () => {
+		return fetchWithAuth('/social/friends');
+	},
+
 	getFriends: async () => {
 		return fetchWithAuth('/social/friends');
 	},
 
+	getFriendsOfUser: async (userId) => {
+		console.log('🔵 [socialAPI] GET /social/friends/' + userId);
+		const result = await fetchWithAuth(`/social/friends/${userId}`);
+		console.log('✅ [socialAPI] Friends reçus:', result?.length);
+		return result;
+	},
+
 	followUser: async (userId) => {
-		return fetchWithAuth(`/social/user/${userId}`, { method: 'POST' });
+		console.log('🔵 [socialAPI] POST /social/user/' + userId);
+		const result = await fetchWithAuth(`/social/user/${userId}`, { method: 'POST' });
+		console.log('✅ [socialAPI] Réponse follow:', result);
+		return result;
 	},
 
 	unfollowUser: async (userId) => {
-		return fetchWithAuth(`/social/user/${userId}`, { method: 'DELETE' });
+		console.log('🔵 [socialAPI] DELETE /social/user/' + userId);
+		const result = await fetchWithAuth(`/social/user/${userId}`, { method: 'DELETE' });
+		console.log('✅ [socialAPI] Réponse unfollow:', result);
+		return result;
 	},
 };
+
+// Aliases for convenience
+socialAPI.follow = socialAPI.followUser;
+socialAPI.unfollow = socialAPI.unfollowUser;
 
 // ===================================
 // API SEARCH

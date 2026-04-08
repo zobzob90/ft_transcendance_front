@@ -151,7 +151,7 @@ exports.modifyOnePost = async (req, res) => {
     const { postId } = req.params;
     const { content, image, pdf } = req.body;
 
-    await prisma.post.update({
+    const updatedPost = await prisma.post.update({
       where: { id: postId },
       data: {
         ...(content !== undefined && { content }),
@@ -160,7 +160,7 @@ exports.modifyOnePost = async (req, res) => {
       },
     });
 
-    return res.sendStatus(200);
+    return res.status(200).json(updatedPost);
   }
   catch (error) {
     switch (error.code) {

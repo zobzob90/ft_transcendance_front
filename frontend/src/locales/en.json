@@ -28,7 +28,23 @@
       "new": "New password",
       "confirm": "Confirm password",
       "change": "Change password",
-      "changing": "Changing..."
+      "changing": "Changing...",
+      "minLength": "Minimum 3 characters",
+      "maxLength": "Maximum 10 characters",
+      "noSpaces": "Spaces are not allowed",
+      "mismatch": "Passwords do not match",
+      "match": "Passwords match",
+      "valid": "All fields are valid, you can submit!"
+    },
+    "messages": {
+      "profileUpdated": "Profile updated successfully!",
+      "passwordChanged": "Password changed successfully!",
+      "profileRestored": "Profile restored to 42 information! 🎓",
+      "errors": {
+        "notAuthenticated": "Error: User not authenticated",
+        "invalidEmail": "Invalid email",
+        "invalidPassword": "Invalid password (3-10 characters, no spaces)"
+      }
     },
     "notifications": {
       "title": "Notifications",

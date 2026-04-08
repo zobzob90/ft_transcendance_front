@@ -50,7 +50,9 @@ router.delete('/like/post/:postId', auth, contentCtrl.deleteLikeFromPost);
 // SOCIAL
 
 router.get('/social/followers', auth, socialCtrl.getFollowers);
+router.get('/social/followers/:userId', auth, socialCtrl.getFollowersOfUser);
 router.get('/social/friends', auth, socialCtrl.getFriends);
+router.get('/social/friends/:userId', auth, socialCtrl.getFriendsOfUser);
 router.post('/social/user/:userId', auth, socialCtrl.followUser);
 router.delete('/social/user/:userId', auth, socialCtrl.unfollowUser);
 

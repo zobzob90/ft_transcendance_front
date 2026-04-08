@@ -6,3 +6,13 @@
 
 # VSCode
 .vscode/
+
+# Certificates (security - never commit)
+**/certs/
+!**/certs/.gitkeep
+
+# Node dependencies
+**/node_modules/
+dist/
+.next/
+.cache/

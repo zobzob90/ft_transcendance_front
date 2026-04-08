@@ -28,7 +28,23 @@
       "new": "Neues Passwort",
       "confirm": "Passwort bestätigen",
       "change": "Passwort ändern",
-      "changing": "Wird geändert..."
+      "changing": "Wird geändert...",
+      "minLength": "Mindestens 3 Zeichen",
+      "maxLength": "Maximal 10 Zeichen",
+      "noSpaces": "Leerzeichen sind nicht erlaubt",
+      "mismatch": "Passwörter stimmen nicht überein",
+      "match": "Passwörter stimmen überein",
+      "valid": "Alle Felder sind gültig, Sie können senden!"
+    },
+    "messages": {
+      "profileUpdated": "Profil erfolgreich aktualisiert!",
+      "passwordChanged": "Passwort erfolgreich geändert!",
+      "profileRestored": "Profil zu 42-Informationen wiederhergestellt! 🎓",
+      "errors": {
+        "notAuthenticated": "Fehler: Benutzer nicht authentifiziert",
+        "invalidEmail": "Ungültige E-Mail",
+        "invalidPassword": "Ungültiges Passwort (3-10 Zeichen, keine Leerzeichen)"
+      }
     },
     "notifications": {
       "title": "Benachrichtigungen",

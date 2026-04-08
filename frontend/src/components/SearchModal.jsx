@@ -185,7 +185,7 @@ export default function SearchModal({ isOpen, onClose }) {
 										{sortUsers(localUsers, sortBy, sortOrder).map((user) => (
 											<Link
 												key={user.id}
-												to={`/profile/${user.username}`}
+												to={`/profile/${user.id}`}
 												onClick={onClose}
 												className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
 											>

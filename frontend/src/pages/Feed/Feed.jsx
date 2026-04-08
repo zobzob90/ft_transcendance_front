@@ -72,14 +72,16 @@ export default function Feed()
     };
 
     const loadMorePosts = async () => {
-        if (isLoadingMore || !hasMorePosts) return;
+        if (isLoadingMore || !hasMorePosts || displayedPosts.length === 0) return;
         
         setIsLoadingMore(true);
         try {
-            const nextPage = currentPage + 1;
-            const response = await postsAPI.getFeed(nextPage, 5);
+            // Utiliser la date du dernier post chargé pour la pagination
+            const lastPostDate = displayedPosts[displayedPosts.length - 1].createdAt;
             
-            if (response.posts && response.posts.length > 0) {
+            const response = await postsAPI.loadMorePosts(lastPostDate, 5);
+            
+            if (response && response.length > 0) {
                 // Récupérer les likes de l'utilisateur courant
                 let likedPostIds = [];
                 try {
@@ -90,38 +92,35 @@ export default function Feed()
                 }
                 
                 // Formatter les nouveaux posts
-                const formattedPosts = response.posts.map(p => ({
+                const formattedPosts = response.map(p => ({
                     id: p.id,
-                    author: p.user?.username || p.user?.firstName || 'Anonyme',
-                    avatar: p.user?.avatar || `https://ui-avatars.com/api/?name=${p.user?.firstName || 'User'}&background=3b82f6&color=fff`,
+                    author: p.author || p.user?.username || p.user?.firstName || 'Anonyme',
+                    avatar: p.avatar || p.user?.avatar || `https://ui-avatars.com/api/?name=${p.user?.firstName || 'User'}&background=3b82f6&color=fff`,
                     content: p.content,
+                    image: p.image || null,
+                    pdf: p.pdf || null,
                     likes: p.likesCount || p._count?.likes || 0,
                     liked: likedPostIds.includes(p.id),
                     date: new Date(p.createdAt).toLocaleDateString('fr-FR'),
                     userId: p.userId,
                     createdAt: p.createdAt,
                     isEdited: p.isEdited || false,
-                    image: p.image || null,
-                    pdf: p.pdf || null,
                 }));
                 
-                // ✅ CORRECTED: Ajouter UNIQUEMENT les nouveaux posts (dédupliquer)
-                // Filtrer les posts qui ne sont pas déjà chargés
+                // Ajouter uniquement les nouveaux posts (dédupliquer)
                 const newPosts = formattedPosts.filter(p => !loadedPostIds.has(p.id));
                 
                 if (newPosts.length > 0) {
                     setDisplayedPosts(prev => [...prev, ...newPosts]);
-                    // Mettre à jour le set des IDs chargés
                     setLoadedPostIds(prev => {
                         const updated = new Set(prev);
                         newPosts.forEach(p => updated.add(p.id));
                         return updated;
                     });
-                    console.log(`✅ ${newPosts.length} nouveaux posts chargés (page ${nextPage})`);
+                    console.log(`✅ ${newPosts.length} nouveaux posts chargés`);
                 } else {
                     console.log("ℹ️ Aucun nouveau post à ajouter");
                 }
-                setCurrentPage(nextPage);
             } else {
                 setHasMorePosts(false);
             }

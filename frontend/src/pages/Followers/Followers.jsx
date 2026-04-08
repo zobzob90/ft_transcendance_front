@@ -64,9 +64,9 @@ export default function Followers() {
 		}
 	};
 	
-	const handleFollow = async (username) => {
+	const handleFollow = async (userId) => {
 		try {
-			await followersAPI.follow(username);
+			await followersAPI.follow(userId);
 			// Recharger les listes
 			loadFollowers();
 			loadFollowing();
@@ -76,9 +76,9 @@ export default function Followers() {
 		}
 	};
 	
-	const handleUnfollow = async (username) => {
+	const handleUnfollow = async (userId) => {
 		try {
-			await followersAPI.unfollow(username);
+			await followersAPI.unfollow(userId);
 			// Recharger les listes
 			loadFollowers();
 			loadFollowing();
@@ -185,7 +185,7 @@ export default function Followers() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-4 flex-1">
                                         {/* Avatar */}
-                                        <Link to={`/profile/${user.username}`}>
+                                        <Link to={`/profile/${user.id}`}>
                                             <img
                                                 src={user.avatar || `https://ui-avatars.com/api/?name=${user.firstName}&background=3b82f6&color=fff`}
                                                 alt={user.firstName}
@@ -196,7 +196,7 @@ export default function Followers() {
 										{/* Info utilisateur */}
                                         <div className="flex-1 min-w-0">
                                             <Link 
-                                                to={`/profile/${user.username}`}
+                                                to={`/profile/${user.id}`}
                                                 className="hover:underline"
                                             >
                                                 <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -224,7 +224,7 @@ export default function Followers() {
                                             <>
                                                 {!user.isFollowingBack ? (
                                                     <button
-                                                        onClick={() => handleFollow(user.username)}
+                                                        onClick={() => handleFollow(user.id)}
                                                         className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
                                                     >
                                                         <FiUserPlus />
@@ -239,7 +239,7 @@ export default function Followers() {
                                             </>
                                         ) : (
 											<button
-                                                onClick={() => handleUnfollow(user.username)}
+                                                onClick={() => handleUnfollow(user.id)}
                                                 className="flex items-center space-x-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
                                             >
                                                 <FiUserX />

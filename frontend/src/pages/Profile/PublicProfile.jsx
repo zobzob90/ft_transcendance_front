@@ -12,14 +12,16 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppContext } from '../../context/AppContext';
 import { useAvatar } from '../../hooks/useAvatar';
-import { profileAPI, followersAPI, postsAPI } from '../../services/api';
+import { profileAPI, followersAPI, postsAPI, socialAPI } from '../../services/api';
 import PostCard from '../../components/PostCard';
 import { FiX } from 'react-icons/fi';
 
 export default function PublicProfile() {
 	const { userId } = useParams();
+	const { t } = useTranslation();
 	const { user, toggleLike, deletePost } = useAppContext();
 	const [profile, setProfile] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -32,23 +34,57 @@ export default function PublicProfile() {
 	const [modal, setModal] = useState(null); // null | 'followers' | 'following'
 	const [modalList, setModalList] = useState([]);
 	const [modalLoading, setModalLoading] = useState(false);
+	const [selectedMedia, setSelectedMedia] = useState(null);
+	const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
 	
 	// Hook pour charger l'avatar avec JWT - seulement si c'est un filename local
 	const isLocalProfileAvatar = profile?.avatar && !profile.avatar.startsWith('http') && !profile.avatar.startsWith('data:');
 	const { imageUrl: profileAvatarUrl } = useAvatar(isLocalProfileAvatar ? profile?.avatar : null);
 
 	useEffect(() => {
+		const handleKeyDown = (e) => {
+			if (!selectedMedia) return;
+
+			const filteredMedia = profile && profile.posts && profile.posts.filter(post => post.image || post.pdf);
+			if (!filteredMedia || filteredMedia.length === 0) return;
+
+			if (e.key === 'Escape') {
+				setSelectedMedia(null);
+				setSelectedMediaIndex(0);
+			} else if (e.key === 'ArrowLeft') {
+				setSelectedMediaIndex((prev) => (prev === 0 ? filteredMedia.length - 1 : prev - 1));
+			} else if (e.key === 'ArrowRight') {
+				setSelectedMediaIndex((prev) => (prev === filteredMedia.length - 1 ? 0 : prev + 1));
+			}
+		};
+
+		if (selectedMedia) {
+			window.addEventListener('keydown', handleKeyDown);
+			return () => window.removeEventListener('keydown', handleKeyDown);
+		}
+	}, [selectedMedia, profile, selectedMediaIndex]);
+
+	useEffect(() => {
 		const loadProfile = async () => {
 			setLoading(true);
 			setError(null);
 			try {
-				console.log('🔍 Chargement du profil:', userId);
+				console.log('🔍 [PublicProfile] Chargement du profil:', userId);
 				const [profileData, postsData] = await Promise.all([
 					profileAPI.getProfile(userId),
-					postsAPI.getUserPosts(userId, 10)
+				postsAPI.getUserPosts(userId, 999999)
 				]);
-				console.log('📊 Profile complet:', profileData);
-				console.log('📝 Posts retournés:', postsData);
+				console.log('📊 [PublicProfile] Profile reçu:', profileData);
+				console.log('📊 [PublicProfile] isFollowing:', profileData.isFollowing);
+				console.log('📊 [PublicProfile] followersCount:', profileData.followersCount);
+				console.log('📊 [PublicProfile] followingCount:', profileData.followingCount);
+				console.log('📝 Posts retournés:', postsData?.length);
+				console.log('🖼️ [Media Debug] Posts structure:', postsData?.map(p => ({
+					id: p.id,
+					image: p.image,
+					pdf: p.pdf,
+					content: p.content?.substring(0, 30)
+				})));
 				
 				// Normaliser les données du profil avec _count
 				const normalizedProfile = {
@@ -60,9 +96,11 @@ export default function PublicProfile() {
 						posts: (postsData?.length || profileData.postsCount) ?? 0,
 					}
 				};
+				console.log('✅ [PublicProfile] Profile normalisé:', normalizedProfile);
 				
 				setProfile(normalizedProfile);
 				setIsFollowing(profileData.isFollowing || false);
+				console.log('✅ [PublicProfile] isFollowing défini à:', profileData.isFollowing);
 			} catch (err) {
 				console.error('❌ Erreur chargement profil:', err);
 				setError('Profil introuvable');
@@ -76,34 +114,49 @@ export default function PublicProfile() {
 
 	const handleFollow = async () => {
 		if (!user || followLoading) return;
+		console.log('🔵 [PublicProfile] handleFollow - wasFollowing:', isFollowing);
 		setFollowLoading(true);
 
 		const wasFollowing = isFollowing;
+		console.log('🔵 [PublicProfile] Toggle - avant:', wasFollowing, '-> après:', !wasFollowing);
 		setIsFollowing(!wasFollowing);
-		setProfile(prev => ({
-			...prev,
-			_count: {
-				...prev._count,
-				followers: Math.max(0, (prev._count?.followers || 0) + (wasFollowing ? -1 : 1)),
-			},
-		}));
-
-		try {
-			if (wasFollowing) {
-				await profileAPI.unfollow(userId);
-			} else {
-				await profileAPI.follow(userId);
-			}
-		} catch (err) {
-			console.error('❌ Erreur follow/unfollow:', err);
-			setIsFollowing(wasFollowing);
-			setProfile(prev => ({
+		setProfile(prev => {
+			const newCount = Math.max(0, (prev._count?.followers || 0) + (wasFollowing ? -1 : 1));
+			console.log('🔵 [PublicProfile] Followers avant:', prev._count?.followers, '-> après:', newCount);
+			return {
 				...prev,
 				_count: {
 					...prev._count,
-					followers: Math.max(0, (prev._count?.followers || 0) + (wasFollowing ? 1 : -1)),
+					followers: newCount,
 				},
-			}));
+			};
+		});
+
+		try {
+			if (wasFollowing) {
+				console.log('🔵 [PublicProfile] Appel unfollow pour userId:', userId);
+				await profileAPI.unfollow(userId);
+				console.log('✅ [PublicProfile] Unfollow succès');
+			} else {
+				console.log('🔵 [PublicProfile] Appel follow pour userId:', userId);
+				await profileAPI.follow(userId);
+				console.log('✅ [PublicProfile] Follow succès');
+			}
+		} catch (err) {
+			console.error('❌ [PublicProfile] Erreur follow/unfollow:', err);
+			console.log('❌ [PublicProfile] Rollback - revenir à:', wasFollowing);
+			setIsFollowing(wasFollowing);
+			setProfile(prev => {
+				const newCount = Math.max(0, (prev._count?.followers || 0) + (wasFollowing ? 1 : -1));
+				console.log('❌ [PublicProfile] Rollback followers:', newCount);
+				return {
+					...prev,
+					_count: {
+						...prev._count,
+						followers: newCount,
+					},
+				};
+			});
 		} finally {
 			setFollowLoading(false);
 		}
@@ -114,9 +167,11 @@ export default function PublicProfile() {
 		setModalLoading(true);
 		setModalList([]);
 		try {
+			console.log('🔵 [PublicProfile] openModal - type:', type, 'profileId:', userId);
 			const data = type === 'followers'
-				? await followersAPI.getFollowers(userId)
-				: await followersAPI.getFollowing(userId);
+				? await socialAPI.getFollowersOfUser(userId)
+				: await socialAPI.getFriendsOfUser(userId);
+			console.log('✅ [PublicProfile] Données modale reçues:', data?.length || 0, 'items');
 			// L'API retourne un tableau directement
 			setModalList(Array.isArray(data) ? data : (data.followers || data.following || []));
 		} catch (err) {
@@ -138,10 +193,7 @@ export default function PublicProfile() {
 					return {
 						...post,
 						isLiked: !post.isLiked,
-						_count: {
-							...post._count,
-							likes: post.isLiked ? (post._count?.likes || 1) - 1 : (post._count?.likes || 0) + 1
-						}
+						likes: post.isLiked ? post.likes - 1 : post.likes + 1
 					};
 				}
 				return post;
@@ -194,9 +246,9 @@ export default function PublicProfile() {
 								<p className="text-gray-600 dark:text-gray-400">@{profile.username}</p>
 							</div>
 
-							{/* Badge si non inscrit sur 42Hub */}
-							{!profile.isRegistered && (
-								<span className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full">
+							{/* Badge si inscrit via Oauth42 */}
+							{profile.login42 && (
+								<span className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
 									Profil Intra 42
 								</span>
 							)}
@@ -212,7 +264,7 @@ export default function PublicProfile() {
 											: 'bg-blue-500 text-white hover:bg-blue-600'
 									}`}
 								>
-									{followLoading ? '...' : isFollowing ? 'Ne plus suivre' : 'Suivre'}
+									{followLoading ? '...' : isFollowing ? t('followers.unfollow') : t('followers.follow')}
 								</button>
 							)}
 						</div>
@@ -322,14 +374,130 @@ export default function PublicProfile() {
 
 			{/* Médias de l'utilisateur */}
 			{activeTab === "media" && (
-				<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-					<div className="col-span-full text-center text-gray-500 dark:text-gray-400">
-						Aucun média pour le moment.
-					</div>
-				</div>
-			)}
+			(() => {
+				const filteredMedia = profile.posts && profile.posts.filter(post => post.image || post.pdf);
+				console.log('🖼️ [Media] Profile posts:', profile.posts?.length);
+				console.log('🖼️ [Media] Filtered media count:', filteredMedia?.length);
+				console.log('🖼️ [Media] Filtered items:', filteredMedia?.map(p => ({
+					id: p.id,
+					image: !!p.image,
+					pdf: !!p.pdf
+				})));
 
-			{/* Modale followers / following */}
+				return (
+					<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+						{filteredMedia && filteredMedia.length > 0 ? (
+							filteredMedia.map(post => (
+								<div key={post.id} className="relative group bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden aspect-square cursor-pointer hover:opacity-80 transition" onClick={() => {
+									const idx = filteredMedia.findIndex(m => m.id === post.id);
+									setSelectedMediaIndex(idx);
+									setSelectedMedia(post.image || post.pdf);
+								}}>
+									{post.image && (
+										<img 
+											src={post.image} 
+											alt="Post media" 
+											className="w-full h-full object-cover"
+										/>
+									)}
+									{post.pdf && !post.image && (
+										<a 
+											href={post.pdf}
+											target="_blank"
+											rel="noopener noreferrer"
+											className="w-full h-full flex items-center justify-center bg-red-100 dark:bg-red-900/30"
+										>
+											<div className="text-center">
+												<div className="text-3xl">📄</div>
+												<p className="text-xs text-red-600 dark:text-red-400 mt-2">PDF</p>
+											</div>
+										</a>
+									)}
+									<div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition flex items-center justify-center">
+										{post.pdf && post.image && (
+											<a 
+												href={post.pdf}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-white opacity-0 group-hover:opacity-100 transition"
+											>
+												<div className="text-2xl">📄</div>
+											</a>
+										)}
+									</div>
+								</div>
+							))
+						) : (
+							<div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-12">
+								{t('profile.noMedia') || 'Aucun média pour le moment.'}
+							</div>
+						)}
+					</div>
+				);
+			})()
+		)}
+
+		{/* Modal Fullscreen Media */}
+		{selectedMedia && (
+		<div className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4" onClick={() => {
+			setSelectedMedia(null);
+			setSelectedMediaIndex(0);
+		}}>
+			<button
+				onClick={() => {
+					setSelectedMedia(null);
+					setSelectedMediaIndex(0);
+				}}
+				className="absolute top-4 right-4 text-white hover:text-gray-300 text-3xl z-50"
+			>
+				✕
+			</button>
+
+			{/* Navigation buttons */}
+			{(() => {
+				const filteredMedia = profile && profile.posts && profile.posts.filter(post => post.image || post.pdf);
+				return filteredMedia && filteredMedia.length > 1 ? (
+					<>
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								setSelectedMediaIndex((prev) => (prev === 0 ? filteredMedia.length - 1 : prev - 1));
+							}}
+							className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 text-3xl z-50"
+						>
+							❮
+						</button>
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								setSelectedMediaIndex((prev) => (prev === filteredMedia.length - 1 ? 0 : prev + 1));
+							}}
+							className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 text-3xl z-50"
+						>
+							❯
+						</button>
+						<div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm">
+							{selectedMediaIndex + 1} / {filteredMedia.length}
+						</div>
+					</>
+				) : null;
+			})()}
+
+			<img
+				src={(() => {
+					const filteredMedia = profile && profile.posts && profile.posts.filter(post => post.image || post.pdf);
+					return filteredMedia && filteredMedia[selectedMediaIndex] 
+						? (filteredMedia[selectedMediaIndex].image || filteredMedia[selectedMediaIndex].pdf)
+						: selectedMedia;
+				})()}
+				alt="Full screen media"
+				className="max-w-full max-h-full object-contain"
+				onClick={(e) => e.stopPropagation()}
+			/>
+		</div>
+	)}
+
+	{/* Modale followers / following */}
 			{modal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 					<div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col">
