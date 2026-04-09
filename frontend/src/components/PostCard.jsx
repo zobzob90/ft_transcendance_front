@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 16:21:25 by eric              #+#    #+#             */
-/*   Updated: 2026/04/03 17:36:46 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/08 15:40:05 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ export default function PostCard({ post, onLike, onDelete })
 						>
 							<FiMessageCircle />
 							<span>
-								{commentsCount === 0 ? t('post.comment') : `${commentsCount} commentaire${commentsCount > 1 ? 's' : ''}`}
+								{commentsCount === 0 ? t('post.comment') : `${commentsCount} ${commentsCount > 1 ? t('comment.plural') : t('comment.singular')}`}
 							</span>
 						</button>
 						<button className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-500 transition">

@@ -127,6 +127,8 @@
     "delete": "Supprimer",
     "edited": "(modifié)",
     "confirmDelete": "Supprimer ce commentaire ?",
+    "singular": "commentaire",
+    "plural": "commentaires",
     "loadMore": "Charger plus",
     "next": "suivants"
   },

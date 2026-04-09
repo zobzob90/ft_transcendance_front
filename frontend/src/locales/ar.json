@@ -127,6 +127,8 @@
     "delete": "حذف",
     "edited": "(معدل)",
     "confirmDelete": "حذف هذا التعليق؟",
+    "singular": "تعليق",
+    "plural": "تعليقات",
     "loadMore": "تحميل المزيد",
     "next": "القادمة"
   },

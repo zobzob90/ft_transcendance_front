@@ -276,14 +276,8 @@ export const AppProvider = ({ children }) => {
         // Retirer les classes existantes
         root.classList.remove('light', 'dark');
         
-        if (theme === 'auto') {
-            // Détecter la préférence système
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            root.classList.add(systemPrefersDark ? 'dark' : 'light');
-        } else {
-            // Appliquer le thème choisi
-            root.classList.add(theme);
-        }
+        // Appliquer le thème choisi (en minuscule pour Tailwind)
+        root.classList.add(theme.toLowerCase());
     }, [theme]);
 
     // Fonctions pour gérer les posts

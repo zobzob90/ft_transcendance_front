@@ -9,7 +9,6 @@ const validateAuthorization = (authorization) => {
     return false;
   if (!/^Bearer\s\S+$/.test(authorization))
     return false;
-  console.log('NOT ERROR HERE');
   return true;
 };
 

@@ -125,6 +125,8 @@
     "delete": "Excluir",
     "edited": "(editado)",
     "confirmDelete": "Excluir este comentário?",
+    "singular": "comentário",
+    "plural": "comentários",
     "loadMore": "Carregar mais",
     "next": "próximos"
   },

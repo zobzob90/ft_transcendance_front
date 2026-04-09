@@ -129,6 +129,8 @@
     "delete": "Delete",
     "edited": "(edited)",
     "confirmDelete": "Delete this comment?",
+    "singular": "comment",
+    "plural": "comments",
     "loadMore": "Load more",
     "next": "next"
   },

@@ -185,8 +185,8 @@ exports.modifyOneUser = async (req, res) => {
       return res.status(400).json({ error: 'Invalid user data format.' });
     }
 
-    const { username, firstName, lastName, email, bio } = user;
-    console.log('📝 [modifyOneUser] Données reçues:', { username, firstName, lastName, email, bio });
+    const { username, firstName, lastName, email, bio, theme, language } = user;
+    console.log('📝 [modifyOneUser] Données reçues:', { username, firstName, lastName, email, bio, theme, language });
 
     const avatar = req.file ? `${process.env.BFF_URL}/uploads/images/${req.file.filename}` : undefined;
 
@@ -195,7 +195,9 @@ exports.modifyOneUser = async (req, res) => {
       ...(firstName && { firstName }),
       ...(lastName  && { lastName }),
       ...(bio !== undefined && { bio }),
-      ...(avatar    && { avatar })
+      ...(avatar    && { avatar }),
+      ...(theme     && { theme }),
+      ...(language  && { langue: language })
     };
     console.log('📤 [modifyOneUser] Données envoyées à USER_SERVICE:', userUpdateData);
 
@@ -565,17 +567,36 @@ exports.getPostsLikedByUser = async (req, res) => {
       )
     );
 
-    const result = postsResponses.map(([post, commentsCount, likesCount]) => ({
-      id:            post.id,
-      content:       post.content    ?? null,
-      image:         post.image      ?? null,
-      pdf:           post.pdf        ?? null,
-      userId:        post.userId,
-      createdAt:     post.createdAt,
-      modifiedAt:    post.modifiedAt,
-      commentsCount: commentsCount?.count ?? 0,
-      likesCount:    likesCount?.count    ?? 0,
-    }));
+    // Récupérer les infos des auteurs
+    const uniqueUserIds = [...new Set(postsResponses.map(([post]) => post.userId))];
+    const userInfos = await Promise.all(
+      uniqueUserIds.map(uid =>
+        fetch(`${process.env.USER_SERVICE_URL}/${uid}`).then(r => r.json()).catch(() => null)
+      )
+    );
+    
+    const usersMap = {};
+    userInfos.forEach(user => {
+      if (user) usersMap[user.id] = user;
+    });
+
+    const result = postsResponses.map(([post, commentsCount, likesCount]) => {
+      const author = usersMap[post.userId];
+      return {
+        id:            post.id,
+        content:       post.content    ?? null,
+        image:         post.image      ?? null,
+        pdf:           post.pdf        ?? null,
+        userId:        post.userId,
+        author:        author?.username || 'Anonyme',
+        avatar:        author?.avatar || null,
+        user:          author,
+        createdAt:     post.createdAt,
+        modifiedAt:    post.modifiedAt,
+        commentsCount: commentsCount?.count ?? 0,
+        likesCount:    likesCount?.count    ?? 0,
+      };
+    });
 
     return res.status(200).json(result);
 

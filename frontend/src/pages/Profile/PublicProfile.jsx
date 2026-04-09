@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 16:02:01 by eric              #+#    #+#             */
-/*   Updated: 2026/04/03 17:41:35 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/08 15:40:05 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppContext } from '../../context/AppContext';
 import { useAvatar } from '../../hooks/useAvatar';
-import { profileAPI, followersAPI, postsAPI, socialAPI } from '../../services/api';
+import { profileAPI, followersAPI, postsAPI, socialAPI, likesAPI } from '../../services/api';
 import PostCard from '../../components/PostCard';
 import { FiX } from 'react-icons/fi';
 
@@ -29,6 +29,8 @@ export default function PublicProfile() {
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [followLoading, setFollowLoading] = useState(false);
 	const [activeTab, setActiveTab] = useState('posts');
+	const [likedPosts, setLikedPosts] = useState([]);
+	const [likedPostsLoading, setLikedPostsLoading] = useState(false);
 
 	// Modale followers/following
 	const [modal, setModal] = useState(null); // null | 'followers' | 'following'
@@ -70,21 +72,37 @@ export default function PublicProfile() {
 			setError(null);
 			try {
 				console.log('🔍 [PublicProfile] Chargement du profil:', userId);
-				const [profileData, postsData] = await Promise.all([
-					profileAPI.getProfile(userId),
-				postsAPI.getUserPosts(userId, 999999)
+			const [profileData, postsData, likedData, currentUserLikesResponse] = await Promise.all([
+				profileAPI.getProfile(userId),
+				postsAPI.getUserPosts(userId, 999999),
+				postsAPI.getLikedPosts(userId, 999999),
+				user ? likesAPI.getMyLikes() : Promise.resolve(null)
 				]);
+				
+				// Récupérer les IDs des posts aimés par l'utilisateur courant
+				let currentUserLikedIds = new Set();
+				if (currentUserLikesResponse?.likedPostIds) {
+					currentUserLikedIds = new Set(currentUserLikesResponse.likedPostIds);
+				}
+				
 				console.log('📊 [PublicProfile] Profile reçu:', profileData);
 				console.log('📊 [PublicProfile] isFollowing:', profileData.isFollowing);
 				console.log('📊 [PublicProfile] followersCount:', profileData.followersCount);
 				console.log('📊 [PublicProfile] followingCount:', profileData.followingCount);
 				console.log('📝 Posts retournés:', postsData?.length);
+				console.log('❤️ Posts aimés par utilisateur courant:', currentUserLikedIds.size);
 				console.log('🖼️ [Media Debug] Posts structure:', postsData?.map(p => ({
 					id: p.id,
 					image: p.image,
 					pdf: p.pdf,
 					content: p.content?.substring(0, 30)
 				})));
+				
+				// Enrichir les posts aimés avec l'info si l'utilisateur courant les a aimés
+				const enrichedLikedPosts = likedData?.map(post => ({
+					...post,
+					isLiked: currentUserLikedIds.has(post.id)
+				})) || [];
 				
 				// Normaliser les données du profil avec _count
 				const normalizedProfile = {
@@ -99,6 +117,7 @@ export default function PublicProfile() {
 				console.log('✅ [PublicProfile] Profile normalisé:', normalizedProfile);
 				
 				setProfile(normalizedProfile);
+				setLikedPosts(enrichedLikedPosts);
 				setIsFollowing(profileData.isFollowing || false);
 				console.log('✅ [PublicProfile] isFollowing défini à:', profileData.isFollowing);
 			} catch (err) {
@@ -185,19 +204,38 @@ export default function PublicProfile() {
 	const handleLike = (postId) => {
 		toggleLike(postId);
 		
-		// Mettre aussi à jour le state local du profil
+		// Mettre à jour le state local du profil
 		setProfile(prev => ({
 			...prev,
 			posts: prev.posts.map(post => {
 				if (post.id === postId) {
+					const currentLikes = post._count?.likes ?? post.likes ?? post.likesCount ?? 0;
 					return {
 						...post,
 						isLiked: !post.isLiked,
-						likes: post.isLiked ? post.likes - 1 : post.likes + 1
+						likes: post.isLiked ? currentLikes - 1 : currentLikes + 1,
+						_count: {
+							...post._count,
+							likes: post.isLiked ? currentLikes - 1 : currentLikes + 1
+						}
 					};
 				}
 				return post;
 			})
+		}));
+		
+		// Mettre à jour les posts aimés
+		setLikedPosts(prev => prev.map(post => {
+			if (post.id === postId) {
+				const currentLikes = post.likesCount ?? post.likes ?? 0;
+				return {
+					...post,
+					isLiked: !post.isLiked,
+					likes: post.isLiked ? currentLikes - 1 : currentLikes + 1,
+					likesCount: post.isLiked ? currentLikes - 1 : currentLikes + 1
+				};
+			}
+			return post;
 		}));
 	};
 
@@ -209,6 +247,9 @@ export default function PublicProfile() {
 			...prev,
 			posts: prev.posts.filter(post => post.id !== postId)
 		}));
+		
+		// Supprimer aussi des posts aimés
+		setLikedPosts(prev => prev.filter(post => post.id !== postId));
 	};
 
 	if (loading) {
@@ -334,45 +375,53 @@ export default function PublicProfile() {
 					>
 						Médias
 					</button>
-				</div>
+				<button 
+					onClick={() => setActiveTab("liked")}
+					className={`px-6 py-3 font-semibold ${
+						activeTab === "liked" 
+							? "text-blue-500 border-b-2 border-blue-500" 
+							: "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+					}`}
+				>
+					Likes
+				</button>
 			</div>
+		</div>
 
-			{/* Posts de l'utilisateur */}
-			{activeTab === "posts" && (
-				profile && (profile.posts && profile.posts.length > 0 ? (
-					<div className="space-y-4">
-						{profile.posts.map(post => {
-							// Normaliser la structure du post (API profil vs API feed)
-							const normalized = {
-								id: post.id,
-								content: post.content,
-								image: post.image || null,
-								pdf: post.pdf || null,
-								author: post.user?.username || post.author || profile.username,
-								avatar: post.user?.avatar || post.avatar || `https://ui-avatars.com/api/?name=${profile.firstName || profile.username}&background=3b82f6&color=fff`,
-								likes: post._count?.likes ?? post.likes ?? post.likesCount ?? 0,
-								liked: post.isLiked || post.liked || false,
-								date: new Date(post.createdAt).toLocaleDateString('fr-FR'),
-								userId: post.userId || post.user?.id,
-								createdAt: post.createdAt,
-								isEdited: post.isEdited || false,
-							};
-							return <PostCard 
-								key={post.id} 
-								post={normalized} 
+		{/* Posts de l'utilisateur */}
+		{activeTab === "posts" && (
+			profile && (profile.posts && profile.posts.length > 0 ? (
+				<div className="space-y-4">
+					{profile.posts.map(post => {
+						// Normaliser la structure du post (API profil vs API feed)
+						const normalized = {
+							id: post.id,
+							content: post.content,
+							image: post.image || null,
+							pdf: post.pdf || null,
+							author: post.user?.username || post.author || profile.username,
+							avatar: post.user?.avatar || post.avatar || `https://ui-avatars.com/api/?name=${profile.firstName || profile.username}&background=3b82f6&color=fff`,
+							likes: post._count?.likes ?? post.likes ?? post.likesCount ?? 0,
+							liked: post.isLiked || post.liked || false,
+							date: new Date(post.createdAt).toLocaleDateString('fr-FR'),
+							userId: post.userId || post.user?.id,
+							createdAt: post.createdAt,
+							isEdited: post.isEdited || false,
+						};
+						return <PostCard 
+							key={post.id} 
+							post={normalized} 
 							onLike={() => handleLike(post.id)} 
 							onDelete={() => handleDelete(post.id)} 
-							/>;
-						})}
-					</div>
-				) : (
-					<div className="text-center text-gray-500 dark:text-gray-400 mt-10">
-						Aucun post pour le moment.
-					</div>
-				))
-			)}
-
-			{/* Médias de l'utilisateur */}
+						/>;
+					})}
+				</div>
+			) : (
+				<div className="text-center text-gray-500 dark:text-gray-400 mt-10">
+					Aucun post pour le moment.
+				</div>
+			))
+		)}
 			{activeTab === "media" && (
 			(() => {
 				const filteredMedia = profile.posts && profile.posts.filter(post => post.image || post.pdf);
@@ -432,6 +481,43 @@ export default function PublicProfile() {
 								{t('profile.noMedia') || 'Aucun média pour le moment.'}
 							</div>
 						)}
+					</div>
+				);
+			})()
+		)}
+
+		{/* Posts aimés par l'utilisateur */}
+		{activeTab === "liked" && (
+			(() => {
+				return likedPosts && likedPosts.length > 0 ? (
+					<div className="space-y-4">
+						{likedPosts.map(post => {
+							// Normaliser la structure du post
+							const normalized = {
+								id: post.id,
+								content: post.content,
+								image: post.image || null,
+								pdf: post.pdf || null,
+								author: post.user?.username || post.author || post.author || 'Anonyme',
+								avatar: post.user?.avatar || post.avatar || `https://ui-avatars.com/api/?name=${post.user?.firstName || 'User'}&background=3b82f6&color=fff`,
+								likes: post._count?.likes ?? post.likes ?? post.likesCount ?? 0,
+								liked: post.isLiked,
+								date: new Date(post.createdAt).toLocaleDateString('fr-FR'),
+								userId: post.userId || post.user?.id,
+								createdAt: post.createdAt,
+								isEdited: post.isEdited || false,
+							};
+							return <PostCard 
+								key={post.id} 
+								post={normalized} 
+								onLike={() => handleLike(post.id)} 
+								onDelete={() => handleDelete(post.id)} 
+							/>;
+						})}
+					</div>
+				) : (
+					<div className="text-center text-gray-500 dark:text-gray-400 mt-10">
+						Aucun post aimé pour le moment.
 					</div>
 				);
 			})()

@@ -67,11 +67,16 @@ export default function Login()
 
 			// Charger et stocker l'utilisateur dans le contexte
 			const userData = await authAPI.getCurrentUser();
+			console.log('📊 [Login] userData reçu:', userData);
+			console.log('📊 [Login] userData.theme:', userData.theme);
+			console.log('📊 [Login] userData.language:', userData.language);
 			setUser(userData);
 			
-			// Appliquer le theme du user
+			// Appliquer le theme du user depuis le serveur
 			if (userData.theme) {
+				console.log('🎨 [Login] Applying theme:', userData.theme);
 				setTheme(userData.theme);
+				localStorage.setItem('theme', userData.theme);
 			}
 
 			// Rediriger vers le feed

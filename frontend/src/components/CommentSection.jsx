@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 15:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/03/24 11:26:33 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/08 15:40:05 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,8 @@ export default function CommentSection({ postId, onCommentCountChange }) {
 			}
 			
 			setComments(commentsArray);
-			// Notifier le parent du nombre de commentaires
-			if (onCommentCountChange) {
-				console.log('💬 [CommentSection] Appelant onCommentCountChange avec:', commentsArray.length);
-				onCommentCountChange(commentsArray.length);
-			} else {
-				console.warn('⚠️ [CommentSection] onCommentCountChange not provided!');
-			}
+			// NE PAS appeler onCommentCountChange ici car on charge seulement les 5 premiers
+			// Le parent a déjà le count total
 		} catch (err) {
 			console.error("Erreur chargement commentaires:", err);
 		}
@@ -259,7 +254,7 @@ export default function CommentSection({ postId, onCommentCountChange }) {
 						disabled={loadingMore}
 						className="w-full mt-3 py-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
 					>
-						{loadingMore ? 'Chargement...' : `${t('comment.loadMore')} (${COMMENTS_PER_PAGE} ${t('comment.next')})`}
+						{loadingMore ? 'Chargement...' : t('comment.loadMore')}
 					</button>
 				)}
 			</div>

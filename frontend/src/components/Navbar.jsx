@@ -36,6 +36,7 @@ export default function Navbar()
 		localStorage.removeItem('user');
 		localStorage.removeItem('posts');
 		localStorage.removeItem('notifications');
+		// ⚠️ NE PAS supprimer theme et language - les récupérer au re-login
 		
 		// Réinitialiser le contexte
 		setUser(null);

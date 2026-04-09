@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 11:00:00 by eric              #+#    #+#             */
-/*   Updated: 2026/04/03 17:29:18 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/08 15:40:05 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,14 +118,31 @@ export default function Settings() {
         setNotifications({ ...notifications, [key]: !notifications[key] });
     };
 
-    const handleLanguageChange = (e) => {
-        setLanguage(e.target.value);
-        console.log("🌍 Langue changée:", e.target.value);
+    const handleLanguageChange = async (e) => {
+        const newLanguage = e.target.value;
+        setLanguage(newLanguage);
+        console.log("🌍 Langue changée:", newLanguage);
+        
+        // Sauvegarder immédiatement au serveur
+        try {
+            await usersAPI.updateUser(user.id, { language: newLanguage });
+            console.log("✅ Langue sauvegardée au serveur");
+        } catch (err) {
+            console.error("❌ Erreur sauvegarde langue:", err);
+        }
     };
 
-    const handleThemeChange = (newTheme) => {
+    const handleThemeChange = async (newTheme) => {
         setContextTheme(newTheme);
         console.log("🎨 Thème changé:", newTheme);
+        
+        // Sauvegarder immédiatement au serveur en majuscule
+        try {
+            await usersAPI.updateUser(user.id, { theme: newTheme.toUpperCase() });
+            console.log("✅ Thème sauvegardé au serveur");
+        } catch (err) {
+            console.error("❌ Erreur sauvegarde thème:", err);
+        }
     };
 
     const handleSaveProfile = async (e) => {
@@ -508,7 +525,7 @@ export default function Settings() {
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                             {t('settings.appearance.theme')}
                         </label>
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 gap-3">
                             {/* Light Theme */}
                             <button
                                 onClick={() => handleThemeChange('light')}
@@ -538,28 +555,11 @@ export default function Settings() {
                                     {t('settings.appearance.dark')}
                                 </span>
                             </button>
-
-                            {/* Auto Theme */}
-                            <button
-                                onClick={() => handleThemeChange('auto')}
-                                className={`p-4 border-2 rounded-lg flex flex-col items-center space-y-2 transition ${
-                                    contextTheme === 'auto' 
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' 
-                                        : 'border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500'
-                                }`}
-                            >
-                                <FiMonitor className={`text-2xl ${contextTheme === 'auto' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`} />
-                                <span className={`text-sm font-medium ${contextTheme === 'auto' ? 'text-blue-700 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}>
-                                    {t('settings.appearance.auto')}
-                                </span>
-                            </button>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                            {contextTheme === 'auto' 
-                                ? t('settings.appearance.autoDesc')
-                                : contextTheme === 'dark' 
-                                    ? t('settings.appearance.darkDesc')
-                                    : t('settings.appearance.lightDesc')}
+                            {contextTheme === 'dark' 
+                                ? t('settings.appearance.darkDesc')
+                                : t('settings.appearance.lightDesc')}
                         </p>
                     </div>
                 </div>

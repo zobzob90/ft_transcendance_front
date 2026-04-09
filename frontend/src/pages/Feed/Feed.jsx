@@ -6,7 +6,7 @@
 /*   By: eric <eric@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 14:07:04 by eric              #+#    #+#             */
-/*   Updated: 2026/03/25 16:40:22 by eric             ###   ########.fr       */
+/*   Updated: 2026/04/08 15:40:05 by eric             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ export default function Feed()
         };
     }, [isLoadingMore, hasMorePosts, loadMorePosts]);
     return (
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between gap-3 mb-6">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('feed.title')}</h1>
                 <button
